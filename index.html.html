@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobTrack — Application Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0b0c0e;--surface:#13151a;--surface2:#1c1f27;--border:#252830;--accent:#e8b84b;--accent2:#f5d070;--text:#e9eaed;--muted:#6b7280;--green:#3fb87a;--red:#e05068;--blue:#4f8ef7;--purple:#8b6ef0;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+  ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+  .app{display:flex;min-height:100vh;}
+  .sidebar{width:230px;background:var(--surface);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .main{flex:1;padding:32px 36px;overflow-y:auto;}
+  @media(max-width:640px){.sidebar{width:56px;padding:14px 8px;}.sidebar .nav-label,.sidebar .logo-sub,.logo-text,.stat-label{display:none;}.main{padding:18px 14px;}}
+
+  .logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent);margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+  .logo-sub{color:var(--muted);font-size:11px;font-family:'DM Sans',sans-serif;display:block;margin-top:2px;font-weight:300;}
+  .nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+  .nav-btn:hover{background:var(--surface2);color:var(--text);}
+  .nav-btn.active{background:var(--surface2);color:var(--accent);}
+  .nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+  .nav-section{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:12px 12px 4px;font-weight:600;}
+  .sidebar-stats{padding-top:16px;border-top:1px solid var(--border);}
+  .stat-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:3px 0;}
+
+  .page-title{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:24px;}
+  .page-title span{color:var(--accent);}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:14px;}
+  .card h3{font-size:14px;font-weight:600;color:var(--accent);margin-bottom:12px;}
+  .btn{padding:9px 18px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s;display:inline-flex;align-items:center;gap:7px;text-decoration:none;white-space:nowrap;}
+  .btn:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-primary{background:var(--accent);color:#0b0c0e;}
+  .btn-primary:not(:disabled):hover{background:var(--accent2);}
+  .btn-ghost{background:var(--surface2);color:var(--text);}
+  .btn-ghost:hover{background:var(--border);}
+  .btn-green{background:var(--green);color:#0b0c0e;}
+  .btn-green:not(:disabled):hover{opacity:0.9;}
+  .btn-blue{background:var(--blue);color:#fff;}
+  .btn-blue:not(:disabled):hover{opacity:0.9;}
+  .btn-danger{background:rgba(224,80,104,0.1);color:var(--red);border:1px solid var(--red);}
+  .btn-danger:hover{background:var(--red);color:#fff;}
+  .btn-sm{padding:5px 12px;font-size:12px;border-radius:7px;}
+  input,select,textarea{background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  input::placeholder,textarea::placeholder{color:var(--muted);}
+  .field{width:100%;padding:10px 13px;font-size:13px;}
+  .row{display:flex;gap:10px;align-items:flex-start;}
+
+  /* Badges */
+  .badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+  .badge-saved{background:rgba(232,184,75,0.15);color:var(--accent);}
+  .badge-applied{background:rgba(79,142,247,0.15);color:var(--blue);}
+  .badge-interview{background:rgba(139,110,240,0.15);color:var(--purple);}
+  .badge-offer{background:rgba(63,184,122,0.15);color:var(--green);}
+  .badge-rejected{background:rgba(224,80,104,0.15);color:var(--red);}
+
+  /* Dashboard */
+  .filter-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+  .filter-btn{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+  .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(232,184,75,0.07);}
+  .view-toggle{display:flex;gap:3px;background:var(--surface2);border-radius:8px;padding:3px;margin-left:auto;}
+  .view-btn{padding:4px 11px;border-radius:6px;font-size:12px;cursor:pointer;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .view-btn.active{background:var(--surface);color:var(--accent);}
+  .jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:13px;}
+  .job-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:17px;cursor:pointer;transition:all 0.18s;}
+  .job-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .card-company{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:500;margin-bottom:6px;}
+  .card-title{font-size:15px;font-weight:600;margin-bottom:7px;line-height:1.35;}
+  .card-meta{display:flex;gap:10px;font-size:11px;color:var(--muted);flex-wrap:wrap;}
+  .card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:11px;border-top:1px solid var(--border);}
+  .card-date{font-size:10px;color:var(--muted);}
+  .match-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .kanban{display:flex;gap:11px;overflow-x:auto;padding-bottom:10px;}
+  .k-col{flex:0 0 205px;background:var(--surface);border-radius:14px;border:1px solid var(--border);}
+  .k-header{padding:11px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+  .k-title-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;}
+  .k-count{font-size:11px;background:var(--surface2);padding:2px 7px;border-radius:20px;color:var(--muted);}
+  .k-cards{padding:9px;display:flex;flex-direction:column;gap:7px;max-height:460px;overflow-y:auto;}
+  .k-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px;cursor:pointer;transition:all 0.15s;}
+  .k-card:hover{border-color:var(--accent);}
+  .k-company{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:3px;}
+  .k-title-text{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:5px;}
+  .k-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);}
+  .empty{text-align:center;padding:70px 20px;color:var(--muted);grid-column:1/-1;}
+  .empty-icon{font-size:42px;margin-bottom:12px;opacity:0.4;}
+  .empty h3{font-size:16px;color:var(--text);margin-bottom:6px;}
+
+  /* Documents */
+  .doc-tabs{display:flex;gap:3px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content;}
+  .doc-tab{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .doc-tab.active{background:var(--surface);color:var(--accent);}
+  .doc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .doc-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .doc-item:hover{border-color:var(--border);}
+  .doc-info{flex:1;min-width:0;}
+  .doc-name{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .doc-meta{font-size:11px;color:var(--muted);}
+  .doc-actions{display:flex;gap:6px;flex-shrink:0;}
+  .doc-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;}
+
+  /* Document editor */
+  .doc-editor{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  .editor-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .editor-title-input{background:none;border:none;font-size:16px;font-weight:600;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;flex:1;min-width:120px;}
+  .editor-textarea{width:100%;min-height:420px;padding:20px;font-size:13px;line-height:1.75;border:none;border-radius:0;background:var(--bg);color:var(--text);resize:vertical;}
+  .editor-footer{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+  /* AI Edit panel */
+  .ai-panel{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px;}
+  .ai-panel h4{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;}
+  .ai-instruction{width:100%;padding:10px 13px;font-size:13px;line-height:1.5;min-height:70px;resize:vertical;margin-bottom:10px;}
+  .ai-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .ai-chip{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .ai-chip:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:720px;max-height:92vh;overflow-y:auto;animation:slideUp 0.22s ease;}
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-head{padding:22px 26px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:var(--surface);z-index:1;}
+  .modal-company{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;}
+  .modal-title-text{font-family:'Playfair Display',serif;font-size:21px;line-height:1.3;}
+  .modal-close{background:var(--surface2);border:none;color:var(--muted);font-size:16px;width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:12px;}
+  .modal-body{padding:20px 26px 26px;}
+  .modal-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+  .meta-item{display:flex;align-items:center;gap:7px;font-size:13px;}
+  .meta-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;}
+  .meta-val{font-weight:500;}
+  .section{margin-bottom:22px;}
+  .section-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:8px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .q-item{background:var(--surface2);border-radius:9px;padding:11px 13px;font-size:13px;line-height:1.5;border-left:3px solid var(--accent);margin-bottom:7px;}
+  .q-type{color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;display:block;margin-bottom:2px;}
+  .facts-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .fact-item{background:var(--surface2);border-radius:9px;padding:11px 13px;font-size:13px;}
+  .fact-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;display:block;margin-bottom:2px;}
+  .status-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .status-opt{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:none;font-family:'DM Sans',sans-serif;color:var(--muted);transition:all 0.15s;}
+  .modal-actions{display:flex;gap:7px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap;}
+
+  /* CV Match */
+  .job-pick-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+  .job-pick{display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--surface2);border-radius:9px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;}
+  .job-pick.sel{border-color:var(--accent);background:rgba(232,184,75,0.05);}
+  .match-result{background:var(--surface2);border-radius:13px;padding:20px;margin-top:14px;}
+  .score-big{font-family:'Playfair Display',serif;font-size:50px;font-weight:700;line-height:1;}
+  .bar-outer{height:7px;background:var(--border);border-radius:7px;overflow:hidden;margin:9px 0 3px;}
+  .bar-inner{height:100%;border-radius:7px;transition:width 0.8s ease;}
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px;}
+  .match-box{background:var(--surface);border-radius:9px;padding:13px;}
+  .match-box strong{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);display:block;margin-bottom:6px;}
+
+  /* Setup */
+  .setup{max-width:500px;margin:56px auto;padding:0 16px;animation:fadeUp 0.3s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .setup h1{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:8px;}
+  .step-pill{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;background:var(--accent);color:#0b0c0e;font-size:12px;font-weight:700;flex-shrink:0;}
+  .setup-step{display:flex;gap:13px;align-items:flex-start;padding:13px 15px;background:var(--surface2);border-radius:10px;margin-bottom:9px;font-size:13px;color:var(--muted);line-height:1.6;}
+  .setup-step strong{color:var(--text);}
+  .setup-step a{color:var(--accent);text-decoration:none;}
+
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .toast{position:fixed;bottom:18px;right:18px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13px;z-index:300;animation:fadeUp 0.2s ease;}
+  .toast.ok{border-color:var(--green);}
+  .toast.err{border-color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- Setup Screen -->
+<div id="setup-screen" class="setup" style="display:none;">
+  <h1>Welcome to <span style="color:var(--accent)">JobTrack</span></h1>
+  <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:18px;">Uses Google <strong style="color:var(--text)">Gemini AI</strong> — completely free, no credit card needed.</p>
+  <div class="setup-step"><span class="step-pill">1</span><div>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank"><strong>aistudio.google.com/app/apikey ↗</strong></a> and sign in with your Google account</div></div>
+  <div class="setup-step"><span class="step-pill">2</span><div>Click <strong>"Create API Key"</strong> — instant and free</div></div>
+  <div class="setup-step"><span class="step-pill">3</span><div>Copy the key and paste it below</div></div>
+  <div style="display:flex;gap:10px;margin-top:16px;">
+    <input id="key-input" type="password" placeholder="Paste your Gemini API key..." class="field" style="flex:1;">
+    <button class="btn btn-primary" onclick="saveKey()">Start →</button>
+  </div>
+  <p id="key-error" style="color:var(--red);font-size:12px;margin-top:7px;display:none;">⚠️ Key looks invalid. Please check and try again.</p>
+  <p style="font-size:11px;color:var(--muted);margin-top:10px;">🔒 Stored only in your browser — never shared.</p>
+</div>
+
+<!-- Main App -->
+<div id="app" class="app" style="display:none;">
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-text">JobTrack</span><span class="logo-sub">Application Manager</span></div>
+
+    <div class="nav-section nav-label">Jobs</div>
+    <button class="nav-btn active" id="nav-dashboard" onclick="showView('dashboard')"><span class="nav-icon">📋</span><span class="nav-label"> Dashboard</span></button>
+    <button class="nav-btn" id="nav-add" onclick="showView('add')"><span class="nav-icon">✚</span><span class="nav-label"> Add Job</span></button>
+    <button class="nav-btn" id="nav-cv" onclick="showView('cv')"><span class="nav-icon">🎯</span><span class="nav-label"> CV Match</span></button>
+
+    <div class="nav-section nav-label" style="margin-top:6px;">Documents</div>
+    <button class="nav-btn" id="nav-resumes" onclick="showView('resumes')"><span class="nav-icon">📄</span><span class="nav-label"> Resumes</span></button>
+    <button class="nav-btn" id="nav-covers" onclick="showView('covers')"><span class="nav-icon">✉️</span><span class="nav-label"> Cover Letters</span></button>
+
+    <button class="nav-btn" id="nav-settings" onclick="showView('settings')" style="margin-top:auto;"><span class="nav-icon">⚙️</span><span class="nav-label"> Settings</span></button>
+    <div class="sidebar-stats" id="sidebar-stats"></div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <h1 class="page-title" style="margin-bottom:0;">My <span>Applications</span></h1>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input id="search-input" type="text" placeholder="🔍 Search..." class="field" style="width:160px;font-size:13px;padding:8px 12px;" oninput="renderDashboard()">
+          <select id="sort-select" onchange="renderDashboard()" style="padding:8px 11px;font-size:13px;cursor:pointer;">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="company-asc">Company A→Z</option>
+            <option value="company-desc">Company Z→A</option>
+            <option value="title-asc">Title A→Z</option>
+            <option value="status">By Status</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-bar" id="filter-bar"></div>
+      <div id="jobs-grid" class="jobs-grid"></div>
+      <div id="kanban-board" class="kanban" style="display:none;"></div>
+    </div>
+
+    <!-- ADD JOB -->
+    <div id="view-add" style="display:none;max-width:580px;">
+      <h1 class="page-title">Add <span>Application</span></h1>
+      <div class="card">
+        <h3>🔗 Paste a Job Posting URL</h3>
+        <div class="row" style="margin-bottom:10px;">
+          <input id="url-input" type="url" placeholder="https://seek.com.au/job/... or any job URL" class="field" style="flex:1;">
+          <button class="btn btn-primary" id="analyse-btn" onclick="analyseJob()">✨ Analyse</button>
+        </div>
+        <div id="add-status" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;"></div>
+        <div id="add-error" style="display:none;font-size:13px;color:var(--red);margin-top:6px;"></div>
+      </div>
+      <div class="card"><p style="font-size:13px;color:var(--muted);line-height:1.7;">Paste any job URL — Seek, LinkedIn, Indeed, company career pages. AI automatically extracts the <strong style="color:var(--text)">title, company, location, salary and description</strong>, plus generates <strong style="color:var(--text)">interview questions</strong> and <strong style="color:var(--text)">company facts</strong>.</p></div>
+    </div>
+
+    <!-- CV MATCH -->
+    <div id="view-cv" style="display:none;max-width:640px;">
+      <h1 class="page-title">CV <span>Match Score</span></h1>
+      <div class="card">
+        <h3>1. Select a Job</h3>
+        <div class="job-pick-list" id="cv-job-list"></div>
+      </div>
+      <div class="card">
+        <h3>2. Paste Your Resume / CV</h3>
+        <textarea id="cv-text" placeholder="Paste the full text of your resume or CV here..." class="field" style="min-height:160px;padding:12px 13px;line-height:1.6;resize:vertical;"></textarea>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);">💡 Tip: Save your resume in the <strong style="color:var(--text)">Resumes</strong> section for quick access across applications.</div>
+      </div>
+      <button class="btn btn-green" id="cv-btn" onclick="analyseCV()">🎯 Analyse My CV</button>
+      <div id="cv-status" style="display:none;font-size:13px;color:var(--muted);margin-top:10px;"></div>
+      <div id="cv-error" style="font-size:13px;color:var(--red);margin-top:8px;display:none;"></div>
+      <div id="cv-result"></div>
+    </div>
+
+    <!-- RESUMES -->
+    <div id="view-resumes" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
+        <h1 class="page-title" style="margin-bottom:0;">My <span>Resumes</span></h1>
+        <button class="btn btn-primary" onclick="newDocument('resume')">＋ New Resume</button>
+      </div>
+      <div id="resume-list-view">
+        <div id="resume-list" class="doc-list"></div>
+      </div>
+      <div id="resume-editor-view" style="display:none;">
+        <div style="margin-bottom:14px;">
+          <button class="btn btn-ghost btn-sm" onclick="closeDocEditor('resume')">← Back to Resumes</button>
+        </div>
+        <div class="doc-editor">
+          <div class="editor-head">
+            <input id="resume-name-input" class="editor-title-input" placeholder="Resume name (e.g. Senior Developer Resume)">
+            <div style="display:flex;gap:7px;">
+              <button class="btn btn-ghost btn-sm" onclick="uploadResumeFile()">📎 Upload .txt</button>
+              <input type="file" id="resume-file-upload" accept=".txt,.md" style="display:none;" onchange="handleResumeUpload(event)">
+              <button class="btn btn-primary btn-sm" onclick="saveDocument('resume')">💾 Save</button>
+            </div>
+          </div>
+          <textarea id="resume-textarea" class="editor-textarea" placeholder="Paste or type your full resume here..."></textarea>
+          <div class="editor-footer">
+            <span style="font-size:12px;color:var(--muted);" id="resume-wordcount"></span>
+            <div style="margin-left:auto;display:flex;gap:7px;">
+              <button class="btn btn-blue btn-sm" onclick="toggleAIPanel('resume')">🤖 AI Edit</button>
+            </div>
+          </div>
+        </div>
+        <div id="resume-ai-panel" style="display:none;">
+          <div class="ai-panel">
+            <h4>🤖 AI Edit — Senior Sydney Recruiter</h4>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Tell the AI what changes to make. Be specific for best results.</p>
+            <div class="ai-suggestions">
+              <button class="ai-chip" onclick="setInstruction('resume','Make this more concise and impactful for senior roles in Sydney')">More concise</button>
+              <button class="ai-chip" onclick="setInstruction('resume','Strengthen the achievements with metrics and quantifiable results')">Add metrics</button>
+              <button class="ai-chip" onclick="setInstruction('resume','Tailor this for the Australian job market and Sydney employers')">Aus market</button>
+              <button class="ai-chip" onclick="setInstruction('resume','Improve the professional summary to be more compelling')">Better summary</button>
+              <button class="ai-chip" onclick="setInstruction('resume','Reorder and restructure for maximum impact with ATS systems')">ATS friendly</button>
+            </div>
+            <textarea id="resume-ai-instruction" class="ai-instruction field" placeholder="e.g. Tailor this resume for a senior project manager role in Sydney fintech..."></textarea>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button class="btn btn-primary" id="resume-ai-btn" onclick="aiEditDocument('resume')">✨ Rewrite</button>
+              <span id="resume-ai-status" style="font-size:12px;color:var(--muted);"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COVER LETTERS -->
+    <div id="view-covers" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
+        <h1 class="page-title" style="margin-bottom:0;">Cover <span>Letters</span></h1>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="newDocumentFromJob()">⚡ Generate from Job</button>
+          <button class="btn btn-primary" onclick="newDocument('cover')">＋ New Cover Letter</button>
+        </div>
+      </div>
+      <div id="cover-list-view">
+        <div id="cover-list" class="doc-list"></div>
+      </div>
+      <div id="cover-editor-view" style="display:none;">
+        <div style="margin-bottom:14px;">
+          <button class="btn btn-ghost btn-sm" onclick="closeDocEditor('cover')">← Back to Cover Letters</button>
+        </div>
+        <div class="doc-editor">
+          <div class="editor-head">
+            <input id="cover-name-input" class="editor-title-input" placeholder="Cover letter name (e.g. Marketing Manager — SEEK)">
+            <div style="display:flex;gap:7px;">
+              <button class="btn btn-primary btn-sm" onclick="saveDocument('cover')">💾 Save</button>
+            </div>
+          </div>
+          <textarea id="cover-textarea" class="editor-textarea" placeholder="Write or paste your cover letter here..."></textarea>
+          <div class="editor-footer">
+            <span style="font-size:12px;color:var(--muted);" id="cover-wordcount"></span>
+            <div style="margin-left:auto;display:flex;gap:7px;">
+              <button class="btn btn-ghost btn-sm" onclick="duplicateCover()">⎘ Duplicate</button>
+              <button class="btn btn-blue btn-sm" onclick="toggleAIPanel('cover')">🤖 AI Edit</button>
+            </div>
+          </div>
+        </div>
+        <div id="cover-ai-panel" style="display:none;">
+          <div class="ai-panel">
+            <h4>🤖 AI Edit — Senior Sydney Recruiter</h4>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Describe what you want changed. The AI acts as your personal senior Sydney recruiter.</p>
+            <div class="ai-suggestions">
+              <button class="ai-chip" onclick="setInstruction('cover','Tailor this cover letter for a similar role at a different company')">Adapt for new role</button>
+              <button class="ai-chip" onclick="setInstruction('cover','Make the opening paragraph more attention-grabbing')">Stronger opening</button>
+              <button class="ai-chip" onclick="setInstruction('cover','Make this sound more confident and senior')">More senior tone</button>
+              <button class="ai-chip" onclick="setInstruction('cover','Shorten this to under 300 words while keeping key points')">Shorten it</button>
+              <button class="ai-chip" onclick="setInstruction('cover','Align this more closely with Australian workplace culture and values')">Aus culture</button>
+              <button class="ai-chip" onclick="setInstruction('cover','Add a strong call to action at the end')">Call to action</button>
+            </div>
+            <textarea id="cover-ai-instruction" class="ai-instruction field" placeholder="e.g. Adapt this for a similar role at a startup, keep the tone warm but professional..."></textarea>
+            <!-- Optional: link to job -->
+            <div style="margin-bottom:10px;">
+              <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:5px;">Optional: tailor to a specific saved job</label>
+              <select id="cover-job-select" style="width:100%;padding:8px 12px;font-size:13px;cursor:pointer;">
+                <option value="">— No specific job —</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button class="btn btn-primary" id="cover-ai-btn" onclick="aiEditDocument('cover')">✨ Rewrite</button>
+              <span id="cover-ai-status" style="font-size:12px;color:var(--muted);"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="view-settings" style="display:none;max-width:480px;">
+      <h1 class="page-title"><span>Settings</span></h1>
+      <div class="card">
+        <h3>🔑 Gemini API Key</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com ↗</a></p>
+        <div class="row">
+          <input id="new-key-input" type="password" placeholder="Paste new API key..." class="field" style="flex:1;">
+          <button class="btn btn-primary" onclick="updateKey()">Update</button>
+        </div>
+        <div id="key-update-msg" style="font-size:12px;margin-top:7px;display:none;"></div>
+      </div>
+      <div class="card">
+        <h3>🗑 Clear All Data</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Delete all saved jobs, resumes and cover letters.</p>
+        <button class="btn btn-danger btn-sm" onclick="clearAllData()">Clear Everything</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Job Detail Modal -->
+<div id="modal" class="overlay" style="display:none;" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-company" id="m-company"></div><div class="modal-title-text" id="m-title"></div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="m-meta"></div>
+      <div class="section"><div class="section-title">Status</div><div class="status-row" id="m-status"></div></div>
+      <div class="section" id="m-desc-sec"><div class="section-title">Job Description</div><div id="m-desc" style="font-size:13px;color:var(--muted);line-height:1.7;"></div></div>
+      <div class="section" id="m-q-sec"><div class="section-title">Interview Prep Questions</div><div id="m-questions"></div></div>
+      <div class="section" id="m-facts-sec"><div class="section-title">Key Company Facts</div><div class="facts-grid" id="m-facts"></div></div>
+      <div class="section"><div class="section-title">My Notes</div><textarea id="m-notes" class="field" style="min-height:72px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Add your notes..."></textarea></div>
+      <div class="modal-actions" id="m-actions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Generate Cover Letter from Job Modal -->
+<div id="gen-modal" class="overlay" style="display:none;" onclick="if(event.target===this)closeGenModal()">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-head">
+      <div><div class="modal-company">Cover Letter Generator</div><div class="modal-title-text">Generate from Job</div></div>
+      <button class="modal-close" onclick="closeGenModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Select a Job</label>
+        <select id="gen-job-select" class="field" style="cursor:pointer;"></select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Your Resume (paste or use saved)</label>
+        <select id="gen-resume-select" class="field" style="cursor:pointer;margin-bottom:8px;" onchange="fillResumeFromSaved()">
+          <option value="">— Paste manually below —</option>
+        </select>
+        <textarea id="gen-resume-text" class="field" style="min-height:110px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Paste your resume text here, or select a saved resume above..."></textarea>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Any extra instructions? (optional)</label>
+        <input id="gen-extra" type="text" class="field" placeholder="e.g. Keep it under 300 words, focus on leadership experience...">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-primary" id="gen-btn" onclick="generateCoverLetter()">⚡ Generate</button>
+        <span id="gen-status" style="font-size:12px;color:var(--muted);"></span>
+      </div>
+      <div id="gen-error" style="font-size:13px;color:var(--red);margin-top:8px;display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────
+let jobs     = JSON.parse(localStorage.getItem('jt_jobs')    || '[]');
+let resumes  = JSON.parse(localStorage.getItem('jt_resumes') || '[]');
+let covers   = JSON.parse(localStorage.getItem('jt_covers')  || '[]');
+let currentJobId = null;
+let currentFilter = 'all';
+let boardView = 'grid';
+let editingDocId = { resume: null, cover: null };
+let selectedCvJobId = null;
+
+const STATUS = {
+  saved:     {label:'Saved',     color:'var(--accent)'},
+  applied:   {label:'Applied',   color:'var(--blue)'},
+  interview: {label:'Interview', color:'var(--purple)'},
+  offer:     {label:'Offer',     color:'var(--green)'},
+  rejected:  {label:'Rejected',  color:'var(--red)'},
+};
+const STATUS_ORDER = ['saved','applied','interview','offer','rejected'];
+
+// ── Sydney Recruiter Persona ───────────────────────────────
+const SYDNEY_RECRUITER = `You are Alex Chen, a senior recruiter with 18 years of experience based in Sydney, Australia. You've placed thousands of candidates across finance, tech, healthcare, government, and professional services in Sydney and across Australia. You know exactly what hiring managers at top Australian companies look for. You write in a direct, warm, and professional Australian tone — no fluff, no Americanisms. You use Australian spelling (e.g. "organisation", "recognise", "colour"). Your edits are always polished, impactful, and tailored for the Australian job market. Return only the edited document text with no commentary, no preamble, and no markdown formatting.`;
+
+// ── Persistence ───────────────────────────────────────────
+function saveJobs()    { localStorage.setItem('jt_jobs',    JSON.stringify(jobs));    }
+function saveResumes() { localStorage.setItem('jt_resumes', JSON.stringify(resumes)); }
+function saveCovers()  { localStorage.setItem('jt_covers',  JSON.stringify(covers));  }
+
+// ── API ───────────────────────────────────────────────────
+function getKey() { return localStorage.getItem('gemini_key')||''; }
+function saveKey() {
+  const k=document.getElementById('key-input').value.trim();
+  if(!k||k.length<20){document.getElementById('key-error').style.display='block';return;}
+  localStorage.setItem('gemini_key',k);
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  renderDashboard();
+}
+function updateKey(){
+  const k=document.getElementById('new-key-input').value.trim();
+  const msg=document.getElementById('key-update-msg');
+  if(!k||k.length<20){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='⚠️ Invalid key.';return;}
+  localStorage.setItem('gemini_key',k);
+  msg.style.display='block';msg.style.color='var(--green)';msg.textContent='✅ Key updated!';
+  setTimeout(()=>msg.style.display='none',2500);
+}
+
+async function callGemini(prompt, system='') {
+  const key=getKey();
+  const fullPrompt = system ? system+'\n\n'+prompt : prompt;
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:fullPrompt}]}],generationConfig:{temperature:0.4}})
+  });
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message||'API error');
+  return data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+}
+
+function parseJSON(text){const m=text.match(/\{[\s\S]*\}/);if(!m)throw new Error('No JSON');return JSON.parse(m[0]);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg,type=''){const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
+function setStatus(id,html){const el=document.getElementById(id);if(!el)return;el.innerHTML=html;el.style.display=html?'flex':'none';}
+function showErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.style.display='block';}
+function clearErr(id){const el=document.getElementById(id);if(!el)return;el.textContent='';el.style.display='none';}
+function scoreColor(n){return n>=80?'var(--green)':n>=60?'var(--accent)':n>=40?'var(--blue)':'var(--red)';}
+
+// ── Navigation ────────────────────────────────────────────
+function showView(v) {
+  ['dashboard','add','cv','resumes','covers','settings'].forEach(n=>{
+    document.getElementById('view-'+n).style.display=n===v?'':'none';
+    const nb=document.getElementById('nav-'+n);
+    if(nb) nb.classList.toggle('active',n===v);
+  });
+  if(v==='dashboard') renderDashboard();
+  if(v==='cv')        renderCVJobList();
+  if(v==='resumes')   renderResumeList();
+  if(v==='covers')    renderCoverList();
+}
+
+// ── Dashboard ─────────────────────────────────────────────
+function getFiltered(){
+  const s=(document.getElementById('search-input')?.value||'').toLowerCase();
+  const sort=document.getElementById('sort-select')?.value||'date-desc';
+  return [...jobs].filter(j=>
+    (currentFilter==='all'||j.status===currentFilter)&&
+    (!s||j.title.toLowerCase().includes(s)||j.company.toLowerCase().includes(s))
+  ).sort((a,b)=>{
+    if(sort==='date-desc')   return new Date(b.date)-new Date(a.date);
+    if(sort==='date-asc')    return new Date(a.date)-new Date(b.date);
+    if(sort==='company-asc') return a.company.localeCompare(b.company);
+    if(sort==='company-desc')return b.company.localeCompare(a.company);
+    if(sort==='title-asc')   return a.title.localeCompare(b.title);
+    if(sort==='status')      return STATUS_ORDER.indexOf(a.status)-STATUS_ORDER.indexOf(b.status);
+    return 0;
+  });
+}
+
+function renderDashboard(){
+  const counts={};jobs.forEach(j=>{counts[j.status]=(counts[j.status]||0)+1;});
+  document.getElementById('filter-bar').innerHTML=
+    ['all',...STATUS_ORDER].map(f=>`<button class="filter-btn ${currentFilter===f?'active':''}" onclick="setFilter('${f}')">${f==='all'?`All (${jobs.length})`:STATUS[f].label+(counts[f]?` (${counts[f]})`:'')} </button>`).join('')+
+    `<div class="view-toggle"><button class="view-btn ${boardView==='grid'?'active':''}" onclick="setView('grid')">⊞ Grid</button><button class="view-btn ${boardView==='kanban'?'active':''}" onclick="setView('kanban')">⠿ Kanban</button></div>`;
+  if(boardView==='grid') renderGrid(); else renderKanban();
+  renderStats();
+}
+
+function renderGrid(){
+  document.getElementById('jobs-grid').style.display='';
+  document.getElementById('kanban-board').style.display='none';
+  const f=getFiltered(),g=document.getElementById('jobs-grid');
+  if(!f.length){g.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><h3>${jobs.length?'No matches':'No applications yet'}</h3><p style="font-size:13px;margin-top:5px;">${jobs.length?'Try a different filter':'Add your first job to get started'}</p></div>`;return;}
+  g.innerHTML=f.map(j=>`<div class="job-card" onclick="openModal(${j.id})">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><div class="card-company">${esc(j.company)}</div><span class="badge badge-${j.status}">${STATUS[j.status].label}</span></div>
+    <div class="card-title">${esc(j.title)}</div>
+    <div class="card-meta">${j.location!=='N/A'?`<span>📍 ${esc(j.location)}</span>`:''}${j.salary!=='N/A'?`<span>💰 ${esc(j.salary)}</span>`:''}</div>
+    <div class="card-footer">
+      <span class="card-date">${new Date(j.date).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}</span>
+      <div style="display:flex;align-items:center;gap:5px;">
+        ${j.matchScore?`<span class="match-pill" style="background:${scoreColor(j.matchScore)}22;color:${scoreColor(j.matchScore)}">${j.matchScore}% match</span>`:''}
+        <button onclick="quickDelete(${j.id},event)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:1px 4px;border-radius:5px;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'" title="Delete">🗑</button>
+      </div>
+    </div></div>`).join('');
+}
+
+function renderKanban(){
+  document.getElementById('jobs-grid').style.display='none';
+  document.getElementById('kanban-board').style.display='flex';
+  const s=(document.getElementById('search-input')?.value||'').toLowerCase();
+  document.getElementById('kanban-board').innerHTML=STATUS_ORDER.map(status=>{
+    const col=jobs.filter(j=>j.status===status&&(!s||j.title.toLowerCase().includes(s)||j.company.toLowerCase().includes(s)));
+    return `<div class="k-col">
+      <div class="k-header"><span class="k-title-label" style="color:${STATUS[status].color}">${STATUS[status].label}</span><span class="k-count">${col.length}</span></div>
+      <div class="k-cards">${col.length?col.map(j=>`<div class="k-card" onclick="openModal(${j.id})">
+        <div class="k-company">${esc(j.company)}</div><div class="k-title-text">${esc(j.title)}</div>
+        ${j.location!=='N/A'?`<div style="font-size:10px;color:var(--muted)">📍 ${esc(j.location)}</div>`:''}
+        <div class="k-footer"><span>${new Date(j.date).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</span>
+          <div style="display:flex;align-items:center;gap:4px;">${j.matchScore?`<span style="font-size:9px;font-weight:700;color:${scoreColor(j.matchScore)}">${j.matchScore}%</span>`:''}
+            <button onclick="quickDelete(${j.id},event)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">🗑</button>
+          </div></div></div>`).join(''):`<div style="padding:16px 0;text-align:center;font-size:12px;color:var(--muted);opacity:0.5;">Empty</div>`}
+      </div></div>`;
+  }).join('');
+}
+
+function setFilter(f){currentFilter=f;renderDashboard();}
+function setView(v){boardView=v;renderDashboard();}
+function quickDelete(id,e){e.stopPropagation();if(!confirm('Remove this application?'))return;jobs=jobs.filter(j=>j.id!==id);saveJobs();renderDashboard();toast('Application removed','ok');}
+function renderStats(){
+  const c={};jobs.forEach(j=>{c[j.status]=(c[j.status]||0)+1;});
+  document.getElementById('sidebar-stats').innerHTML=`
+    <div class="stat-row"><span class="stat-label">Total</span><strong>${jobs.length}</strong></div>
+    <div class="stat-row"><span class="stat-label">Applied</span><strong style="color:var(--blue)">${c.applied||0}</strong></div>
+    <div class="stat-row"><span class="stat-label">Interviews</span><strong style="color:var(--purple)">${c.interview||0}</strong></div>
+    <div class="stat-row"><span class="stat-label">Offers</span><strong style="color:var(--green)">${c.offer||0}</strong></div>`;
+}
+
+// ── Add Job ───────────────────────────────────────────────
+async function analyseJob(){
+  const url=document.getElementById('url-input').value.trim();
+  if(!url){showErr('add-error','Please enter a URL');return;}
+  const btn=document.getElementById('analyse-btn');
+  btn.disabled=true; setStatus('add-status','<span class="spinner"></span> Analysing job posting...'); clearErr('add-error');
+  try{
+    const text=await callGemini(
+      `Analyse this job posting URL and return ONLY raw JSON (no markdown, no backticks).\nURL: ${url}\nReturn exactly:\n{"title":"...","company":"...","location":"...","salary":"...","description":"2-3 sentence summary","requirements":["r1","r2","r3"],"interview_questions":[{"type":"Behavioral","question":"..."},{"type":"Technical","question":"..."},{"type":"Role-Specific","question":"..."},{"type":"Situational","question":"..."},{"type":"Culture Fit","question":"..."}],"company_facts":[{"label":"Founded","value":"..."},{"label":"Industry","value":"..."},{"label":"Size","value":"..."},{"label":"Headquarters","value":"..."},{"label":"Known For","value":"..."},{"label":"Culture","value":"..."}]}`
+    );
+    const d=parseJSON(text);
+    const job={id:Date.now(),url,title:d.title||'Unknown Title',company:d.company||'Unknown Company',location:d.location||'N/A',salary:d.salary||'N/A',description:d.description||'',requirements:d.requirements||[],interview_questions:d.interview_questions||[],company_facts:d.company_facts||[],status:'applied',notes:'',date:new Date().toISOString()};
+    jobs.unshift(job);saveJobs();
+    document.getElementById('url-input').value='';
+    setStatus('add-status','');toast('✅ Job added!','ok');showView('dashboard');
+  }catch(e){
+    setStatus('add-status','');
+    showErr('add-error',e.message?.includes('API_KEY')?'⚠️ Invalid API key. Check Settings.':'⚠️ Couldn\'t analyse that URL. Make sure it\'s a public job posting.');
+  }finally{btn.disabled=false;}
+}
+
+// ── CV Match ──────────────────────────────────────────────
+function renderCVJobList(){
+  const el=document.getElementById('cv-job-list');
+  if(!jobs.length){el.innerHTML='<p style="font-size:13px;color:var(--muted);padding:6px 0;">No jobs added yet.</p>';return;}
+  el.innerHTML=jobs.map(j=>`<div class="job-pick ${selectedCvJobId===j.id?'sel':''}" onclick="selCvJob(${j.id})">
+    <input type="radio" name="cvj" ${selectedCvJobId===j.id?'checked':''} style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;">
+    <span style="font-size:13px;"><strong>${esc(j.title)}</strong> <span style="color:var(--muted)">— ${esc(j.company)}</span></span></div>`).join('');
+}
+function selCvJob(id){selectedCvJobId=id;renderCVJobList();}
+
+async function analyseCV(){
+  if(!selectedCvJobId){showErr('cv-error','Please select a job first.');return;}
+  const cv=document.getElementById('cv-text').value.trim();
+  if(!cv){showErr('cv-error','Please paste your CV first.');return;}
+  const job=jobs.find(j=>j.id===selectedCvJobId);if(!job)return;
+  clearErr('cv-error');
+  document.getElementById('cv-btn').disabled=true;
+  document.getElementById('cv-result').innerHTML='';
+  setStatus('cv-status','<span class="spinner"></span> Analysing your CV...');
+  try{
+    const text=await callGemini(
+      `Analyse how well this CV matches the job. Return ONLY raw JSON.\nJOB: ${job.title} at ${job.company}\nDESCRIPTION: ${job.description}\nREQUIREMENTS: ${(job.requirements||[]).join(', ')}\nCV:\n${cv}\nReturn exactly:\n{"score":75,"summary":"one sentence","strengths":["s1","s2","s3"],"gaps":["g1","g2","g3"],"skills_match":"brief","experience_match":"brief","recommendation":"one tip"}`,
+      'You are an expert recruitment analyst. Return raw JSON only.'
+    );
+    const d=parseJSON(text);const sc=parseInt(d.score)||0;const col=scoreColor(sc);
+    jobs=jobs.map(j=>j.id===selectedCvJobId?{...j,matchScore:sc}:j);saveJobs();
+    setStatus('cv-status','');
+    document.getElementById('cv-result').innerHTML=`<div class="match-result">
+      <div style="display:flex;align-items:flex-end;gap:14px;margin-bottom:5px;">
+        <div class="score-big" style="color:${col}">${sc}<span style="font-size:22px;color:var(--muted)">%</span></div>
+        <div style="flex:1;padding-bottom:3px;"><p style="font-size:13px;color:var(--muted);margin-bottom:7px;">${esc(d.summary||'')}</p>
+        <div class="bar-outer"><div class="bar-inner" id="score-bar" style="width:0%;background:${col}"></div></div></div>
+      </div>
+      <div class="match-grid">
+        <div class="match-box"><strong>✅ Strengths</strong>${(d.strengths||[]).map(s=>`<div style="font-size:12px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--border)">✓ ${esc(s)}</div>`).join('')}</div>
+        <div class="match-box"><strong>⚠️ Gaps</strong>${(d.gaps||[]).map(g=>`<div style="font-size:12px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--border)">✗ ${esc(g)}</div>`).join('')}</div>
+        <div class="match-box"><strong>Skills Match</strong><p style="font-size:12px;color:var(--text);margin-top:4px;">${esc(d.skills_match||'')}</p></div>
+        <div class="match-box"><strong>Experience Match</strong><p style="font-size:12px;color:var(--text);margin-top:4px;">${esc(d.experience_match||'')}</p></div>
+      </div>
+      ${d.recommendation?`<div style="margin-top:11px;padding:12px 14px;background:rgba(232,184,75,0.07);border:1px solid rgba(232,184,75,0.2);border-radius:9px;font-size:13px;">💡 <strong>Tip:</strong> ${esc(d.recommendation)}</div>`:''}
+      <div style="margin-top:9px;font-size:12px;color:var(--green);">✅ Score saved to "${esc(job.title)}"</div></div>`;
+    setTimeout(()=>{const b=document.getElementById('score-bar');if(b)b.style.width=sc+'%';},80);
+  }catch(e){
+    setStatus('cv-status','');
+    showErr('cv-error',e.message?.includes('API_KEY')?'⚠️ Invalid API key. Check Settings.':'⚠️ Couldn\'t analyse CV. Please try again.');
+  }finally{document.getElementById('cv-btn').disabled=false;}
+}
+
+// ── Resumes ───────────────────────────────────────────────
+function renderResumeList(){
+  document.getElementById('resume-list-view').style.display='';
+  document.getElementById('resume-editor-view').style.display='none';
+  const el=document.getElementById('resume-list');
+  if(!resumes.length){el.innerHTML=`<div class="doc-empty">📄 No resumes saved yet.<br><span style="font-size:12px;margin-top:4px;display:block;">Click <strong>New Resume</strong> to add one.</span></div>`;return;}
+  el.innerHTML=resumes.map(r=>`<div class="doc-item">
+    <div class="doc-info">
+      <div class="doc-name">${esc(r.name)}</div>
+      <div class="doc-meta">${r.wordCount||0} words · Last edited ${new Date(r.updated).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}</div>
+    </div>
+    <div class="doc-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editDocument('resume',${r.id})">✏️ Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteDocument('resume',${r.id})">🗑</button>
+    </div></div>`).join('');
+}
+
+function newDocument(type){
+  editingDocId[type]=null;
+  document.getElementById(`${type}-name-input`).value='';
+  document.getElementById(`${type}-textarea`).value='';
+  updateWordCount(type);
+  document.getElementById(`${type}-list-view`).style.display='none';
+  document.getElementById(`${type}-editor-view`).style.display='';
+  if(type==='cover') populateCoverJobSelect();
+}
+
+function editDocument(type,id){
+  const list = type==='resume'?resumes:covers;
+  const doc=list.find(d=>d.id===id);if(!doc)return;
+  editingDocId[type]=id;
+  document.getElementById(`${type}-name-input`).value=doc.name;
+  document.getElementById(`${type}-textarea`).value=doc.content;
+  updateWordCount(type);
+  document.getElementById(`${type}-list-view`).style.display='none';
+  document.getElementById(`${type}-editor-view`).style.display='';
+  if(type==='cover') populateCoverJobSelect();
+}
+
+function saveDocument(type){
+  const name=document.getElementById(`${type}-name-input`).value.trim();
+  const content=document.getElementById(`${type}-textarea`).value.trim();
+  if(!name){toast('Please enter a name','err');return;}
+  if(!content){toast('Document is empty','err');return;}
+  const wordCount=content.split(/\s+/).filter(Boolean).length;
+  const now=new Date().toISOString();
+  if(type==='resume'){
+    if(editingDocId.resume){
+      resumes=resumes.map(r=>r.id===editingDocId.resume?{...r,name,content,wordCount,updated:now}:r);
+    }else{
+      resumes.unshift({id:Date.now(),name,content,wordCount,created:now,updated:now});
+    }
+    saveResumes();
+  }else{
+    if(editingDocId.cover){
+      covers=covers.map(c=>c.id===editingDocId.cover?{...c,name,content,wordCount,updated:now}:c);
+    }else{
+      covers.unshift({id:Date.now(),name,content,wordCount,created:now,updated:now});
+    }
+    saveCovers();
+  }
+  toast(`✅ ${type==='resume'?'Resume':'Cover letter'} saved!`,'ok');
+  closeDocEditor(type);
+}
+
+function deleteDocument(type,id){
+  if(!confirm('Delete this document? This cannot be undone.'))return;
+  if(type==='resume'){resumes=resumes.filter(r=>r.id!==id);saveResumes();renderResumeList();}
+  else{covers=covers.filter(c=>c.id!==id);saveCovers();renderCoverList();}
+  toast('Deleted','ok');
+}
+
+function closeDocEditor(type){
+  document.getElementById(`${type}-list-view`).style.display='';
+  document.getElementById(`${type}-editor-view`).style.display='none';
+  document.getElementById(`${type}-ai-panel`).style.display='none';
+  editingDocId[type]=null;
+  if(type==='resume') renderResumeList();
+  else renderCoverList();
+}
+
+function updateWordCount(type){
+  const val=document.getElementById(`${type}-textarea`)?.value||'';
+  const wc=val.split(/\s+/).filter(Boolean).length;
+  const el=document.getElementById(`${type}-wordcount`);
+  if(el) el.textContent=wc+' words';
+}
+
+// Wire up word count live update
+['resume','cover'].forEach(t=>{
+  setTimeout(()=>{
+    const ta=document.getElementById(t+'-textarea');
+    if(ta) ta.addEventListener('input',()=>updateWordCount(t));
+  },100);
+});
+
+function uploadResumeFile(){document.getElementById('resume-file-upload').click();}
+function handleResumeUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    document.getElementById('resume-textarea').value=ev.target.result;
+    if(!document.getElementById('resume-name-input').value) document.getElementById('resume-name-input').value=file.name.replace(/\.[^.]+$/,'');
+    updateWordCount('resume');
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ── Cover Letters ─────────────────────────────────────────
+function renderCoverList(){
+  document.getElementById('cover-list-view').style.display='';
+  document.getElementById('cover-editor-view').style.display='none';
+  const el=document.getElementById('cover-list');
+  if(!covers.length){el.innerHTML=`<div class="doc-empty">✉️ No cover letters saved yet.<br><span style="font-size:12px;margin-top:4px;display:block;">Click <strong>New Cover Letter</strong> or <strong>Generate from Job</strong> to get started.</span></div>`;return;}
+  el.innerHTML=covers.map(c=>`<div class="doc-item">
+    <div class="doc-info">
+      <div class="doc-name">${esc(c.name)}</div>
+      <div class="doc-meta">${c.wordCount||0} words · Last edited ${new Date(c.updated).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}</div>
+    </div>
+    <div class="doc-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editDocument('cover',${c.id})">✏️ Edit</button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicateCoverById(${c.id})">⎘</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteDocument('cover',${c.id})">🗑</button>
+    </div></div>`).join('');
+}
+
+function populateCoverJobSelect(){
+  const sel=document.getElementById('cover-job-select');
+  sel.innerHTML='<option value="">— No specific job —</option>'+
+    jobs.map(j=>`<option value="${j.id}">${esc(j.title)} — ${esc(j.company)}</option>`).join('');
+}
+
+function duplicateCover(){
+  const content=document.getElementById('cover-textarea').value;
+  const name=document.getElementById('cover-name-input').value;
+  if(!content){toast('Nothing to duplicate','err');return;}
+  const now=new Date().toISOString();
+  const wc=content.split(/\s+/).filter(Boolean).length;
+  covers.unshift({id:Date.now(),name:`Copy of ${name}`,content,wordCount:wc,created:now,updated:now});
+  saveCovers();toast('✅ Duplicated!','ok');
+}
+
+function duplicateCoverById(id){
+  const c=covers.find(x=>x.id===id);if(!c)return;
+  const now=new Date().toISOString();
+  covers.unshift({id:Date.now(),name:`Copy of ${c.name}`,content:c.content,wordCount:c.wordCount,created:now,updated:now});
+  saveCovers();renderCoverList();toast('✅ Duplicated!','ok');
+}
+
+// ── Generate Cover Letter from Job ────────────────────────
+function newDocumentFromJob(){
+  if(!jobs.length){toast('Add some jobs first','err');return;}
+  const sel=document.getElementById('gen-job-select');
+  sel.innerHTML=jobs.map(j=>`<option value="${j.id}">${esc(j.title)} — ${esc(j.company)}</option>`).join('');
+  const rsel=document.getElementById('gen-resume-select');
+  rsel.innerHTML='<option value="">— Paste manually below —</option>'+
+    resumes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('');
+  document.getElementById('gen-resume-text').value='';
+  document.getElementById('gen-extra').value='';
+  clearErr('gen-error');
+  document.getElementById('gen-status').textContent='';
+  document.getElementById('gen-btn').disabled=false;
+  document.getElementById('gen-modal').style.display='flex';
+}
+function closeGenModal(){document.getElementById('gen-modal').style.display='none';}
+function fillResumeFromSaved(){
+  const id=parseInt(document.getElementById('gen-resume-select').value);
+  if(!id)return;
+  const r=resumes.find(x=>x.id===id);
+  if(r) document.getElementById('gen-resume-text').value=r.content;
+}
+
+async function generateCoverLetter(){
+  const jobId=parseInt(document.getElementById('gen-job-select').value);
+  const job=jobs.find(j=>j.id===jobId);
+  const resumeText=document.getElementById('gen-resume-text').value.trim();
+  const extra=document.getElementById('gen-extra').value.trim();
+  if(!job){showErr('gen-error','Please select a job.');return;}
+  if(!resumeText){showErr('gen-error','Please paste or select your resume.');return;}
+  clearErr('gen-error');
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true;
+  document.getElementById('gen-status').innerHTML='<span class="spinner"></span> Writing your cover letter...';
+  try{
+    const coverText=await callGemini(
+      `Write a compelling, tailored cover letter for this job application.\n\nJOB TITLE: ${job.title}\nCOMPANY: ${job.company}\nLOCATION: ${job.location}\nJOB DESCRIPTION: ${job.description}\nKEY REQUIREMENTS: ${(job.requirements||[]).join(', ')}\n\nCANDIDATE RESUME:\n${resumeText}\n\n${extra?`ADDITIONAL INSTRUCTIONS: ${extra}\n\n`:''}Write a professional cover letter that is specific, compelling and tailored to this role. Use Australian spelling. Do not include placeholders like [Your Name] — write naturally as if on behalf of the candidate. Return only the cover letter text.`,
+      SYDNEY_RECRUITER
+    );
+    document.getElementById('gen-status').textContent='';
+    closeGenModal();
+    // Open in editor
+    editingDocId.cover=null;
+    document.getElementById('cover-name-input').value=`${job.title} — ${job.company}`;
+    document.getElementById('cover-textarea').value=coverText.trim();
+    updateWordCount('cover');
+    document.getElementById('cover-list-view').style.display='none';
+    document.getElementById('cover-editor-view').style.display='';
+    populateCoverJobSelect();
+    showView('covers');
+    toast('✅ Cover letter generated!','ok');
+  }catch(e){
+    document.getElementById('gen-status').textContent='';
+    showErr('gen-error',e.message?.includes('API_KEY')?'⚠️ Invalid API key. Check Settings.':'⚠️ Generation failed. Please try again.');
+  }finally{btn.disabled=false;}
+}
+
+// ── AI Edit ───────────────────────────────────────────────
+function toggleAIPanel(type){
+  const panel=document.getElementById(`${type}-ai-panel`);
+  panel.style.display=panel.style.display==='none'?'':'none';
+}
+function setInstruction(type,text){
+  document.getElementById(`${type}-ai-instruction`).value=text;
+}
+
+async function aiEditDocument(type){
+  const content=document.getElementById(`${type}-textarea`).value.trim();
+  const instruction=document.getElementById(`${type}-ai-instruction`).value.trim();
+  if(!content){toast('Document is empty','err');return;}
+  if(!instruction){toast('Please enter an instruction','err');return;}
+
+  let jobContext='';
+  if(type==='cover'){
+    const jobId=parseInt(document.getElementById('cover-job-select').value);
+    if(jobId){
+      const job=jobs.find(j=>j.id===jobId);
+      if(job) jobContext=`\n\nTARGET JOB: ${job.title} at ${job.company}\nJOB DESCRIPTION: ${job.description}\nKEY REQUIREMENTS: ${(job.requirements||[]).join(', ')}`;
+    }
+  }
+
+  const btn=document.getElementById(`${type}-ai-btn`);
+  const statusEl=document.getElementById(`${type}-ai-status`);
+  btn.disabled=true;
+  statusEl.innerHTML='<span class="spinner"></span> Rewriting...';
+
+  try{
+    const docType=type==='resume'?'resume':'cover letter';
+    const rewritten=await callGemini(
+      `The candidate has the following ${docType}:\n\n${content}${jobContext}\n\nYour task: ${instruction}\n\nReturn only the rewritten ${docType} text. No commentary, no explanation.`,
+      SYDNEY_RECRUITER
+    );
+    document.getElementById(`${type}-textarea`).value=rewritten.trim();
+    updateWordCount(type);
+    statusEl.textContent='✅ Done!';
+    setTimeout(()=>statusEl.textContent='',2500);
+  }catch(e){
+    statusEl.textContent='⚠️ Failed. Try again.';
+    setTimeout(()=>statusEl.textContent='',3000);
+  }finally{btn.disabled=false;}
+}
+
+// ── Job Modal ─────────────────────────────────────────────
+function openModal(id){
+  const j=jobs.find(x=>x.id===id);if(!j)return;
+  currentJobId=id;
+  document.getElementById('m-company').textContent=j.company;
+  document.getElementById('m-title').textContent=j.title;
+  document.getElementById('m-meta').innerHTML=[
+    j.location!=='N/A'?mi('📍','Location',j.location):'',
+    j.salary!=='N/A'?mi('💰','Salary',j.salary):'',
+    mi('📅','Added',new Date(j.date).toLocaleDateString()),
+    `<div class="meta-item"><span style="font-size:14px">🔗</span><div><div class="meta-label">Posting</div><div class="meta-val"><a href="${j.url}" target="_blank" style="color:var(--accent);text-decoration:none;">View Job ↗</a></div></div></div>`,
+    j.matchScore?`<div class="meta-item"><span style="font-size:14px">🎯</span><div><div class="meta-label">CV Match</div><div class="meta-val" style="color:${scoreColor(j.matchScore)};font-weight:700;">${j.matchScore}%</div></div></div>`:''
+  ].join('');
+  document.getElementById('m-status').innerHTML=STATUS_ORDER.map(s=>{
+    const m=STATUS[s];const a=j.status===s;
+    return `<button class="status-opt ${a?'sel':''}" style="${a?`color:${m.color};border-color:${m.color};background:${m.color}18`:''}" onclick="updateStatus('${s}')">${m.label}</button>`;
+  }).join('');
+  if(j.description){document.getElementById('m-desc').innerHTML=`<p>${esc(j.description)}</p>`+(j.requirements?.length?`<ul style="padding-left:17px;margin-top:9px;">${j.requirements.map(r=>`<li style="font-size:13px;color:var(--muted);margin-bottom:2px;">${esc(r)}</li>`).join('')}</ul>`:'');document.getElementById('m-desc-sec').style.display='';}
+  else document.getElementById('m-desc-sec').style.display='none';
+  if(j.interview_questions?.length){document.getElementById('m-questions').innerHTML=j.interview_questions.map(q=>`<div class="q-item"><span class="q-type">${esc(q.type)}</span>${esc(q.question)}</div>`).join('');document.getElementById('m-q-sec').style.display='';}
+  else document.getElementById('m-q-sec').style.display='none';
+  if(j.company_facts?.length){document.getElementById('m-facts').innerHTML=j.company_facts.map(f=>`<div class="fact-item"><span class="fact-label">${esc(f.label)}</span>${esc(f.value)}</div>`).join('');document.getElementById('m-facts-sec').style.display='';}
+  else document.getElementById('m-facts-sec').style.display='none';
+  document.getElementById('m-notes').value=j.notes||'';
+  document.getElementById('m-actions').innerHTML=`
+    <button class="btn btn-primary" onclick="saveNotes()">💾 Save Notes</button>
+    <a href="${j.url}" target="_blank" class="btn btn-ghost">🔗 Open Job</a>
+    <button class="btn btn-ghost btn-sm" onclick="quickGenCoverFromModal(${j.id})">✉️ Write Cover Letter</button>
+    <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="deleteFromModal()">🗑 Delete</button>`;
+  document.getElementById('modal').style.display='flex';
+}
+
+function mi(icon,label,val){return`<div class="meta-item"><span style="font-size:14px">${icon}</span><div><div class="meta-label">${label}</div><div class="meta-val">${esc(val)}</div></div></div>`;}
+function updateStatus(s){const j=jobs.find(x=>x.id===currentJobId);if(!j)return;j.status=s;saveJobs();document.getElementById('m-status').innerHTML=STATUS_ORDER.map(st=>{const m=STATUS[st];const a=j.status===st;return`<button class="status-opt ${a?'sel':''}" style="${a?`color:${m.color};border-color:${m.color};background:${m.color}18`:''}" onclick="updateStatus('${st}')">${m.label}</button>`;}).join('');renderDashboard();}
+function saveNotes(){const j=jobs.find(x=>x.id===currentJobId);if(!j)return;j.notes=document.getElementById('m-notes').value;saveJobs();toast('Notes saved','ok');}
+function deleteFromModal(){if(!confirm('Remove this application?'))return;jobs=jobs.filter(j=>j.id!==currentJobId);saveJobs();closeModal();renderDashboard();toast('Application removed','ok');}
+function closeModal(){document.getElementById('modal').style.display='none';currentJobId=null;}
+
+function quickGenCoverFromModal(jobId){
+  closeModal();
+  // pre-select job in gen modal
+  if(!jobs.length)return;
+  const sel=document.getElementById('gen-job-select');
+  sel.innerHTML=jobs.map(j=>`<option value="${j.id}" ${j.id===jobId?'selected':''}>${esc(j.title)} — ${esc(j.company)}</option>`).join('');
+  const rsel=document.getElementById('gen-resume-select');
+  rsel.innerHTML='<option value="">— Paste manually below —</option>'+resumes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('');
+  document.getElementById('gen-resume-text').value='';document.getElementById('gen-extra').value='';
+  clearErr('gen-error');document.getElementById('gen-status').textContent='';
+  document.getElementById('gen-btn').disabled=false;
+  document.getElementById('gen-modal').style.display='flex';
+  showView('covers');
+}
+
+// ── Settings ──────────────────────────────────────────────
+function clearAllData(){if(!confirm('Delete ALL jobs, resumes and cover letters? Cannot be undone.'))return;jobs=[];resumes=[];covers=[];saveJobs();saveResumes();saveCovers();renderDashboard();toast('All data cleared','ok');}
+
+// ── Init ──────────────────────────────────────────────────
+if(getKey()){document.getElementById('app').style.display='flex';renderDashboard();}
+else{document.getElementById('setup-screen').style.display='block';}
+</script>
+</body>
+</html>
