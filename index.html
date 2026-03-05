@@ -9,6 +9,7 @@
 <title>JobTrack — Application Manager</title>
 <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkpvYlRyYWNrIiwKICAic2hvcnRfbmFtZSI6ICJKb2JUcmFjayIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMTQxYTFmIiwKICAidGhlbWVfY29sb3IiOiAiIzE0MWExZiIsCiAgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyByeD0nMjAnIGZpbGw9JyMxNDFhMWYnLz48dGV4dCB4PSc1MCcgeT0nNjUnIGZvbnQtc2l6ZT0nNDUnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyMyZWM0YjYnPko8L3RleHQ+PC9zdmc+Iiwic2l6ZXMiOiAiYW55IiwidHlwZSI6ICJpbWFnZS9zdmcreG1sIn1dCn0=">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -18,7 +19,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
-:root{--bg:#141a1f;--surface:#1a2028;--surface2:#212830;--border:#2a3340;--accent:#2ec4b6;--accent2:#5dd9cd;--text:#dfe4ea;--muted:#6b7a8a;--green:#2ed573;--red:#ff6b81;--blue:#56b4f9;--purple:#9d8df1;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.2);--shadow-lg:0 8px 30px rgba(0,0,0,0.25);}
+:root{--bg:#141a1f;--surface:#1a2028;--surface2:#212830;--border:#2a3340;--accent:#2ec4b6;--accent2:#5dd9cd;--text:#dfe4ea;--muted:#8b9bab;--green:#2ed573;--red:#ff6b81;--blue:#56b4f9;--purple:#9d8df1;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.2);--shadow-lg:0 8px 30px rgba(0,0,0,0.25);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
@@ -221,6 +222,89 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.6;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:16px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;z-index:300;animation:fadeUp 0.2s ease;box-shadow:var(--shadow-lg);}
 .toast.ok{border-color:var(--green);}.toast.err{border-color:var(--red);}
+/* Skip to content */
+.skip-link{position:absolute;top:-100px;left:16px;background:var(--accent);color:#111;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;text-decoration:none;transition:top 0.2s;}
+.skip-link:focus{top:16px;}
+/* Accessibility Toolbar */
+.a11y-fab{position:fixed;bottom:78px;left:12px;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#111;border:none;font-size:18px;cursor:pointer;z-index:250;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;transition:transform 0.15s;}
+.a11y-fab:hover{transform:scale(1.1);}
+.a11y-panel{position:fixed;bottom:124px;left:12px;width:260px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;z-index:250;box-shadow:var(--shadow-lg);display:none;max-height:70vh;overflow-y:auto;}
+.a11y-panel.open{display:block;}
+.a11y-panel h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 10px;font-weight:600;}
+.a11y-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);}
+.a11y-row:last-child{border-bottom:none;}
+.a11y-label{font-size:12px;color:var(--text);}
+.a11y-toggle{position:relative;width:36px;height:20px;border-radius:10px;background:var(--border);cursor:pointer;border:none;transition:background 0.15s;flex-shrink:0;}
+.a11y-toggle.on{background:var(--accent);}
+.a11y-toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.15s;}
+.a11y-toggle.on::after{transform:translateX(16px);}
+.a11y-size-btns{display:flex;gap:3px;}
+.a11y-size-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:all 0.12s;}
+.a11y-size-btn.active{background:var(--accent);color:#111;border-color:var(--accent);}
+.a11y-spacing-btns{display:flex;gap:3px;}
+.a11y-spacing-btn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.a11y-spacing-btn.active{background:var(--accent);color:#111;border-color:var(--accent);}
+/* TTS Read Aloud button */
+.tts-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;cursor:pointer;transition:all 0.12s;flex-shrink:0;vertical-align:middle;margin-left:6px;}
+.tts-btn:hover,.tts-btn.speaking{color:var(--accent);border-color:var(--accent);background:rgba(46,196,182,0.08);}
+.tts-btn.speaking{animation:pulse 1.2s ease infinite;}
+.doc-preview .tts-btn{border-color:#ccc;color:#999;background:#f5f5f5;}
+.doc-preview .tts-btn:hover,.doc-preview .tts-btn.speaking{color:#1a8a7d;border-color:#1a8a7d;background:rgba(26,138,125,0.08);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+/* TTS Mini Player */
+.tts-player{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 14px;display:none;align-items:center;gap:10px;z-index:260;box-shadow:var(--shadow-lg);font-size:11px;}
+.tts-player.active{display:flex;}
+.tts-player button{background:none;border:none;color:var(--text);cursor:pointer;font-size:13px;padding:2px 4px;}
+.tts-player button:hover{color:var(--accent);}
+.tts-player .tts-speed{font-size:10px;color:var(--muted);padding:2px 6px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:none;font-family:'DM Sans',sans-serif;}
+/* Voice Input button */
+.voice-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;}
+.voice-btn:hover{color:var(--accent);border-color:var(--accent);}
+.voice-btn.recording{color:var(--red);border-color:var(--red);animation:pulse 1s ease infinite;}
+.voice-wrap{position:relative;}
+/* Focus visible */
+*:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+/* Easy Read Mode */
+body.easy-read{font-size:16px;line-height:1.8;letter-spacing:0.3px;}
+body.easy-read .page-title{font-size:26px;}
+body.easy-read .card{padding:24px;margin-bottom:16px;}
+body.easy-read .card h3{font-size:16px;}
+body.easy-read .btn{padding:12px 20px;font-size:14px;min-height:44px;}
+body.easy-read .btn-sm{padding:8px 14px;font-size:13px;min-height:44px;}
+body.easy-read .field{font-size:15px;padding:12px 14px;min-height:44px;}
+body.easy-read .nav-btn{padding:12px 14px;font-size:14px;min-height:44px;}
+body.easy-read .section-title{font-size:11px;}
+body.easy-read .q-item{font-size:15px;padding:14px 16px;}
+body.easy-read .q-answer{font-size:14px;}
+body.easy-read .modal-title-text{font-size:22px;}
+body.easy-read .doc-item{padding:16px 18px;}
+body.easy-read .doc-name{font-size:15px;}
+body.easy-read .meta-label{font-size:12px;}
+body.easy-read .meta-val{font-size:14px;}
+body.easy-read .fact-item{font-size:14px;padding:14px 16px;}
+body.easy-read .kpi-val{font-size:32px;}
+body.easy-read .kpi-label{font-size:13px;}
+body.easy-read .toast{font-size:14px;padding:14px 18px;}
+body.easy-read .mob-tab{font-size:11px;}
+body.easy-read .mob-tab .mob-icon{font-size:22px;}
+/* Dyslexia font */
+body.dyslexia-font,body.dyslexia-font *{font-family:'OpenDyslexic','DM Sans',sans-serif!important;}
+body.dyslexia-font .page-title,body.dyslexia-font .logo{font-family:'OpenDyslexic','Playfair Display',serif!important;}
+/* High Contrast */
+body.high-contrast{--bg:#000;--surface:#111;--surface2:#1a1a1a;--border:#555;--text:#fff;--muted:#ccc;}
+body.high-contrast .doc-preview{background:#fff;color:#000;}
+body.high-contrast .btn-primary{background:#fff;color:#000;}
+/* Wide line spacing */
+body.line-wide{line-height:2.0;}
+body.line-wide .doc-preview{line-height:2.2;}
+body.line-xwide{line-height:2.6;}
+body.line-xwide .doc-preview{line-height:2.8;}
+/* Reduce motion */
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+body.reduce-motion *{animation:none!important;transition-duration:0.01ms!important;}
+/* Application questions */
+.aq-item{background:var(--surface2);border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.5;border-left:2px solid var(--blue);margin-bottom:6px;}
+.aq-type{color:var(--blue);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;display:block;margin-bottom:2px;}
 .doc-preview-wrap{background:#fff;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);margin-top:-1px;box-shadow:var(--shadow-lg);}
 .doc-preview{padding:48px 50px;color:#1a1a1a;font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.85;max-width:740px;margin:0 auto;min-height:480px;position:relative;}
 .doc-preview::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1a8a7d 0%,#2ec4b6 40%,#5dd9cd 100%);}
@@ -252,7 +336,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.6;}
 .preview-btn.active{background:var(--surface);color:var(--accent);}
 .dl-menu{position:relative;display:inline-block;}
 .dl-menu-content{display:none;position:absolute;bottom:100%;left:0;margin-bottom:5px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;z-index:50;min-width:145px;box-shadow:var(--shadow-lg);}
-.dl-menu:hover .dl-menu-content,.dl-menu:focus-within .dl-menu-content{display:block;}
+.dl-menu:hover .dl-menu-content,.dl-menu:focus-within .dl-menu-content,.dl-menu.open .dl-menu-content{display:block;}
 .dl-opt{display:block;width:100%;padding:8px 12px;font-size:12px;color:var(--text);background:none;border:none;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:background 0.1s;}
 .dl-opt:hover{background:var(--surface2);}
 .pdf-page-viewer{background:var(--surface2);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);margin-top:10px;padding:16px;}
@@ -317,6 +401,25 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.6;}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<!-- Accessibility Toolbar -->
+<button class="a11y-fab" onclick="toggleA11yPanel()" aria-label="Accessibility settings" title="Accessibility settings">&#9881;</button>
+<div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="Accessibility settings">
+  <h4>Accessibility</h4>
+  <div class="a11y-row"><span class="a11y-label">Text Size</span><div class="a11y-size-btns"><button class="a11y-size-btn active" data-size="sm" onclick="setTextSize('sm')" title="Small">A</button><button class="a11y-size-btn" data-size="md" onclick="setTextSize('md')" title="Medium" style="font-size:13px;">A</button><button class="a11y-size-btn" data-size="lg" onclick="setTextSize('lg')" title="Large" style="font-size:15px;">A</button><button class="a11y-size-btn" data-size="xl" onclick="setTextSize('xl')" title="Extra large" style="font-size:17px;">A</button></div></div>
+  <div class="a11y-row"><span class="a11y-label">Line Spacing</span><div class="a11y-spacing-btns"><button class="a11y-spacing-btn active" data-spacing="normal" onclick="setLineSpacing('normal')">Normal</button><button class="a11y-spacing-btn" data-spacing="wide" onclick="setLineSpacing('wide')">Wide</button><button class="a11y-spacing-btn" data-spacing="xwide" onclick="setLineSpacing('xwide')">Extra</button></div></div>
+  <div class="a11y-row"><span class="a11y-label">Easy Read</span><button class="a11y-toggle" id="a11y-easyread" onclick="toggleA11y('easyread')" aria-label="Toggle Easy Read mode"></button></div>
+  <div class="a11y-row"><span class="a11y-label">High Contrast</span><button class="a11y-toggle" id="a11y-contrast" onclick="toggleA11y('contrast')" aria-label="Toggle high contrast"></button></div>
+  <div class="a11y-row"><span class="a11y-label">Dyslexia Font</span><button class="a11y-toggle" id="a11y-dyslexia" onclick="toggleA11y('dyslexia')" aria-label="Toggle dyslexia-friendly font"></button></div>
+  <div class="a11y-row"><span class="a11y-label">Reduce Motion</span><button class="a11y-toggle" id="a11y-motion" onclick="toggleA11y('motion')" aria-label="Toggle reduce motion"></button></div>
+</div>
+<!-- TTS Mini Player -->
+<div class="tts-player" id="tts-player" role="region" aria-label="Audio player">
+  <button onclick="ttsPause()" title="Pause/Resume" id="tts-pause-btn">&#10074;&#10074;</button>
+  <span id="tts-player-label" style="color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Reading...</span>
+  <button class="tts-speed" onclick="ttsCycleSpeed()" id="tts-speed-btn" title="Change speed">1x</button>
+  <button onclick="ttsStop()" title="Stop">&#x2716;</button>
+</div>
 <div id="loading-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px;">
   <span class="spinner" style="width:24px;height:24px;border-width:3px;"></span>
   <span style="font-size:12px;color:var(--muted);">Loading your data...</span>
@@ -342,7 +445,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.6;}
   </div>
 </div>
 <div id="app" class="app" style="display:none;">
-  <aside class="sidebar">
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
     <div class="logo"><span class="logo-text">Job<span>Track</span></span><span class="logo-sub">Application Manager</span></div>
     <div id="auth-indicator" style="display:flex;align-items:center;gap:6px;padding:0 8px 12px;border-bottom:1px solid var(--border);margin-bottom:8px;min-height:28px;"></div>
     <div class="nav-section nav-label">Jobs</div>
@@ -364,7 +467,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.6;}
     <a href="https://www.jora.com" target="_blank" class="nav-link">&#128188; Jora</a>
     <button class="nav-btn" id="nav-settings" onclick="showView('settings')" style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;margin-top:auto;"><span class="nav-icon">&#9881;</span><span class="nav-label"> Settings</span></button>
   </aside>
-  <main class="main">
+  <main class="main" role="main" id="main-content">
     <!-- DASHBOARD -->
     <div id="view-dashboard">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
@@ -734,7 +837,8 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.6;}
         <div id="m-interview-status" style="margin-top:8px;font-size:12px;color:var(--muted);"></div>
       </div>
       <div class="section" id="m-desc-sec"><div class="section-title">Job Description</div><div id="m-desc" style="font-size:13px;color:var(--muted);line-height:1.7;"></div></div>
-      <div class="section" id="m-q-sec"><div class="section-title">Interview Prep Questions</div><div id="m-questions"></div></div>
+      <div class="section" id="m-aq-sec" style="display:none;"><div class="section-title">Application Questions</div><p style="font-size:11px;color:var(--muted);margin-bottom:8px;">Questions you may need to answer when applying on the job site.</p><div id="m-app-questions"></div></div>
+      <div class="section" id="m-q-sec"><div class="section-title">Interview Prep Questions</div><p style="font-size:11px;color:var(--muted);margin-bottom:8px;">Practice these to prepare for your interview.</p><div id="m-questions"></div></div>
       <div class="section" id="m-facts-sec"><div class="section-title">Key Company Facts</div><div class="facts-grid" id="m-facts"></div></div>
       <div class="section"><div class="section-title">My Notes</div><textarea id="m-notes" class="field" style="min-height:72px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Add your notes..."></textarea></div>
       <div class="section"><div class="section-title">Application Timeline</div><div id="m-timeline" class="timeline"></div></div>
@@ -1108,7 +1212,7 @@ function parseJSON(text){
   try{return JSON.parse(cleaned.substring(start,end+1));}catch(e){throw new Error("Invalid JSON in response");}
 }
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function toast(msg,type=""){const t=document.createElement("div");t.className='toast '+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
+function toast(msg,type=""){const t=document.createElement("div");t.className='toast '+type;t.textContent=msg;t.setAttribute("role","alert");t.setAttribute("aria-live","polite");document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
 function setStatus(id,html){const el=document.getElementById(id);if(!el)return;el.innerHTML=html;el.style.display=html?"flex":"none";}
 function showErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.style.display="block";}
 function clearErr(id){const el=document.getElementById(id);if(!el)return;el.textContent="";el.style.display="none";}
@@ -1224,9 +1328,9 @@ async function analyseJob(){
   btn.disabled=true;setStatus("add-status","<span class='spinner'></span> Analysing job posting...");clearErr("add-error");
   try{
     const systemMsg='You are a job posting analyser. You MUST respond with ONLY a raw JSON object. No markdown, no backticks, no commentary, no text before or after the JSON.';
-    const text=await callGemini('Analyse this job posting URL and extract all available information. If something is not available, use "N/A".\n\nURL: '+url+'\n\nRespond with ONLY this JSON structure:\n{"title":"...","company":"...","location":"...","salary":"...","description":"2-3 sentence summary","requirements":["r1","r2","r3"],"interview_questions":[{"type":"Behavioral","question":"...","answer":"A strong 3-4 sentence suggested answer using STAR method where appropriate"},{"type":"Technical","question":"...","answer":"..."},{"type":"Role-Specific","question":"...","answer":"..."},{"type":"Situational","question":"...","answer":"..."},{"type":"Culture Fit","question":"...","answer":"..."}],"company_facts":[{"label":"Industry","value":"..."},{"label":"Size","value":"..."},{"label":"Known For","value":"..."},{"label":"Culture","value":"..."}]}',systemMsg);
+    const text=await callGemini('Analyse this job posting URL and extract all available information. If something is not available, use "N/A".\n\nURL: '+url+'\n\nIMPORTANT: Separate the job ad\'s own screening/application questions (like notice period, work rights, availability, salary expectations, licences) from interview preparation questions.\n\nRespond with ONLY this JSON structure:\n{"title":"...","company":"...","location":"...","salary":"...","description":"2-3 sentence summary","requirements":["r1","r2","r3"],"application_questions":[{"question":"screening question from the job ad itself"}],"interview_questions":[{"type":"Behavioral","question":"AI-generated practice question","answer":"A strong 3-4 sentence suggested answer using STAR method where appropriate"},{"type":"Technical","question":"...","answer":"..."},{"type":"Role-Specific","question":"...","answer":"..."},{"type":"Situational","question":"...","answer":"..."},{"type":"Culture Fit","question":"...","answer":"..."}],"company_facts":[{"label":"Industry","value":"..."},{"label":"Size","value":"..."},{"label":"Known For","value":"..."},{"label":"Culture","value":"..."}]}',systemMsg);
     const d=parseJSON(text);
-    const job={id:Date.now(),url:url,title:d.title||"Unknown Title",company:d.company||"Unknown Company",location:d.location||"N/A",salary:d.salary||"N/A",description:d.description||"",requirements:d.requirements||[],interview_questions:d.interview_questions||[],company_facts:d.company_facts||[],status:"applied",notes:"",date:new Date().toISOString()};
+    const job={id:Date.now(),url:url,title:d.title||"Unknown Title",company:d.company||"Unknown Company",location:d.location||"N/A",salary:d.salary||"N/A",description:d.description||"",requirements:d.requirements||[],application_questions:d.application_questions||[],interview_questions:d.interview_questions||[],company_facts:d.company_facts||[],status:"applied",notes:"",date:new Date().toISOString()};
     jobs.unshift(job);saveJobs();
     document.getElementById("url-input").value="";
     setStatus("add-status","");toast("Job added!","ok");showView("dashboard");
@@ -1252,10 +1356,10 @@ async function analyseJobText(){
     // Sanitise: collapse whitespace, limit length to avoid token overflow
     const sanitised=raw.replace(/\r\n/g,"\n").substring(0,8000);
     const systemMsg='You are a job posting analyser. You MUST respond with ONLY a raw JSON object. No markdown, no backticks, no commentary, no text before or after the JSON. Just the JSON object.';
-    const prompt='Extract structured information from this job advertisement text. If any field is not mentioned in the text, use "N/A" for strings or empty arrays for lists. Infer the company name and other details from context if not explicitly stated.\n\nJOB AD TEXT:\n"""\n'+sanitised+'\n"""\n\nRespond with ONLY this JSON structure (no other text):\n{"title":"job title","company":"company name","location":"city or region","salary":"salary if mentioned","description":"2-3 sentence summary of the role","requirements":["requirement 1","requirement 2","requirement 3"],"interview_questions":[{"type":"Behavioral","question":"a relevant question","answer":"A strong 3-4 sentence suggested answer using STAR method where appropriate"},{"type":"Technical","question":"a relevant question","answer":"..."},{"type":"Role-Specific","question":"a relevant question","answer":"..."},{"type":"Situational","question":"a relevant question","answer":"..."},{"type":"Culture Fit","question":"a relevant question","answer":"..."}],"company_facts":[{"label":"Industry","value":"..."},{"label":"Size","value":"..."},{"label":"Known For","value":"..."},{"label":"Culture","value":"..."}]}';
+    const prompt='Extract structured information from this job advertisement text. If any field is not mentioned in the text, use "N/A" for strings or empty arrays for lists. Infer the company name and other details from context if not explicitly stated.\n\nIMPORTANT: Separate the job ad\'s own screening/application questions (like notice period, work rights, availability, salary expectations, licences) from interview preparation questions you generate to help the applicant practise.\n\nJOB AD TEXT:\n"""\n'+sanitised+'\n"""\n\nRespond with ONLY this JSON structure (no other text):\n{"title":"job title","company":"company name","location":"city or region","salary":"salary if mentioned","description":"2-3 sentence summary of the role","requirements":["requirement 1","requirement 2","requirement 3"],"application_questions":[{"question":"screening question from the job ad itself"}],"interview_questions":[{"type":"Behavioral","question":"AI-generated practice question","answer":"A strong 3-4 sentence suggested answer using STAR method where appropriate"},{"type":"Technical","question":"...","answer":"..."},{"type":"Role-Specific","question":"...","answer":"..."},{"type":"Situational","question":"...","answer":"..."},{"type":"Culture Fit","question":"...","answer":"..."}],"company_facts":[{"label":"Industry","value":"..."},{"label":"Size","value":"..."},{"label":"Known For","value":"..."},{"label":"Culture","value":"..."}]}';
     const text=await callGemini(prompt,systemMsg);
     const d=parseJSON(text);
-    const job={id:Date.now(),url:"",title:d.title||"Unknown Title",company:d.company||"Unknown Company",location:d.location||"N/A",salary:d.salary||"N/A",description:d.description||"",requirements:d.requirements||[],interview_questions:d.interview_questions||[],company_facts:d.company_facts||[],status:"saved",notes:"",date:new Date().toISOString(),rawText:raw};
+    const job={id:Date.now(),url:"",title:d.title||"Unknown Title",company:d.company||"Unknown Company",location:d.location||"N/A",salary:d.salary||"N/A",description:d.description||"",requirements:d.requirements||[],application_questions:d.application_questions||[],interview_questions:d.interview_questions||[],company_facts:d.company_facts||[],status:"saved",notes:"",date:new Date().toISOString(),rawText:raw};
     jobs.unshift(job);saveJobs();
     document.getElementById("paste-input").value="";
     setStatus("paste-status","");toast("Job added!","ok");showView("dashboard");
@@ -1605,10 +1709,23 @@ function refreshPreview(type){
   const text=document.getElementById(type+"-textarea").value;
   const el=document.getElementById(type+"-preview-content");
   const tpl=type==="resume"?resumeTemplate:coverTemplate;
-  // Apply template class
   el.className='doc-preview tpl-'+tpl;
   if(type==="resume")el.innerHTML=renderResumePreview(text);
   else el.innerHTML=renderCoverPreview(text);
+  // Inject per-paragraph TTS buttons
+  el.querySelectorAll('p,.summary,.cover-body p,h1,h2,.contact-line,.role-header,.skills-grid,.cover-greeting,.cover-sign,.cover-date').forEach(node=>{
+    const txt=node.textContent.trim();
+    if(txt.length>2){
+      const btn=document.createElement('button');
+      btn.className='tts-btn';
+      btn.innerHTML='&#128264;';
+      btn.title='Read aloud';
+      btn.setAttribute('aria-label','Read this section aloud');
+      btn.onclick=function(e){e.stopPropagation();ttsSpeak(btn,txt);};
+      btn.style.cssText='float:right;margin-top:2px;';
+      node.insertBefore(btn,node.firstChild);
+    }
+  });
 }
 
 function setResumeTemplate(tpl){
@@ -1787,7 +1904,8 @@ function renderResumePreview(text){
             summaryLines.push(lines[si].trim());si++;
           }
           if(summaryLines.length){
-            html+='<div class="summary">'+summaryLines.map(l=>esc(l)).join(' ')+'</div>';
+            const summaryText=summaryLines.join(' ');
+            html+='<div class="summary">'+summaryLines.map(l=>esc(l)).join(' ')+ttsBtnHTML(summaryText)+'</div>';
             i=si-1;if(isDashUnderline)i=Math.max(i,i);
             continue;
           }
@@ -1803,7 +1921,7 @@ function renderResumePreview(text){
       if(inList){html+='</ul>';inList=false;}
       // Format contact with separators
       const formatted=esc(trimmed).replace(/\s*\|\s*/g,'<span class="sep">\u2022</span>');
-      html+='<div class="contact-line">'+formatted+'</div>';
+      html+='<div class="contact-line">'+formatted+ttsBtnHTML(trimmed)+'</div>';
       continue;
     }
     // Bullet points (including numbered bullets)
@@ -1843,7 +1961,7 @@ function renderResumePreview(text){
     if(trimmed.length<60&&!trimmed.includes('.')&&/[A-Z]/.test(trimmed[0])&&!/^(I |A |The |An |My |In |At |To |For |With )/.test(trimmed)){
       html+='<h3>'+esc(trimmed)+'</h3>';
     }else{
-      html+='<p>'+esc(trimmed)+'</p>';
+      html+='<p>'+esc(trimmed)+ttsBtnHTML(trimmed)+'</p>';
     }
   }
   if(inList)html+='</ul>';
@@ -1920,7 +2038,7 @@ function renderCoverPreview(text){
       return html;
     }
     if(bodyStarted){
-      html+='<p>'+esc(trimmed)+'</p>';
+      html+='<p>'+esc(trimmed)+ttsBtnHTML(trimmed)+'</p>';
     }
   }
   if(bodyStarted)html+='</div>';
@@ -1930,7 +2048,7 @@ function renderCoverPreview(text){
     for(const line of lines){
       const t=line.trim();
       if(!t){html+='<br>';continue;}
-      html+='<p>'+esc(t)+'</p>';
+      html+='<p>'+esc(t)+ttsBtnHTML(t)+'</p>';
     }
     html+='</div>';
   }
@@ -2130,11 +2248,15 @@ function openModal(id){
     j.matchScore?'<div class="meta-item"><span style="font-size:14px">\u{1F3AF}</span><div><div class="meta-label">CV Match</div><div class="meta-val" style="color:'+scoreColor(j.matchScore)+';font-weight:700;">'+j.matchScore+'%</div></div></div>':""
   ].join("");
   document.getElementById("m-status").innerHTML=STATUS_ORDER.map(s=>{const m=STATUS[s];const a=j.status===s;return '<button class="status-opt" style="'+(a?'color:'+m.color+';border-color:'+m.color+';background:'+m.color+'18':"")+'" onclick="updateStatus(\''+s+'\')">'+m.label+'</button>';}).join("");
-  if(j.description){document.getElementById("m-desc").innerHTML='<p>'+esc(j.description)+'</p>'+((j.requirements||[]).length?'<ul style="padding-left:17px;margin-top:9px;">'+(j.requirements||[]).map(r=>'<li style="font-size:13px;color:var(--muted);margin-bottom:2px;">'+esc(r)+'</li>').join("")+'</ul>':"");document.getElementById("m-desc-sec").style.display="";}
+  if(j.description){document.getElementById("m-desc").innerHTML='<p>'+esc(j.description)+ttsBtnHTML(j.description)+'</p>'+((j.requirements||[]).length?'<ul style="padding-left:17px;margin-top:9px;">'+(j.requirements||[]).map(r=>'<li style="font-size:13px;color:var(--muted);margin-bottom:2px;">'+esc(r)+'</li>').join("")+'</ul>':"");document.getElementById("m-desc-sec").style.display="";}
   else document.getElementById("m-desc-sec").style.display="none";
-  if(j.interview_questions?.length){document.getElementById("m-questions").innerHTML=j.interview_questions.map((q,i)=>'<div class="q-item"><span class="q-type">'+esc(q.type)+'</span>'+esc(q.question)+(q.answer?'<button class="q-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.textContent=this.nextElementSibling.style.display===\'none\'?\'Show Answer\':\'Hide Answer\'">Show Answer</button><div class="q-answer" style="display:none;">'+esc(q.answer)+'</div>':'')+'</div>').join("");document.getElementById("m-q-sec").style.display="";}
+  // Application Questions (screening from job ad)
+  if(j.application_questions?.length){document.getElementById("m-app-questions").innerHTML=j.application_questions.map(q=>'<div class="aq-item"><span class="aq-type">Application Question</span>'+esc(q.question)+ttsBtnHTML(q.question)+'</div>').join("");document.getElementById("m-aq-sec").style.display="";}
+  else document.getElementById("m-aq-sec").style.display="none";
+  // Interview Prep Questions (AI-generated)
+  if(j.interview_questions?.length){document.getElementById("m-questions").innerHTML=j.interview_questions.map((q,i)=>'<div class="q-item"><span class="q-type">'+esc(q.type)+'</span>'+esc(q.question)+ttsBtnHTML(q.question)+(q.answer?'<button class="q-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.textContent=this.nextElementSibling.style.display===\'none\'?\'Show Answer\':\'Hide Answer\'">Show Answer</button><div class="q-answer" style="display:none;">'+esc(q.answer)+ttsBtnHTML(q.answer)+'</div>':'')+'</div>').join("");document.getElementById("m-q-sec").style.display="";}
   else document.getElementById("m-q-sec").style.display="none";
-  if(j.company_facts?.length){document.getElementById("m-facts").innerHTML=j.company_facts.map(f=>'<div class="fact-item"><span class="fact-label">'+esc(f.label)+'</span>'+esc(f.value)+'</div>').join("");document.getElementById("m-facts-sec").style.display="";}
+  if(j.company_facts?.length){document.getElementById("m-facts").innerHTML=j.company_facts.map(f=>'<div class="fact-item"><span class="fact-label">'+esc(f.label)+'</span>'+esc(f.value)+ttsBtnHTML(f.label+': '+f.value)+'</div>').join("");document.getElementById("m-facts-sec").style.display="";}
   else document.getElementById("m-facts-sec").style.display="none";
   document.getElementById("m-notes").value=j.notes||"";
   // Interview tracking
@@ -2195,7 +2317,32 @@ function saveInterviewDate(){const j=jobs.find(x=>x.id===currentJobId);if(!j)ret
 function saveInterviewType(){const j=jobs.find(x=>x.id===currentJobId);if(!j)return;j.interviewType=document.getElementById("m-interview-type").value;saveJobs();toast("Interview type saved","ok");}
 function saveNotes(){const j=jobs.find(x=>x.id===currentJobId);if(!j)return;j.notes=document.getElementById("m-notes").value;saveJobs();toast("Notes saved","ok");}
 function deleteFromModal(){if(!confirm("Remove this application?"))return;jobs=jobs.filter(j=>j.id!==currentJobId);saveJobs();closeModal();renderDashboard();toast("Application removed","ok");}
-function closeModal(){document.getElementById("modal").style.display="none";currentJobId=null;}
+function closeModal(){document.getElementById("modal").style.display="none";currentJobId=null;document.removeEventListener('keydown',_modalKeyHandler);}
+
+// -- Modal Focus Trapping & Keyboard --
+function _modalKeyHandler(e){
+  if(e.key==='Escape'){closeModal();return;}
+  if(e.key==='Tab'){
+    const modal=document.querySelector('#modal .modal');
+    if(!modal)return;
+    const focusable=modal.querySelectorAll('button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
+    if(!focusable.length)return;
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  }
+}
+
+// Attach keyboard handler when modal opens
+(function(){
+  const origOpen=openModal;
+  openModal=function(id){
+    origOpen(id);
+    document.addEventListener('keydown',_modalKeyHandler);
+    // Focus first interactive element in modal
+    setTimeout(()=>{const f=document.querySelector('#modal .modal button, #modal .modal input');if(f)f.focus();},100);
+  };
+})();
 
 function quickGenCoverFromModal(jobId){
   closeModal();
@@ -2458,8 +2605,245 @@ function renderCompanyChart(){
 }
 
 
+// ============================================================
+// ACCESSIBILITY — TTS, Voice Input, Toolbar, Easy Read
+// ============================================================
+
+// -- Text-to-Speech Engine --
+let _ttsUtterance=null;
+let _ttsSpeed=1;
+let _ttsSpeaking=false;
+const TTS_SPEEDS=[0.75,1,1.25,1.5];
+
+function ttsBtnHTML(text){
+  const safe=text.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+  return ' <button class="tts-btn" onclick="event.stopPropagation();ttsSpeak(this,\''+safe.substring(0,2000)+'\')" title="Read aloud" aria-label="Read this section aloud">&#128264;</button>';
+}
+
+function ttsSpeak(btn,text){
+  if(!window.speechSynthesis){toast("Text-to-speech not supported in this browser","err");return;}
+  // If same button clicked while speaking, stop
+  if(_ttsSpeaking&&btn&&btn.classList.contains('speaking')){ttsStop();return;}
+  ttsStop();
+  // Clean text for speech
+  const clean=text.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+  if(!clean)return;
+  _ttsUtterance=new SpeechSynthesisUtterance(clean);
+  _ttsUtterance.rate=_ttsSpeed;
+  _ttsUtterance.lang='en-AU';
+  _ttsSpeaking=true;
+  // Update UI
+  document.querySelectorAll('.tts-btn.speaking').forEach(b=>b.classList.remove('speaking'));
+  if(btn)btn.classList.add('speaking');
+  const player=document.getElementById('tts-player');
+  player.classList.add('active');
+  document.getElementById('tts-player-label').textContent='Reading...';
+  document.getElementById('tts-pause-btn').textContent='⏸';
+  _ttsUtterance.onend=function(){ttsCleanup(btn);};
+  _ttsUtterance.onerror=function(){ttsCleanup(btn);};
+  speechSynthesis.speak(_ttsUtterance);
+}
+
+function ttsCleanup(btn){
+  _ttsSpeaking=false;
+  if(btn)btn.classList.remove('speaking');
+  document.querySelectorAll('.tts-btn.speaking').forEach(b=>b.classList.remove('speaking'));
+  document.getElementById('tts-player').classList.remove('active');
+}
+
+function ttsPause(){
+  if(!speechSynthesis)return;
+  if(speechSynthesis.paused){speechSynthesis.resume();document.getElementById('tts-pause-btn').textContent='⏸';}
+  else{speechSynthesis.pause();document.getElementById('tts-pause-btn').textContent='▶';}
+}
+
+function ttsStop(){
+  if(speechSynthesis)speechSynthesis.cancel();
+  _ttsSpeaking=false;
+  document.querySelectorAll('.tts-btn.speaking').forEach(b=>b.classList.remove('speaking'));
+  document.getElementById('tts-player').classList.remove('active');
+}
+
+function ttsCycleSpeed(){
+  const idx=TTS_SPEEDS.indexOf(_ttsSpeed);
+  _ttsSpeed=TTS_SPEEDS[(idx+1)%TTS_SPEEDS.length];
+  document.getElementById('tts-speed-btn').textContent=_ttsSpeed+'x';
+  if(_ttsUtterance)_ttsUtterance.rate=_ttsSpeed;
+}
+
+// -- Voice Input --
+let _voiceRecognition=null;
+let _voiceTarget=null;
+
+function startVoiceInput(btn,targetId){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast("Voice input not supported in this browser. Try Chrome or Edge.","err");return;}
+  if(_voiceRecognition){_voiceRecognition.stop();_voiceRecognition=null;btn.classList.remove('recording');return;}
+  const target=document.getElementById(targetId);
+  if(!target)return;
+  _voiceTarget=target;
+  _voiceRecognition=new SR();
+  _voiceRecognition.lang='en-AU';
+  _voiceRecognition.continuous=true;
+  _voiceRecognition.interimResults=true;
+  btn.classList.add('recording');
+  let finalTranscript=target.value;
+  _voiceRecognition.onresult=function(e){
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)finalTranscript+=(finalTranscript?' ':'')+e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    target.value=finalTranscript+(interim?' '+interim:'');
+    // Trigger input event for search etc
+    target.dispatchEvent(new Event('input',{bubbles:true}));
+  };
+  _voiceRecognition.onerror=function(e){
+    if(e.error==='not-allowed')toast("Microphone access denied. Please allow microphone access.","err");
+    btn.classList.remove('recording');_voiceRecognition=null;
+  };
+  _voiceRecognition.onend=function(){btn.classList.remove('recording');_voiceRecognition=null;};
+  _voiceRecognition.start();
+}
+
+// -- Accessibility Toolbar --
+let _a11yPrefs={easyread:false,contrast:false,dyslexia:false,motion:false,textSize:'sm',lineSpacing:'normal'};
+
+function toggleA11yPanel(){document.getElementById('a11y-panel').classList.toggle('open');}
+
+function toggleA11y(key){
+  _a11yPrefs[key]=!_a11yPrefs[key];
+  const btn=document.getElementById('a11y-'+key);
+  if(btn)btn.classList.toggle('on',_a11yPrefs[key]);
+  applyA11yPrefs();
+  saveA11yPrefs();
+}
+
+function setTextSize(size){
+  _a11yPrefs.textSize=size;
+  document.querySelectorAll('.a11y-size-btn').forEach(b=>b.classList.toggle('active',b.dataset.size===size));
+  applyA11yPrefs();
+  saveA11yPrefs();
+}
+
+function setLineSpacing(spacing){
+  _a11yPrefs.lineSpacing=spacing;
+  document.querySelectorAll('.a11y-spacing-btn').forEach(b=>b.classList.toggle('active',b.dataset.spacing===spacing));
+  applyA11yPrefs();
+  saveA11yPrefs();
+}
+
+function applyA11yPrefs(){
+  const b=document.body;
+  b.classList.toggle('easy-read',_a11yPrefs.easyread);
+  b.classList.toggle('high-contrast',_a11yPrefs.contrast);
+  b.classList.toggle('dyslexia-font',_a11yPrefs.dyslexia);
+  b.classList.toggle('reduce-motion',_a11yPrefs.motion);
+  // Text size
+  b.classList.remove('text-sm','text-md','text-lg','text-xl');
+  if(_a11yPrefs.textSize!=='sm')b.classList.add('text-'+_a11yPrefs.textSize);
+  // Line spacing
+  b.classList.remove('line-wide','line-xwide');
+  if(_a11yPrefs.lineSpacing!=='normal')b.classList.add('line-'+_a11yPrefs.lineSpacing);
+  // Update toggles UI
+  ['easyread','contrast','dyslexia','motion'].forEach(k=>{
+    const btn=document.getElementById('a11y-'+k);
+    if(btn)btn.classList.toggle('on',_a11yPrefs[k]);
+  });
+  // Apply Easy Read labels
+  if(_a11yPrefs.easyread)applyEasyReadLabels();
+  else restoreOriginalLabels();
+}
+
+function saveA11yPrefs(){storeSet('jt_a11y',JSON.stringify(_a11yPrefs));}
+
+async function loadA11yPrefs(){
+  try{
+    const raw=await storeGet('jt_a11y');
+    if(raw){_a11yPrefs={..._a11yPrefs,...JSON.parse(raw)};applyA11yPrefs();
+      document.querySelectorAll('.a11y-size-btn').forEach(b=>b.classList.toggle('active',b.dataset.size===_a11yPrefs.textSize));
+      document.querySelectorAll('.a11y-spacing-btn').forEach(b=>b.classList.toggle('active',b.dataset.spacing===_a11yPrefs.lineSpacing));
+    }
+  }catch(e){}
+}
+
+// -- Easy Read Labels --
+const EASY_LABELS={
+  'Dashboard':'My Jobs','Analytics':'How Am I Going','Add Job':'Add a New Job','CV Match':'Check My Resume',
+  'Resumes':'My Resumes','Cover Letters':'My Letters','Email Templates':'Email Help','Settings':'Settings',
+  'Interview Prep Questions':'Practice Questions for Your Interview','Application Questions':'Questions to Answer When You Apply',
+  'Key Company Facts':'About This Company','Job Description':'About This Job','My Notes':'My Notes',
+  'Application Timeline':'What Has Happened','Quick-Apply Checklist':'Things to Do Before You Apply',
+  'Export Data':'Save a Copy','Import Data':'Load a Copy','Clear All Data':'Delete Everything',
+  'Gemini API Key':'Your AI Key','Account & Cloud Sync':'Your Account',
+  'Generate':'Make It','Generate from Job':'Write a Letter for This Job','Generate from Scratch':'Make a New Resume',
+  'New Resume':'Make a New Resume','New Cover Letter':'Write a New Letter',
+  'Analyse Job':'Look at This Job','Search...':'Search your jobs...',
+  'Edit':'Change It','View':'Look At It','Delete':'Remove It','Duplicate':'Make a Copy','Save':'Save It',
+  'TEMPLATE:':'Style:','Modern':'Clean','Classic':'Traditional','Minimal':'Simple','Executive':'Formal'
+};
+let _originalLabels={};
+
+function applyEasyReadLabels(){
+  document.querySelectorAll('.section-title,.page-title span,.nav-label,.card h3,.btn,.btn-sm,.tpl-pick,.filter-btn').forEach(el=>{
+    const txt=el.textContent.trim();
+    if(EASY_LABELS[txt]&&!_originalLabels[el]){
+      _originalLabels.set?_originalLabels.set(el,txt):(_originalLabels=new Map(),_originalLabels.set(el,txt));
+      el.textContent=EASY_LABELS[txt];
+    }
+  });
+}
+
+function restoreOriginalLabels(){
+  if(_originalLabels instanceof Map){
+    _originalLabels.forEach((orig,el)=>{el.textContent=orig;});
+    _originalLabels=new Map();
+  }
+}
+_originalLabels=new Map();
+
+// -- Text Size CSS classes --
+// Added via style tag for text size overrides
+(function(){
+  const s=document.createElement('style');
+  s.textContent=`
+    body.text-md{font-size:15px;}body.text-md .page-title{font-size:28px;}body.text-md .card h3{font-size:15px;}body.text-md .btn{font-size:14px;}body.text-md .section-title{font-size:11px;}body.text-md .nav-btn{font-size:14px;}
+    body.text-lg{font-size:17px;}body.text-lg .page-title{font-size:32px;}body.text-lg .card h3{font-size:17px;}body.text-lg .btn{font-size:16px;}body.text-lg .section-title{font-size:12px;}body.text-lg .nav-btn{font-size:16px;}body.text-lg .field{font-size:16px;min-height:44px;}
+    body.text-xl{font-size:20px;}body.text-xl .page-title{font-size:36px;}body.text-xl .card h3{font-size:20px;}body.text-xl .btn{font-size:18px;padding:12px 22px;min-height:48px;}body.text-xl .section-title{font-size:14px;}body.text-xl .nav-btn{font-size:18px;padding:14px 16px;}body.text-xl .field{font-size:18px;padding:14px;min-height:48px;}
+  `;
+  document.head.appendChild(s);
+})();
+
+// Add voice input buttons to key fields after DOM ready
+function addVoiceButtons(){
+  const fields=[
+    {id:'url-input',label:'Voice input for job URL'},
+    {id:'paste-input',label:'Voice input for job text'},
+    {id:'search-input',label:'Voice input for search'},
+    {id:'m-notes',label:'Voice input for notes'},
+    {id:'new-key-input',label:'Voice input for API key'}
+  ];
+  fields.forEach(f=>{
+    const el=document.getElementById(f.id);
+    if(!el||el.parentElement.querySelector('.voice-btn'))return;
+    const wrap=el.parentElement;
+    if(wrap)wrap.style.position='relative';
+    const btn=document.createElement('button');
+    btn.className='voice-btn';
+    btn.type='button';
+    btn.innerHTML='&#127908;';
+    btn.title=f.label;
+    btn.setAttribute('aria-label',f.label);
+    btn.onclick=function(e){e.preventDefault();startVoiceInput(btn,f.id);};
+    if(wrap)wrap.appendChild(btn);
+  });
+}
+
+
 // Initialize app
 loadAllData();
+loadA11yPrefs();
+setTimeout(addVoiceButtons,500);
 </script>
 </body>
 </html>
