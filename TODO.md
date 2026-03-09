@@ -19,6 +19,9 @@
 - [ ] **P1** Move CSS to external stylesheet
 - [ ] **P1** Add unit tests for core functions (job CRUD, status transitions)
 
+## Phase 2.5 — AI
+- [ ] **P1** Fix Gemini hallucinations (prompt engineering, response validation, grounding)
+
 ## Phase 3 — Features
 - [ ] **P2** Dark/light theme toggle (prefers-color-scheme)
 - [ ] **P2** Notification reminders (follow-up dates)

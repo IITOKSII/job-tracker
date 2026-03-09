@@ -1,5 +1,8 @@
 # CHANGELOG — WorkAble (formerly JobTrack)
 
+## [0.1.1] — 2026-03-10 — Planning
+- Added P1 TODO item: Fix Gemini hallucinations (Phase 2.5 — AI)
+
 ## [0.1.0] — 2026-03-07 — Project Audit & Rename Kickoff
 
 ### Existing Codebase (inherited)
