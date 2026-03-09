@@ -3,7 +3,7 @@
 > Priority: P0 = blocks launch, P1 = important, P2 = nice-to-have
 
 ## Phase 1 — A11y & Rename (current)
-- [ ] **P0** Rename "JobTrack" → "WorkAble" (title, manifest, setup screen, all UI strings)
+- [x] **P0** Rename "JobTrack" → "WorkAble" (title, manifest, setup screen, all UI strings)
 - [ ] **P0** Add ARIA landmarks: `<main>`, `<nav role="navigation">`, `<section aria-label>`
 - [ ] **P0** Modal a11y: focus trap, `role="dialog"`, `aria-modal="true"`, Escape-to-close, return focus
 - [ ] **P0** Toast notifications: `aria-live="polite"`, `role="status"`
@@ -24,3 +24,4 @@
 - [ ] **P2** Notification reminders (follow-up dates)
 - [ ] **P2** Multi-language support (i18n)
 - [ ] **P2** Drag-and-drop Kanban (keyboard accessible)
+- [ ] **P2** Move Analytics into an Admin tab — too prominent in current nav

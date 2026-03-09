@@ -1,5 +1,12 @@
 # CHANGELOG — WorkAble (formerly JobTrack)
 
+## [0.2.0] — 2026-03-09 — Rename: JobTrack → WorkAble
+- Updated `<title>` to "WorkAble — Application Manager"
+- Updated PWA manifest `name`/`short_name` + icon letter (J→W) via re-encoded base64
+- Updated setup screen `<h1>` welcome string
+- Updated backup export filename prefix to `WorkAble_Backup_`
+- Firebase project IDs (`jobtrack-bcbcf.*`) intentionally unchanged (infrastructure identifiers)
+
 ## [0.1.0] — 2026-03-07 — Project Audit & Rename Kickoff
 
 ### Existing Codebase (inherited)
