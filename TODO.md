@@ -4,7 +4,7 @@
 
 ## Phase 1 — A11y & Rename (current)
 - [x] **P0** Rename "JobTrack" → "WorkAble" (title, manifest, setup screen, all UI strings)
-- [ ] **P0** Add ARIA landmarks: `<main>`, `<nav role="navigation">`, `<section aria-label>`
+- [x] **P0** Add ARIA landmarks: `<main>`, `<nav role="navigation">`, `<section aria-label>`
 - [ ] **P0** Modal a11y: focus trap, `role="dialog"`, `aria-modal="true"`, Escape-to-close, return focus
 - [ ] **P0** Toast notifications: `aria-live="polite"`, `role="status"`
 - [ ] **P0** Replace native `prompt()`/`confirm()` with accessible custom dialogs

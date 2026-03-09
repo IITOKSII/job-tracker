@@ -1,5 +1,16 @@
 # CHANGELOG — WorkAble (formerly JobTrack)
 
+## [0.3.0] — 2026-03-09 — ARIA Landmarks & GitHub Pages Deploy
+
+### Build
+- Added `.nojekyll` to prevent GitHub Pages from invoking Jekyll on the static HTML
+- Added `.github/workflows/pages.yml` — explicit GitHub Actions deploy-to-Pages workflow (push to `main`, artifact = repo root)
+
+### Accessibility (WCAG 2.2 AA — P0)
+- `index.html:448` — Changed `<aside class="sidebar" role="navigation">` → `<nav class="sidebar">` (native landmark element; removes conflicting `complementary`→`navigation` role override)
+- `index.html:470` — Removed redundant `role="main"` from `<main>` (implicit ARIA semantics)
+- `index.html:472–756` — Added `role="region" aria-labelledby="heading-{view}"` to all 8 view panels (`dashboard`, `analytics`, `add`, `cv`, `resumes`, `covers`, `emails`, `settings`); added matching `id="heading-{view}"` to each panel's `<h1>` — screen readers can now navigate directly to each section via landmark menu
+
 ## [0.2.0] — 2026-03-09 — Rename: JobTrack → WorkAble
 - Updated `<title>` to "WorkAble — Application Manager"
 - Updated PWA manifest `name`/`short_name` + icon letter (J→W) via re-encoded base64

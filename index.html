@@ -445,7 +445,7 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
   </div>
 </div>
 <div id="app" class="app" style="display:none;">
-  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+  <nav class="sidebar" aria-label="Main navigation">
     <div class="logo"><span class="logo-text">Job<span>Track</span></span><span class="logo-sub">Application Manager</span></div>
     <div id="auth-indicator" style="display:flex;align-items:center;gap:6px;padding:0 8px 12px;border-bottom:1px solid var(--border);margin-bottom:8px;min-height:28px;"></div>
     <div class="nav-section nav-label">Jobs</div>
@@ -466,12 +466,12 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
     <a href="https://www.glassdoor.com.au" target="_blank" class="nav-link">&#11088; Glassdoor</a>
     <a href="https://www.jora.com" target="_blank" class="nav-link">&#128188; Jora</a>
     <button class="nav-btn" id="nav-settings" onclick="showView('settings')" style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;margin-top:auto;"><span class="nav-icon">&#9881;</span><span class="nav-label"> Settings</span></button>
-  </aside>
-  <main class="main" role="main" id="main-content">
+  </nav>
+  <main class="main" id="main-content">
     <!-- DASHBOARD -->
-    <div id="view-dashboard">
+    <div id="view-dashboard" role="region" aria-labelledby="heading-dashboard">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-        <h1 class="page-title" style="margin-bottom:0;">My <span>Applications</span></h1>
+        <h1 class="page-title" id="heading-dashboard" style="margin-bottom:0;">My <span>Applications</span></h1>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <input id="search-input" type="text" placeholder="Search..." class="field" style="width:160px;font-size:13px;padding:8px 12px;" oninput="renderDashboard()">
           <select id="sort-select" onchange="renderDashboard()" style="padding:8px 11px;font-size:13px;cursor:pointer;">
@@ -489,8 +489,8 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       <div id="kanban-board" class="kanban" style="display:none;"></div>
     </div>
     <!-- ANALYTICS -->
-    <div id="view-analytics" style="display:none;">
-      <h1 class="page-title"><span>Analytics</span></h1>
+    <div id="view-analytics" role="region" aria-labelledby="heading-analytics" style="display:none;">
+      <h1 class="page-title" id="heading-analytics"><span>Analytics</span></h1>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;" id="analytics-kpis"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="analytics-charts">
         <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Applications Over Time</h3><canvas id="chart-timeline" height="200"></canvas></div>
@@ -500,8 +500,8 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       </div>
     </div>
     <!-- ADD JOB -->
-    <div id="view-add" style="display:none;max-width:580px;">
-      <h1 class="page-title">Add <span>Application</span></h1>
+    <div id="view-add" role="region" aria-labelledby="heading-add" style="display:none;max-width:580px;">
+      <h1 class="page-title" id="heading-add">Add <span>Application</span></h1>
       <div style="display:flex;gap:3px;background:var(--surface2);border-radius:8px;padding:3px;margin-bottom:14px;width:fit-content;">
         <button class="view-btn active" id="add-tab-url" onclick="setAddMode('url')">From URL</button>
         <button class="view-btn" id="add-tab-paste" onclick="setAddMode('paste')">Paste Job Ad</button>
@@ -530,8 +530,8 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       </div>
     </div>
     <!-- CV MATCH -->
-    <div id="view-cv" style="display:none;max-width:640px;">
-      <h1 class="page-title">CV <span>Match Score</span></h1>
+    <div id="view-cv" role="region" aria-labelledby="heading-cv" style="display:none;max-width:640px;">
+      <h1 class="page-title" id="heading-cv">CV <span>Match Score</span></h1>
       <div class="card"><h3>1. Select a Job</h3><div class="job-pick-list" id="cv-job-list"></div></div>
       <div class="card">
         <h3>2. Paste Your Resume</h3>
@@ -543,9 +543,9 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       <div id="cv-result"></div>
     </div>
     <!-- RESUMES -->
-    <div id="view-resumes" style="display:none;">
+    <div id="view-resumes" role="region" aria-labelledby="heading-resumes" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px;">
-        <h1 class="page-title" style="margin-bottom:0;">My <span>Resumes</span></h1>
+        <h1 class="page-title" id="heading-resumes" style="margin-bottom:0;">My <span>Resumes</span></h1>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-ghost" onclick="openResumeGenerator()">Generate from Scratch</button>
           <button class="btn btn-primary" onclick="newDocument('resume')">+ New Resume</button>
@@ -640,9 +640,9 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       </div>
     </div>
     <!-- COVER LETTERS -->
-    <div id="view-covers" style="display:none;">
+    <div id="view-covers" role="region" aria-labelledby="heading-covers" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
-        <h1 class="page-title" style="margin-bottom:0;">Cover <span>Letters</span></h1>
+        <h1 class="page-title" id="heading-covers" style="margin-bottom:0;">Cover <span>Letters</span></h1>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-ghost" onclick="newDocumentFromJob()">Generate from Job</button>
           <button class="btn btn-primary" onclick="newDocument('cover')">+ New Cover Letter</button>
@@ -722,8 +722,8 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       </div>
     </div>
     <!-- EMAIL TEMPLATES -->
-    <div id="view-emails" style="display:none;max-width:820px;">
-      <h1 class="page-title">Follow-Up <span>Email Templates</span></h1>
+    <div id="view-emails" role="region" aria-labelledby="heading-emails" style="display:none;max-width:820px;">
+      <h1 class="page-title" id="heading-emails">Follow-Up <span>Email Templates</span></h1>
       <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;">Pick a template below, then personalise it manually or use AI to tailor it to a specific job. Copy and send.</p>
       <div class="tpl-grid" id="tpl-grid"></div>
       <div class="card" style="margin-bottom:14px;">
@@ -752,8 +752,8 @@ body.reduce-motion *{animation:none!important;transition-duration:0.01ms!importa
       </div>
     </div>
     <!-- SETTINGS -->
-    <div id="view-settings" style="display:none;max-width:480px;">
-      <h1 class="page-title"><span>Settings</span></h1>
+    <div id="view-settings" role="region" aria-labelledby="heading-settings" style="display:none;max-width:480px;">
+      <h1 class="page-title" id="heading-settings"><span>Settings</span></h1>
       <div class="card" id="settings-account">
         <h3>Account &amp; Cloud Sync</h3>
         <div id="settings-auth-status" style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;"></div>
