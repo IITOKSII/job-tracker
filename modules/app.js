@@ -1775,26 +1775,42 @@ function startVoiceInput(btn,targetId){
 // -- Accessibility Toolbar --
 let _a11yPrefs={easyread:false,contrast:false,dyslexia:false,motion:false,textSize:'sm',lineSpacing:'normal'};
 
-function toggleA11yPanel(){document.getElementById('a11y-panel').classList.toggle('open');}
+function toggleA11yPanel(){
+  const panel=document.getElementById('a11y-panel');
+  const fab=document.getElementById('a11y-fab');
+  const isOpen=panel.classList.toggle('open');
+  if(fab)fab.setAttribute('aria-expanded',isOpen?'true':'false');
+}
 
 function toggleA11y(key){
   _a11yPrefs[key]=!_a11yPrefs[key];
   const btn=document.getElementById('a11y-'+key);
-  if(btn)btn.classList.toggle('on',_a11yPrefs[key]);
+  if(btn){
+    btn.classList.toggle('on',_a11yPrefs[key]);
+    btn.setAttribute('aria-pressed',_a11yPrefs[key]?'true':'false');
+  }
   applyA11yPrefs();
   saveA11yPrefs();
 }
 
 function setTextSize(size){
   _a11yPrefs.textSize=size;
-  document.querySelectorAll('.a11y-size-btn').forEach(b=>b.classList.toggle('active',b.dataset.size===size));
+  document.querySelectorAll('.a11y-size-btn').forEach(b=>{
+    const active=b.dataset.size===size;
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',active?'true':'false');
+  });
   applyA11yPrefs();
   saveA11yPrefs();
 }
 
 function setLineSpacing(spacing){
   _a11yPrefs.lineSpacing=spacing;
-  document.querySelectorAll('.a11y-spacing-btn').forEach(b=>b.classList.toggle('active',b.dataset.spacing===spacing));
+  document.querySelectorAll('.a11y-spacing-btn').forEach(b=>{
+    const active=b.dataset.spacing===spacing;
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',active?'true':'false');
+  });
   applyA11yPrefs();
   saveA11yPrefs();
 }
@@ -1811,11 +1827,20 @@ function applyA11yPrefs(){
   // Line spacing
   b.classList.remove('line-wide','line-xwide');
   if(_a11yPrefs.lineSpacing!=='normal')b.classList.add('line-'+_a11yPrefs.lineSpacing);
-  // Update toggles UI
+  // Update toggles UI + aria-pressed state
   ['easyread','contrast','dyslexia','motion'].forEach(k=>{
     const btn=document.getElementById('a11y-'+k);
-    if(btn)btn.classList.toggle('on',_a11yPrefs[k]);
+    if(btn){
+      btn.classList.toggle('on',_a11yPrefs[k]);
+      btn.setAttribute('aria-pressed',_a11yPrefs[k]?'true':'false');
+    }
   });
+  // Sync aria-pressed for text size buttons
+  document.querySelectorAll('.a11y-size-btn').forEach(b=>
+    b.setAttribute('aria-pressed',b.dataset.size===(_a11yPrefs.textSize||'sm')?'true':'false'));
+  // Sync aria-pressed for spacing buttons
+  document.querySelectorAll('.a11y-spacing-btn').forEach(b=>
+    b.setAttribute('aria-pressed',b.dataset.spacing===(_a11yPrefs.lineSpacing||'normal')?'true':'false'));
   // Apply Easy Read labels
   if(_a11yPrefs.easyread)applyEasyReadLabels();
   else restoreOriginalLabels();

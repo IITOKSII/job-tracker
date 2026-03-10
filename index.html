@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#141a1f">
-<title>JobTrack â€” Application Manager</title>
+<title>JobTrack – Application Manager</title>
 <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkpvYlRyYWNrIiwKICAic2hvcnRfbmFtZSI6ICJKb2JUcmFjayIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMTQxYTFmIiwKICAidGhlbWVfY29sb3IiOiAiIzE0MWExZiIsCiAgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyByeD0nMjAnIGZpbGw9JyMxNDFhMWYnLz48dGV4dCB4PSc1MCcgeT0nNjUnIGZvbnQtc2l6ZT0nNDUnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyMyZWM0YjYnPko8L3RleHQ+PC9zdmc+Iiwic2l6ZXMiOiAiYW55IiwidHlwZSI6ICJpbWFnZS9zdmcreG1sIn1dCn0=">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
@@ -23,28 +23,31 @@
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <!-- Accessibility Toolbar -->
-<button class="a11y-fab" onclick="toggleA11yPanel()" aria-label="Accessibility settings" title="Accessibility settings">&#9881;</button>
-<div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="Accessibility settings">
-  <h4>Accessibility</h4>
-  <div class="a11y-row"><span class="a11y-label">Text Size</span><div class="a11y-size-btns"><button class="a11y-size-btn active" data-size="sm" onclick="setTextSize('sm')" title="Small">A</button><button class="a11y-size-btn" data-size="md" onclick="setTextSize('md')" title="Medium" style="font-size:13px;">A</button><button class="a11y-size-btn" data-size="lg" onclick="setTextSize('lg')" title="Large" style="font-size:15px;">A</button><button class="a11y-size-btn" data-size="xl" onclick="setTextSize('xl')" title="Extra large" style="font-size:17px;">A</button></div></div>
-  <div class="a11y-row"><span class="a11y-label">Line Spacing</span><div class="a11y-spacing-btns"><button class="a11y-spacing-btn active" data-spacing="normal" onclick="setLineSpacing('normal')">Normal</button><button class="a11y-spacing-btn" data-spacing="wide" onclick="setLineSpacing('wide')">Wide</button><button class="a11y-spacing-btn" data-spacing="xwide" onclick="setLineSpacing('xwide')">Extra</button></div></div>
-  <div class="a11y-row"><span class="a11y-label">Easy Read</span><button class="a11y-toggle" id="a11y-easyread" onclick="toggleA11y('easyread')" aria-label="Toggle Easy Read mode"></button></div>
-  <div class="a11y-row"><span class="a11y-label">High Contrast</span><button class="a11y-toggle" id="a11y-contrast" onclick="toggleA11y('contrast')" aria-label="Toggle high contrast"></button></div>
-  <div class="a11y-row"><span class="a11y-label">Dyslexia Font</span><button class="a11y-toggle" id="a11y-dyslexia" onclick="toggleA11y('dyslexia')" aria-label="Toggle dyslexia-friendly font"></button></div>
-  <div class="a11y-row"><span class="a11y-label">Reduce Motion</span><button class="a11y-toggle" id="a11y-motion" onclick="toggleA11y('motion')" aria-label="Toggle reduce motion"></button></div>
+<button class="a11y-fab" id="a11y-fab" onclick="toggleA11yPanel()" aria-label="Accessibility settings" aria-expanded="false" aria-controls="a11y-panel" title="Accessibility settings">&#9881;</button>
+<div class="a11y-panel" id="a11y-panel" role="dialog" aria-labelledby="a11y-panel-title" aria-modal="true">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <h4 id="a11y-panel-title" style="margin:0;">Accessibility</h4>
+    <button onclick="toggleA11yPanel()" aria-label="Close accessibility panel" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;border-radius:4px;">&#x2715;</button>
+  </div>
+  <div class="a11y-row"><span class="a11y-label">Text Size</span><div class="a11y-size-btns" role="group" aria-label="Text size"><button class="a11y-size-btn active" data-size="sm" onclick="setTextSize('sm')" aria-label="Small" aria-pressed="true">A</button><button class="a11y-size-btn" data-size="md" onclick="setTextSize('md')" aria-label="Medium" aria-pressed="false" style="font-size:13px;">A</button><button class="a11y-size-btn" data-size="lg" onclick="setTextSize('lg')" aria-label="Large" aria-pressed="false" style="font-size:15px;">A</button><button class="a11y-size-btn" data-size="xl" onclick="setTextSize('xl')" aria-label="Extra large" aria-pressed="false" style="font-size:17px;">A</button></div></div>
+  <div class="a11y-row"><span class="a11y-label">Line Spacing</span><div class="a11y-spacing-btns" role="group" aria-label="Line spacing"><button class="a11y-spacing-btn active" data-spacing="normal" onclick="setLineSpacing('normal')" aria-label="Normal line spacing" aria-pressed="true">Normal</button><button class="a11y-spacing-btn" data-spacing="wide" onclick="setLineSpacing('wide')" aria-label="Wide line spacing" aria-pressed="false">Wide</button><button class="a11y-spacing-btn" data-spacing="xwide" onclick="setLineSpacing('xwide')" aria-label="Extra wide line spacing" aria-pressed="false">Extra</button></div></div>
+  <div class="a11y-row"><span class="a11y-label">Easy Read</span><button class="a11y-toggle" id="a11y-easyread" onclick="toggleA11y('easyread')" aria-label="Easy Read mode" aria-pressed="false"></button></div>
+  <div class="a11y-row"><span class="a11y-label">High Contrast</span><button class="a11y-toggle" id="a11y-contrast" onclick="toggleA11y('contrast')" aria-label="High contrast" aria-pressed="false"></button></div>
+  <div class="a11y-row"><span class="a11y-label">Dyslexia Font</span><button class="a11y-toggle" id="a11y-dyslexia" onclick="toggleA11y('dyslexia')" aria-label="Dyslexia-friendly font" aria-pressed="false"></button></div>
+  <div class="a11y-row"><span class="a11y-label">Reduce Motion</span><button class="a11y-toggle" id="a11y-motion" onclick="toggleA11y('motion')" aria-label="Reduce motion" aria-pressed="false"></button></div>
 </div>
 <!-- TTS Mini Player -->
-<div class="tts-player" id="tts-player" role="region" aria-label="Audio player">
-  <button onclick="ttsPause()" title="Pause/Resume" id="tts-pause-btn">&#10074;&#10074;</button>
-  <span id="tts-player-label" style="color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Reading...</span>
-  <button class="tts-speed" onclick="ttsCycleSpeed()" id="tts-speed-btn" title="Change speed">1x</button>
-  <button onclick="ttsStop()" title="Stop">&#x2716;</button>
+<div class="tts-player" id="tts-player" role="region" aria-label="Text to speech player">
+  <button onclick="ttsPause()" aria-label="Pause or resume reading" id="tts-pause-btn">&#10074;&#10074;</button>
+  <span id="tts-player-label" aria-live="polite" style="color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Reading...</span>
+  <button class="tts-speed" onclick="ttsCycleSpeed()" aria-label="Change reading speed" id="tts-speed-btn">1x</button>
+  <button onclick="ttsStop()" aria-label="Stop reading">&#x2716;</button>
 </div>
-<div id="loading-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px;">
+<div id="loading-screen" role="status" aria-live="polite" aria-label="Loading your data" style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px;">
   <span class="spinner" style="width:24px;height:24px;border-width:3px;"></span>
   <span style="font-size:12px;color:var(--muted);">Loading your data...</span>
 </div>
-<div id="setup-screen" class="setup" style="display:none;">
+<div id="setup-screen" class="setup" role="main" aria-label="Application setup" style="display:none;">
   <h1>Welcome to <span style="color:var(--accent)">JobTrack</span></h1>
   <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:18px;">Your AI-powered job application manager. Uses Google <strong style="color:var(--text)">Gemini AI</strong> â€” completely free, no credit card needed.</p>
   <div class="setup-step"><span class="step-pill">1</span><div>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank"><strong>aistudio.google.com/app/apikey</strong></a> and sign in with your Google account</div></div>
@@ -80,11 +83,11 @@
     <div class="nav-section nav-label" style="margin-top:6px;">Quick Stats</div>
     <div class="sidebar-stats" id="sidebar-stats"></div>
     <div class="nav-section nav-label" style="margin-top:6px;">Job Sites</div>
-    <a href="https://www.seek.com.au" target="_blank" class="nav-link">&#127758; SEEK</a>
-    <a href="https://www.linkedin.com/jobs" target="_blank" class="nav-link">&#128101; LinkedIn Jobs</a>
-    <a href="https://au.indeed.com" target="_blank" class="nav-link">&#128270; Indeed</a>
-    <a href="https://www.glassdoor.com.au" target="_blank" class="nav-link">&#11088; Glassdoor</a>
-    <a href="https://www.jora.com" target="_blank" class="nav-link">&#128188; Jora</a>
+    <a href="https://www.seek.com.au" target="_blank" class="nav-link" aria-label="SEEK (opens in new tab)" rel="noopener noreferrer">&#127758; SEEK</a>
+    <a href="https://www.linkedin.com/jobs" target="_blank" class="nav-link" aria-label="LinkedIn Jobs (opens in new tab)" rel="noopener noreferrer">&#128101; LinkedIn Jobs</a>
+    <a href="https://au.indeed.com" target="_blank" class="nav-link" aria-label="Indeed (opens in new tab)" rel="noopener noreferrer">&#128270; Indeed</a>
+    <a href="https://www.glassdoor.com.au" target="_blank" class="nav-link" aria-label="Glassdoor (opens in new tab)" rel="noopener noreferrer">&#11088; Glassdoor</a>
+    <a href="https://www.jora.com" target="_blank" class="nav-link" aria-label="Jora (opens in new tab)" rel="noopener noreferrer">&#128188; Jora</a>
     <button class="nav-btn" id="nav-settings" onclick="showView('settings')" style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;margin-top:auto;"><span class="nav-icon">&#9881;</span><span class="nav-label"> Settings</span></button>
   </aside>
   <main class="main" role="main" id="main-content">
@@ -93,8 +96,10 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
         <h1 class="page-title" style="margin-bottom:0;">My <span>Applications</span></h1>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <input id="search-input" type="text" placeholder="Search..." class="field" style="width:160px;font-size:13px;padding:8px 12px;" oninput="renderDashboard()">
-          <select id="sort-select" onchange="renderDashboard()" style="padding:8px 11px;font-size:13px;cursor:pointer;">
+          <label for="search-input" class="sr-only">Search applications</label>
+          <input id="search-input" type="text" placeholder="Search..." class="field" style="width:160px;font-size:13px;padding:8px 12px;" aria-label="Search applications" oninput="renderDashboard()">
+          <label for="sort-select" class="sr-only">Sort applications by</label>
+          <select id="sort-select" onchange="renderDashboard()" aria-label="Sort applications by" style="padding:8px 11px;font-size:13px;cursor:pointer;">
             <option value="date-desc">Newest First</option>
             <option value="date-asc">Oldest First</option>
             <option value="company-asc">Company A-Z</option>
@@ -113,8 +118,8 @@
       <h1 class="page-title"><span>Analytics</span></h1>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;" id="analytics-kpis"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="analytics-charts">
-        <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Applications Over Time</h3><canvas id="chart-timeline" height="200"></canvas></div>
-        <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Status Breakdown</h3><canvas id="chart-status" height="200"></canvas></div>
+        <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Applications Over Time</h3><canvas id="chart-timeline" height="200" role="img" aria-label="Applications over time chart"></canvas></div>
+        <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Status Breakdown</h3><canvas id="chart-status" height="200" role="img" aria-label="Status breakdown chart"></canvas></div>
         <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Response Rate Funnel</h3><div id="chart-funnel"></div></div>
         <div class="card"><h3 style="font-size:13px;margin-bottom:12px;">Applications by Company</h3><div id="chart-companies" style="max-height:220px;overflow-y:auto;"></div></div>
       </div>
@@ -122,29 +127,29 @@
     <!-- ADD JOB -->
     <div id="view-add" style="display:none;max-width:580px;">
       <h1 class="page-title">Add <span>Application</span></h1>
-      <div style="display:flex;gap:3px;background:var(--surface2);border-radius:8px;padding:3px;margin-bottom:14px;width:fit-content;">
-        <button class="view-btn active" id="add-tab-url" onclick="setAddMode('url')">From URL</button>
-        <button class="view-btn" id="add-tab-paste" onclick="setAddMode('paste')">Paste Job Ad</button>
+      <div role="tablist" aria-label="Add job mode" style="display:flex;gap:3px;background:var(--surface2);border-radius:8px;padding:3px;margin-bottom:14px;width:fit-content;">
+        <button class="view-btn active" id="add-tab-url" onclick="setAddMode('url')" role="tab" aria-selected="true" aria-controls="add-mode-url">From URL</button>
+        <button class="view-btn" id="add-tab-paste" onclick="setAddMode('paste')" role="tab" aria-selected="false" aria-controls="add-mode-paste">Paste Job Ad</button>
       </div>
-      <div id="add-mode-url">
+      <div id="add-mode-url" role="tabpanel" aria-labelledby="add-tab-url">
         <div class="card">
           <h3>Paste a Job Posting URL</h3>
           <div class="row" style="margin-bottom:10px;">
             <input id="url-input" type="url" placeholder="https://seek.com.au/job/..." class="field" style="flex:1;">
             <button class="btn btn-primary" id="analyse-btn" onclick="analyseJob()">Analyse</button>
           </div>
-          <div id="add-status" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;"></div>
-          <div id="add-error" style="display:none;font-size:13px;color:var(--red);margin-top:6px;"></div>
+          <div id="add-status" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;"></div>
+          <div id="add-error" role="alert" aria-live="assertive" style="display:none;font-size:13px;color:var(--red);margin-top:6px;"></div>
         </div>
         <div class="card"><p style="font-size:13px;color:var(--muted);line-height:1.7;">Paste any job URL â€” Seek, LinkedIn, Indeed, company career pages. AI extracts the title, company, location, salary and description, plus generates interview questions and company facts.</p></div>
       </div>
-      <div id="add-mode-paste" style="display:none;">
+      <div id="add-mode-paste" role="tabpanel" aria-labelledby="add-tab-paste" style="display:none;">
         <div class="card">
           <h3>Paste the Job Ad Text</h3>
           <textarea id="paste-input" class="field" style="min-height:200px;padding:12px 13px;line-height:1.6;resize:vertical;margin-bottom:10px;" placeholder="Copy and paste the full job ad text here â€” title, company, description, requirements, anything you have..."></textarea>
           <button class="btn btn-primary" id="analyse-paste-btn" onclick="analyseJobText()" style="width:100%;">Analyse Job Ad</button>
-          <div id="paste-status" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;margin-top:8px;"></div>
-          <div id="paste-error" style="display:none;font-size:13px;color:var(--red);margin-top:6px;"></div>
+          <div id="paste-status" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;margin-top:8px;"></div>
+          <div id="paste-error" role="alert" aria-live="assertive" style="display:none;font-size:13px;color:var(--red);margin-top:6px;"></div>
         </div>
         <div class="card"><p style="font-size:13px;color:var(--muted);line-height:1.7;">Copy the full job ad from any source â€” email, PDF, screenshot text, Slack message, anything. AI will extract the title, company, location, salary and description, plus generate interview questions and company facts.</p></div>
       </div>
@@ -158,8 +163,8 @@
         <textarea id="cv-text" placeholder="Paste the full text of your resume here..." class="field" style="min-height:160px;padding:12px 13px;line-height:1.6;resize:vertical;"></textarea>
       </div>
       <button class="btn btn-green" id="cv-btn" onclick="analyseCV()">Analyse My CV</button>
-      <div id="cv-status" style="display:none;font-size:13px;color:var(--muted);margin-top:10px;"></div>
-      <div id="cv-error" style="font-size:13px;color:var(--red);margin-top:8px;display:none;"></div>
+      <div id="cv-status" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--muted);margin-top:10px;"></div>
+      <div id="cv-error" role="alert" aria-live="assertive" style="font-size:13px;color:var(--red);margin-top:8px;display:none;"></div>
       <div id="cv-result"></div>
     </div>
     <!-- RESUMES -->
@@ -407,7 +412,7 @@
       </div>
     </div>
   </main>
-  <nav class="mobile-nav" id="mobile-nav">
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
     <button class="mob-tab active" id="mob-dashboard" onclick="mobNav('dashboard')"><span class="mob-icon">&#128203;</span>Jobs</button>
     <button class="mob-tab" id="mob-add" onclick="mobNav('add')"><span class="mob-icon">&#10010;</span>Add</button>
     <button class="mob-tab" id="mob-resumes" onclick="mobNav('resumes')"><span class="mob-icon">&#128196;</span>Resumes</button>
@@ -425,11 +430,11 @@
   </div>
 </div>
 <!-- Job Detail Modal -->
-<div id="modal" class="overlay" style="display:none;" onclick="if(event.target===this)closeModal()">
+<div id="modal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title" style="display:none;" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-head">
       <div><div class="modal-company" id="m-company"></div><div class="modal-title-text" id="m-title"></div></div>
-      <button class="modal-close" onclick="closeModal()">X</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&#x2715;</button>
     </div>
     <div class="modal-body">
       <div class="modal-meta" id="m-meta"></div>
@@ -468,11 +473,11 @@
   </div>
 </div>
 <!-- Generate Cover Letter Modal -->
-<div id="gen-modal" class="overlay" style="display:none;" onclick="if(event.target===this)closeGenModal()">
+<div id="gen-modal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="gen-modal-title" style="display:none;" onclick="if(event.target===this)closeGenModal()">
   <div class="modal" style="max-width:560px;">
     <div class="modal-head">
-      <div><div class="modal-company">Cover Letter Generator</div><div class="modal-title-text">Generate from Job</div></div>
-      <button class="modal-close" onclick="closeGenModal()">X</button>
+      <div><div class="modal-company">Cover Letter Generator</div><div class="modal-title-text" id="gen-modal-title">Generate from Job</div></div>
+      <button class="modal-close" onclick="closeGenModal()" aria-label="Close">&#x2715;</button>
     </div>
     <div class="modal-body">
       <div style="margin-bottom:14px;">
@@ -499,11 +504,11 @@
   </div>
 </div>
 <!-- Generate Resume Modal -->
-<div id="resume-gen-modal" class="overlay" style="display:none;" onclick="if(event.target===this)closeResumeGenModal()">
+<div id="resume-gen-modal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="rgen-modal-title" style="display:none;" onclick="if(event.target===this)closeResumeGenModal()">
   <div class="modal" style="max-width:560px;">
     <div class="modal-head">
-      <div><div class="modal-company">Resume Generator</div><div class="modal-title-text">Build from Scratch</div></div>
-      <button class="modal-close" onclick="closeResumeGenModal()">X</button>
+      <div><div class="modal-company">Resume Generator</div><div class="modal-title-text" id="rgen-modal-title">Build from Scratch</div></div>
+      <button class="modal-close" onclick="closeResumeGenModal()" aria-label="Close">&#x2715;</button>
     </div>
     <div class="modal-body">
       <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Tell us about yourself and we'll generate a professional, ATS-optimised resume. The more detail you provide, the better the result.</p>
