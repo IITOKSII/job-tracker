@@ -1,10 +1,10 @@
-﻿# 🛠 WORKFLOW: AI-Assisted Development (2026)
+# ?? WORKFLOW: AI-Assisted Development (2026)
 
 > [!TIP]
 > **PRE-SESSION: Starting a New Chat**
 > Before starting, run \git pull\. Use this as your first message:
 
-### 🟦 The Handoff Prompt
+### ?? The Handoff Prompt
 **PROJECT CONTEXT:** WorkAble (Modular)  
 **Architecture:** - \index.html\: UI Skeleton  
 - \modules/app.js\: Logic/Firebase  
@@ -35,8 +35,17 @@
 
 ---
 
-### 🟥 A11Y CHECKLIST
-- [ ] 🎨 **Contrast:** Ratio at least 4.5:1.
-- [ ] ⌨️ **Keyboard:** Navigable via 'Tab' key.
-- [ ] 🗺️ **Landmarks:** UI inside <main>, <nav>, or <header>.
-- [ ] 🖼️ **Alt Text:** Images/icons have 'alt' tags.
+### ?? A11Y CHECKLIST
+- [ ] ?? **Contrast:** Ratio at least 4.5:1.
+- [ ] ?? **Keyboard:** Navigable via 'Tab' key.
+- [ ] ??? **Landmarks:** UI inside <main>, <nav>, or <header>.
+- [ ] ??? **Alt Text:** Images/icons have 'alt' tags.
+
+---
+
+> [!CAUTION]
+> **??? SECURITY & SUBSCRIPTION PROTOCOL**
+> 1. **Public Repo Rule:** Never hardcode passwords, secret keys (Stripe/Firebase Secret), or private emails.
+> 2. **Client-Side Logic:** Assume the user can read all JS. Security must happen in **Firebase Rules**, not JS.
+> 3. **Modular Privacy:** Keep user-specific data fetching restricted to the current Auth UID.
+> 4. **AI Instruction:** Tell Claude: "Build this for a scalable, paid platform. Use secure patterns."
