@@ -24,3 +24,8 @@
 - No error summary or inline validation on forms
 - Missing `<main>`, `<nav>`, `<section>` landmarks in places
 - App name still "JobTrack" — rename to "WorkAble" pending
+
+## [2026-03-10]
+- Modularized index.html: Moved CSS/JS to 'modules' folder.
+- Added .claudignore to optimize AI context window.
+- Fixed 'File too large' error for future sessions.

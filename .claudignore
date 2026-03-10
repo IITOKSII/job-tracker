@@ -1,0 +1,5 @@
+﻿@(.git/
+.claude/
+*.bak
+*.log
+node_modules/)
