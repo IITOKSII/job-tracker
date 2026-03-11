@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#141a1f">
 <title>JobTrack – Application Manager</title>
-<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkpvYlRyYWNrIiwKICAic2hvcnRfbmFtZSI6ICJKb2JUcmFjayIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMTQxYTFmIiwKICAidGhlbWVfY29sb3IiOiAiIzE0MWExZiIsCiAgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyByeD0nMjAnIGZpbGw9JyMxNDFhMWYnLz48dGV4dCB4PSc1MCcgeT0nNjUnIGZvbnQtc2l6ZT0nNDUnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyMyZWM0YjYnPko8L3RleHQ+PC9zdmc+Iiwic2l6ZXMiOiAiYW55IiwidHlwZSI6ICJpbWFnZS9zdmcreG1sIn1dCn0=">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -18,7 +18,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<link rel="stylesheet" href="modules/style.css">
+<link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -542,7 +542,7 @@
     </div>
   </div>
 </div>
-<script src="modules/app.js" defer></script>
+<script type="module" src="modules/app.js"></script>
 </body>
 </html>
 
