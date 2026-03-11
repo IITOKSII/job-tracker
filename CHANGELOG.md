@@ -29,3 +29,9 @@
 - Modularized index.html: Moved CSS/JS to 'modules' folder.
 - Added .claudignore to optimize AI context window.
 - Fixed 'File too large' error for future sessions.
+
+### [2026-03-10] - Desktop Sync & Security Hardening
+- **Added**: .gitignore for AI workstates (.claude/).
+- **Changed**: index.html converted to modular type="module" structure.
+- **Fixed**: Resolved merge conflicts in index.html and corrected CRLF line endings.
+- **Security**: Hardened Firestore logic using the userDocRef pattern for subscription readiness.
