@@ -19,9 +19,13 @@ export function isFirebaseConfigured() {
 
 export function initFirebase() {
   if (!isFirebaseConfigured()) return false;
+  if (fb.ready) return true; // already initialised (guard against double-call)
   try {
-    firebase.initializeApp(FIREBASE_CONFIG);
-    fb.db = firebase.firestore();
+    // Use existing app if already created (e.g. HMR / multiple module loads)
+    const app = firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp(FIREBASE_CONFIG);
+    fb.db = app.firestore();
     fb.db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
     fb.ready = true;
     return true;
