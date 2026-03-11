@@ -71,12 +71,12 @@ node server.js
 .\sync.ps1
 ```
 
-It runs `git add . && git commit && git push origin HEAD`.
+It runs a full 7-step CI pipeline: smoke test -> commit -> push -> PR -> conflict check -> auto-merge.
 
 > [!IMPORTANT]
 > `sync.ps1` pushes to the **current branch** (e.g. `claude/my-branch`), **not directly to `main`**.
-> The `main` branch is protected — it requires a Pull Request and at least 1 approved review before merging. Force-pushes and direct deletions are blocked.
-> After running `sync.ps1`, open a PR on GitHub to merge into `main`.
+> The `main` branch is protected — Pull Requests are required, force-pushes and deletions are blocked.
+> PRs require **0 approvals** — `sync.ps1` will auto-merge immediately once the conflict check passes.
 
 ### Claude Automation Authorization
 **Claude is authorized to run these scripts directly via the terminal tool:**
@@ -84,6 +84,50 @@ It runs `git add . && git commit && git push origin HEAD`.
 - `.\sync.ps1` — commit and push the current branch to origin
 - Standard `git` commands (`status`, `log`, `diff`, `fetch`, `branch`)
 - `gh` CLI commands for PR and branch management
+
+---
+
+## Tomorrow's Mission: The Clipper
+
+### What We Are Building
+**Method 1 of Smart Ingest: The WorkAble Clipper** — a Chrome Extension that lets users clip job listings directly from any browser tab into WorkAble.
+
+> [!NOTE]
+> **Pivot Decision:** The 'Paste URL' box approach has been dropped.
+> The Clipper is the canonical Smart Ingest method going forward.
+
+### Ground Rules for Extension Code
+- All extension source lives exclusively in **`/extension/`** — no extension code in the main app modules.
+- Every UI element in the extension popup/panel must be built with a **strict A11y lens** (see checklist below). This is non-negotiable.
+- The extension is a separate build context — it does not share `modules/` imports. Shared logic must be duplicated or extracted to a neutral utility.
+
+### Session Start Protocol (Do This First — Every Time)
+Before a single line of extension code is written, run a **Full System Review**:
+
+1. **Infrastructure check** — confirm `node server.js` starts clean, no port conflicts, no server.js regressions.
+2. **Auth check** — verify Google Sign-In flow works end-to-end in the browser (sign in, sign out, reload).
+3. **Firestore check** — confirm `userDocRef` pattern is intact: data saves and loads correctly for a signed-in user.
+
+Only after all three checks pass do we open `/extension/` and start building.
+
+### Clipper — Planned File Structure
+```
+/extension/
+  manifest.json        -- Chrome Extension Manifest V3
+  popup.html           -- Extension popup UI
+  popup.js             -- Popup logic (clip, preview, send to WorkAble)
+  content.js           -- Content script: scrapes job data from active tab
+  background.js        -- Service worker: handles messaging between content/popup
+  styles/
+    popup.css          -- Popup styles (A11y-first: contrast, focus, sizing)
+  icons/
+    icon16.png
+    icon48.png
+    icon128.png
+```
+
+### A11y Requirements for the Clipper
+All extension UI must pass the full A11y checklist below. The popup is a constrained UI surface — accessible design is easier here, not harder.
 
 ---
 
