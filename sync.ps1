@@ -1,4 +1,4 @@
-# sync.ps1 -- Full CI pipeline: smoke test -> commit -> push -> PR -> approve -> merge
+# sync.ps1 -- Full CI pipeline: smoke test -> commit -> push -> PR -> merge
 #
 # Steps:
 #   1. Guard:      abort if on main (protected branch)
@@ -7,9 +7,9 @@
 #   4. Push:       git push origin HEAD
 #   5. PR:         gh pr create targeting main (or surface existing PR)
 #   6. Conflicts:  abort if PR is CONFLICTING
-#   7. Approve:    gh pr review --approve
-#   8. Merge:      gh pr merge --auto --merge
+#   7. Merge:      gh pr merge --auto --merge
 #
+# Branch protection: PRs required, 0 approvals required (no self-approve step).
 # Authorization: Claude may run this full sequence autonomously when
 #   smoke test passes (step 2) and PR has no merge conflicts (step 6).
 
@@ -116,17 +116,7 @@ if ($mergeable -eq "CONFLICTING") {
 }
 Write-Host "  [sync] Mergeable  : $mergeable" -ForegroundColor Green
 
-# ── 7. Self-approve ───────────────────────────────────────────────────────────
-Write-Host "  [sync] Approving PR ..." -ForegroundColor Yellow
-gh pr review --approve
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "  [sync] WARNING: self-approve failed (GitHub may require a second reviewer)." -ForegroundColor Yellow
-    Write-Host "         Approve manually on GitHub: $prUrl" -ForegroundColor Cyan
-    exit 0
-}
-Write-Host "  [sync] Approved   : OK" -ForegroundColor Green
-
-# ── 8. Auto-merge ─────────────────────────────────────────────────────────────
+# ── 7. Merge ──────────────────────────────────────────────────────────────────
 Write-Host "  [sync] Enabling auto-merge ..." -ForegroundColor Yellow
 gh pr merge --auto --merge
 if ($LASTEXITCODE -ne 0) {
