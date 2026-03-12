@@ -1,0 +1,36 @@
+# .firebaseignore — files excluded from Firebase Hosting deployment
+# Firebase Hosting would otherwise deploy everything in the project root.
+
+# ── CI / Pipeline scripts ──────────────────────────────────────────────────
+sync.ps1
+
+# ── Local dev server (not needed in production) ───────────────────────────
+server.js
+
+# ── Developer documentation ───────────────────────────────────────────────
+CLAUDE.md
+GEMINI.md
+README.md
+CHANGELOG.md
+TODO.md
+WORKFLOW.md
+
+# ── Git ───────────────────────────────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+
+# ── Claude tooling (already in .gitignore, belt-and-suspenders) ───────────
+.claude/
+
+# ── Node / package files (no build step, but exclude if present) ──────────
+node_modules/
+package.json
+package-lock.json
+npm-debug.log
+
+# ── Environment / secrets ─────────────────────────────────────────────────
+.env
+.env.*
+*.key
+*.pem
