@@ -278,7 +278,7 @@
         <div style="margin-bottom:14px;"><button class="btn btn-ghost btn-sm" onclick="closeDocEditor('cover')">Back to Cover Letters</button></div>
         <div class="doc-editor">
           <div class="editor-head">
-            <input id="cover-name-input" class="editor-title-input" placeholder="Cover letter name (e.g. Marketing Manager â€” SEEK)">
+            <input id="cover-name-input" class="editor-title-input" placeholder="Cover letter name (e.g. Marketing Manager â€" SEEK)" aria-label="Cover letter name">
             <div style="display:flex;gap:7px;">
               <button class="btn btn-ghost btn-sm" onclick="triggerUpload('cover')">Upload File</button>
               <input type="file" id="cover-file-upload" accept=".txt,.md,.pdf,.docx,.doc" style="display:none;" onchange="handleDocUpload(event,'cover')">
