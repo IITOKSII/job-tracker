@@ -55,7 +55,8 @@ export function ttsPause() {
 
 export function ttsStop() {
   if (speechSynthesis) speechSynthesis.cancel();
-  _speaking = false;
+  _speaking  = false;
+  _utterance = null;
   document.querySelectorAll(".tts-btn.speaking").forEach(b => b.classList.remove("speaking"));
   const player = document.getElementById("tts-player");
   if (player) player.classList.remove("active");

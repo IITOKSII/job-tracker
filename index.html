@@ -47,14 +47,14 @@
   <span class="spinner" style="width:24px;height:24px;border-width:3px;"></span>
   <span style="font-size:12px;color:var(--muted);">Loading your data...</span>
 </div>
-<div id="setup-screen" class="setup" role="main" aria-label="Application setup" style="display:none;">
+<div id="setup-screen" class="setup" role="region" aria-label="Application setup" style="display:none;">
   <h1>Welcome to <span style="color:var(--accent)">JobTrack</span></h1>
   <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:18px;">Your AI-powered job application manager. Uses Google <strong style="color:var(--text)">Gemini AI</strong> â€” completely free, no credit card needed.</p>
-  <div class="setup-step"><span class="step-pill">1</span><div>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank"><strong>aistudio.google.com/app/apikey</strong></a> and sign in with your Google account</div></div>
+  <div class="setup-step"><span class="step-pill">1</span><div>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" aria-label="aistudio.google.com/app/apikey (opens in new tab)"><strong>aistudio.google.com/app/apikey</strong></a> and sign in with your Google account</div></div>
   <div class="setup-step"><span class="step-pill">2</span><div>Click <strong>"Create API Key"</strong> â€” instant and free</div></div>
   <div class="setup-step"><span class="step-pill">3</span><div>Copy the key and paste it below</div></div>
   <div style="display:flex;gap:8px;margin-top:14px;">
-    <input id="key-input" type="password" placeholder="Paste your Gemini API key..." class="field" style="flex:1;" onkeydown="if(event.key==='Enter')saveKey()">
+    <input id="key-input" type="password" placeholder="Paste your Gemini API key..." aria-label="Gemini API key" class="field" style="flex:1;" onkeydown="if(event.key==='Enter')saveKey()">
     <button class="btn btn-primary" onclick="saveKey()">Get Started</button>
   </div>
   <p id="key-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none;">Key looks invalid. Please check and try again.</p>
@@ -72,14 +72,14 @@
     <div class="logo"><span class="logo-text">Job<span>Track</span></span><span class="logo-sub">Application Manager</span></div>
     <div id="auth-indicator" style="display:flex;align-items:center;gap:6px;padding:0 8px 12px;border-bottom:1px solid var(--border);margin-bottom:8px;min-height:28px;"></div>
     <div class="nav-section nav-label">Jobs</div>
-    <button class="nav-btn active" id="nav-dashboard" onclick="showView('dashboard')"><span class="nav-icon">&#128203;</span><span class="nav-label"> Dashboard</span></button>
-    <button class="nav-btn" id="nav-analytics" onclick="showView('analytics')"><span class="nav-icon">&#128200;</span><span class="nav-label"> Analytics</span></button>
-    <button class="nav-btn" id="nav-add" onclick="showView('add')"><span class="nav-icon">&#10010;</span><span class="nav-label"> Add Job</span></button>
-    <button class="nav-btn" id="nav-cv" onclick="showView('cv')"><span class="nav-icon">&#127919;</span><span class="nav-label"> CV Match</span></button>
+    <button class="nav-btn active" id="nav-dashboard" onclick="showView('dashboard')"><span class="nav-icon" aria-hidden="true">&#128203;</span><span class="nav-label"> Dashboard</span></button>
+    <button class="nav-btn" id="nav-analytics" onclick="showView('analytics')"><span class="nav-icon" aria-hidden="true">&#128200;</span><span class="nav-label"> Analytics</span></button>
+    <button class="nav-btn" id="nav-add" onclick="showView('add')"><span class="nav-icon" aria-hidden="true">&#10010;</span><span class="nav-label"> Add Job</span></button>
+    <button class="nav-btn" id="nav-cv" onclick="showView('cv')"><span class="nav-icon" aria-hidden="true">&#127919;</span><span class="nav-label"> CV Match</span></button>
     <div class="nav-section nav-label" style="margin-top:6px;">Documents</div>
-    <button class="nav-btn" id="nav-resumes" onclick="showView('resumes')"><span class="nav-icon">&#128196;</span><span class="nav-label"> Resumes</span></button>
-    <button class="nav-btn" id="nav-covers" onclick="showView('covers')"><span class="nav-icon">&#9993;</span><span class="nav-label"> Cover Letters</span></button>
-    <button class="nav-btn" id="nav-emails" onclick="showView('emails')"><span class="nav-icon">&#128232;</span><span class="nav-label"> Email Templates</span></button>
+    <button class="nav-btn" id="nav-resumes" onclick="showView('resumes')"><span class="nav-icon" aria-hidden="true">&#128196;</span><span class="nav-label"> Resumes</span></button>
+    <button class="nav-btn" id="nav-covers" onclick="showView('covers')"><span class="nav-icon" aria-hidden="true">&#9993;</span><span class="nav-label"> Cover Letters</span></button>
+    <button class="nav-btn" id="nav-emails" onclick="showView('emails')"><span class="nav-icon" aria-hidden="true">&#128232;</span><span class="nav-label"> Email Templates</span></button>
     <div class="nav-section nav-label" style="margin-top:6px;">Quick Stats</div>
     <div class="sidebar-stats" id="sidebar-stats"></div>
     <div class="nav-section nav-label" style="margin-top:6px;">Job Sites</div>
@@ -88,7 +88,7 @@
     <a href="https://au.indeed.com" target="_blank" class="nav-link" aria-label="Indeed (opens in new tab)" rel="noopener noreferrer">&#128270; Indeed</a>
     <a href="https://www.glassdoor.com.au" target="_blank" class="nav-link" aria-label="Glassdoor (opens in new tab)" rel="noopener noreferrer">&#11088; Glassdoor</a>
     <a href="https://www.jora.com" target="_blank" class="nav-link" aria-label="Jora (opens in new tab)" rel="noopener noreferrer">&#128188; Jora</a>
-    <button class="nav-btn" id="nav-settings" onclick="showView('settings')" style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;margin-top:auto;"><span class="nav-icon">&#9881;</span><span class="nav-label"> Settings</span></button>
+    <button class="nav-btn" id="nav-settings" onclick="showView('settings')" style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;margin-top:auto;"><span class="nav-icon" aria-hidden="true">&#9881;</span><span class="nav-label"> Settings</span></button>
   </aside>
   <main class="main" role="main" id="main-content">
     <!-- DASHBOARD -->
@@ -135,7 +135,7 @@
         <div class="card">
           <h3>Paste a Job Posting URL</h3>
           <div class="row" style="margin-bottom:10px;">
-            <input id="url-input" type="url" placeholder="https://seek.com.au/job/..." class="field" style="flex:1;">
+            <input id="url-input" type="url" placeholder="https://seek.com.au/job/..." aria-label="Job posting URL" class="field" style="flex:1;">
             <button class="btn btn-primary" id="analyse-btn" onclick="analyseJob()">Analyse</button>
           </div>
           <div id="add-status" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;"></div>
@@ -146,7 +146,7 @@
       <div id="add-mode-paste" role="tabpanel" aria-labelledby="add-tab-paste" style="display:none;">
         <div class="card">
           <h3>Paste the Job Ad Text</h3>
-          <textarea id="paste-input" class="field" style="min-height:200px;padding:12px 13px;line-height:1.6;resize:vertical;margin-bottom:10px;" placeholder="Copy and paste the full job ad text here â€” title, company, description, requirements, anything you have..."></textarea>
+          <textarea id=”paste-input” class=”field” style=”min-height:200px;padding:12px 13px;line-height:1.6;resize:vertical;margin-bottom:10px;” placeholder=”Copy and paste the full job ad text here â€” title, company, description, requirements, anything you have...” aria-label=”Job ad text”></textarea>
           <button class="btn btn-primary" id="analyse-paste-btn" onclick="analyseJobText()" style="width:100%;">Analyse Job Ad</button>
           <div id="paste-status" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--muted);align-items:center;gap:8px;margin-top:8px;"></div>
           <div id="paste-error" role="alert" aria-live="assertive" style="display:none;font-size:13px;color:var(--red);margin-top:6px;"></div>
@@ -160,7 +160,7 @@
       <div class="card"><h3>1. Select a Job</h3><div class="job-pick-list" id="cv-job-list"></div></div>
       <div class="card">
         <h3>2. Paste Your Resume</h3>
-        <textarea id="cv-text" placeholder="Paste the full text of your resume here..." class="field" style="min-height:160px;padding:12px 13px;line-height:1.6;resize:vertical;"></textarea>
+        <textarea id="cv-text" placeholder="Paste the full text of your resume here..." aria-label="Resume text for CV match" class="field" style="min-height:160px;padding:12px 13px;line-height:1.6;resize:vertical;"></textarea>
       </div>
       <button class="btn btn-green" id="cv-btn" onclick="analyseCV()">Analyse My CV</button>
       <div id="cv-status" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--muted);margin-top:10px;"></div>
@@ -184,7 +184,7 @@
         </div>
         <div class="doc-editor">
           <div class="editor-head">
-            <input id="resume-name-input" class="editor-title-input" placeholder="Resume name (e.g. Senior Developer Resume)">
+            <input id="resume-name-input" class="editor-title-input" placeholder="Resume name (e.g. Senior Developer Resume)" aria-label="Resume name">
             <div style="display:flex;gap:7px;">
               <button class="btn btn-ghost btn-sm" onclick="triggerUpload('resume')">Upload File</button>
               <input type="file" id="resume-file-upload" accept=".txt,.md,.pdf,.docx,.doc" style="display:none;" onchange="handleDocUpload(event,'resume')">
@@ -193,7 +193,7 @@
           </div>
           <div id="resume-upload-bar" class="upload-bar">Extracting text from file, please wait...</div>
           <div id="resume-edit-mode">
-            <textarea id="resume-textarea" class="editor-textarea" placeholder="Paste or type your resume, or upload a PDF / Word file above..."></textarea>
+            <textarea id="resume-textarea" class="editor-textarea" placeholder="Paste or type your resume, or upload a PDF / Word file above..." aria-label="Resume content"></textarea>
           </div>
           <div id="resume-preview-mode" class="doc-preview-wrap" style="display:none;">
             <div style="display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid #eee;background:#fafafa;">
@@ -213,7 +213,7 @@
             </div>
             <div style="margin-left:auto;display:flex;gap:7px;">
               <div class="dl-menu">
-                <button class="btn btn-ghost btn-sm">&#8681; Download</button>
+                <button class="btn btn-ghost btn-sm" aria-haspopup="true" aria-expanded="false" aria-label="Download resume">&#8681; Download</button>
                 <div class="dl-menu-content">
                   <button class="dl-opt" onclick="downloadDoc('resume','pdf')">&#128196; Download PDF</button>
                   <button class="dl-opt" onclick="downloadDoc('resume','docx')">&#128462; Download DOCX</button>
@@ -255,7 +255,7 @@
               <button class="ai-chip" onclick="setInstruction('resume','Rewrite for a senior/executive level. Emphasise leadership, strategy, P&L ownership, stakeholder management, and business impact.')">Senior level</button>
               <button class="ai-chip" onclick="setInstruction('resume','Add a Core Competencies / Key Skills section with 12-15 relevant industry keywords arranged in a clean grid.')">Add skills section</button>
             </div>
-            <textarea id="resume-ai-instruction" class="ai-instruction field" placeholder="e.g. Tailor for a senior PM role at a Sydney fintech, emphasise leadership and delivery..."></textarea>
+            <textarea id="resume-ai-instruction" class="ai-instruction field" placeholder="e.g. Tailor for a senior PM role at a Sydney fintech, emphasise leadership and delivery..." aria-label="AI writing instruction for resume"></textarea>
             <div style="display:flex;gap:8px;align-items:center;">
               <button class="btn btn-primary" id="resume-ai-btn" onclick="aiEditDocument('resume')">Rewrite Resume</button>
               <span id="resume-ai-status" style="font-size:12px;color:var(--muted);"></span>
@@ -278,7 +278,7 @@
         <div style="margin-bottom:14px;"><button class="btn btn-ghost btn-sm" onclick="closeDocEditor('cover')">Back to Cover Letters</button></div>
         <div class="doc-editor">
           <div class="editor-head">
-            <input id="cover-name-input" class="editor-title-input" placeholder="Cover letter name (e.g. Marketing Manager â€” SEEK)">
+            <input id=”cover-name-input” class=”editor-title-input” placeholder=”Cover letter name (e.g. Marketing Manager â€” SEEK)” aria-label=”Cover letter name”>
             <div style="display:flex;gap:7px;">
               <button class="btn btn-ghost btn-sm" onclick="triggerUpload('cover')">Upload File</button>
               <input type="file" id="cover-file-upload" accept=".txt,.md,.pdf,.docx,.doc" style="display:none;" onchange="handleDocUpload(event,'cover')">
@@ -287,7 +287,7 @@
           </div>
           <div id="cover-upload-bar" class="upload-bar">Extracting text from file, please wait...</div>
           <div id="cover-edit-mode">
-            <textarea id="cover-textarea" class="editor-textarea" placeholder="Write or paste your cover letter, or upload a PDF / Word file above..."></textarea>
+            <textarea id="cover-textarea" class="editor-textarea" placeholder="Write or paste your cover letter, or upload a PDF / Word file above..." aria-label="Cover letter content"></textarea>
           </div>
           <div id="cover-preview-mode" class="doc-preview-wrap" style="display:none;">
             <div style="display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid #eee;background:#fafafa;">
@@ -307,7 +307,7 @@
             </div>
             <div style="margin-left:auto;display:flex;gap:7px;">
               <div class="dl-menu">
-                <button class="btn btn-ghost btn-sm">&#8681; Download</button>
+                <button class="btn btn-ghost btn-sm" aria-haspopup="true" aria-expanded="false" aria-label="Download cover letter">&#8681; Download</button>
                 <div class="dl-menu-content">
                   <button class="dl-opt" onclick="downloadDoc('cover','pdf')">&#128196; Download PDF</button>
                   <button class="dl-opt" onclick="downloadDoc('cover','docx')">&#128462; Download DOCX</button>
@@ -329,7 +329,7 @@
               <button class="ai-chip" onclick="setInstruction('cover','Align with Australian workplace culture and values')">Aus culture</button>
               <button class="ai-chip" onclick="setInstruction('cover','Add a strong call to action at the end')">Call to action</button>
             </div>
-            <textarea id="cover-ai-instruction" class="ai-instruction field" placeholder="e.g. Adapt for a startup role, warm but professional tone..."></textarea>
+            <textarea id="cover-ai-instruction" class="ai-instruction field" placeholder="e.g. Adapt for a startup role, warm but professional tone..." aria-label="AI writing instruction for cover letter"></textarea>
             <div style="margin-bottom:10px;">
               <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:5px;">Optional: tailor to a specific saved job</label>
               <select id="cover-job-select" style="width:100%;padding:8px 12px;font-size:13px;cursor:pointer;"><option value="">No specific job</option></select>
@@ -364,9 +364,9 @@
       <div class="email-preview" id="email-preview" style="display:none;">
         <div class="email-head">
           <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Subject</div>
-          <input id="email-subject" class="email-subject-input" placeholder="Subject line...">
+          <input id="email-subject" class="email-subject-input" placeholder="Subject line..." aria-label="Email subject line">
         </div>
-        <textarea id="email-body" class="email-body" placeholder="Email body..."></textarea>
+        <textarea id="email-body" class="email-body" placeholder="Email body..." aria-label="Email body"></textarea>
         <div class="email-footer">
           <span style="font-size:12px;color:var(--muted);" id="email-wordcount"></span>
           <div style="margin-left:auto;display:flex;gap:8px;">
@@ -388,7 +388,7 @@
         <h3>Gemini API Key</h3>
         <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com</a></p>
         <div class="row">
-          <input id="new-key-input" type="password" placeholder="Paste new API key..." class="field" style="flex:1;">
+          <input id="new-key-input" type="password" placeholder="Paste new API key..." aria-label="New Gemini API key" class="field" style="flex:1;">
           <button class="btn btn-primary" onclick="updateKey()">Update</button>
         </div>
         <div id="key-update-msg" style="font-size:12px;margin-top:7px;display:none;"></div>
@@ -413,13 +413,13 @@
     </div>
   </main>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-    <button class="mob-tab active" id="mob-dashboard" onclick="mobNav('dashboard')"><span class="mob-icon">&#128203;</span>Jobs</button>
-    <button class="mob-tab" id="mob-add" onclick="mobNav('add')"><span class="mob-icon">&#10010;</span>Add</button>
-    <button class="mob-tab" id="mob-resumes" onclick="mobNav('resumes')"><span class="mob-icon">&#128196;</span>Resumes</button>
-    <button class="mob-tab" id="mob-covers" onclick="mobNav('covers')"><span class="mob-icon">&#9993;</span>Covers</button>
-    <button class="mob-tab" id="mob-more" onclick="toggleMobMore()"><span class="mob-icon">&#8943;</span>More</button>
+    <button class="mob-tab active" id="mob-dashboard" onclick="mobNav('dashboard')"><span class="mob-icon" aria-hidden="true">&#128203;</span>Jobs</button>
+    <button class="mob-tab" id="mob-add" onclick="mobNav('add')"><span class="mob-icon" aria-hidden="true">&#10010;</span>Add</button>
+    <button class="mob-tab" id="mob-resumes" onclick="mobNav('resumes')"><span class="mob-icon" aria-hidden="true">&#128196;</span>Resumes</button>
+    <button class="mob-tab" id="mob-covers" onclick="mobNav('covers')"><span class="mob-icon" aria-hidden="true">&#9993;</span>Covers</button>
+    <button class="mob-tab" id="mob-more" onclick="toggleMobMore()"><span class="mob-icon" aria-hidden="true">&#8943;</span>More</button>
   </nav>
-  <div class="mob-more-menu" id="mob-more-menu">
+  <div class="mob-more-menu" id="mob-more-menu" role="navigation" aria-label="More navigation options">
     <button class="mob-more-item" onclick="mobNav('analytics')">&#128200; Analytics</button>
     <button class="mob-more-item" onclick="mobNav('cv')">&#127919; CV Match</button>
     <button class="mob-more-item" onclick="mobNav('emails')">&#128232; Email Templates</button>
@@ -465,7 +465,7 @@
       <div class="section" id="m-aq-sec" style="display:none;"><div class="section-title">Application Questions</div><p style="font-size:11px;color:var(--muted);margin-bottom:8px;">Questions you may need to answer when applying on the job site.</p><div id="m-app-questions"></div></div>
       <div class="section" id="m-q-sec"><div class="section-title">Interview Prep Questions</div><p style="font-size:11px;color:var(--muted);margin-bottom:8px;">Practice these to prepare for your interview.</p><div id="m-questions"></div></div>
       <div class="section" id="m-facts-sec"><div class="section-title">Key Company Facts</div><div class="facts-grid" id="m-facts"></div></div>
-      <div class="section"><div class="section-title">My Notes</div><textarea id="m-notes" class="field" style="min-height:72px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Add your notes..."></textarea></div>
+      <div class="section"><div class="section-title">My Notes</div><textarea id="m-notes" class="field" style="min-height:72px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Add your notes..." aria-label="Job application notes"></textarea></div>
       <div class="section"><div class="section-title">Application Timeline</div><div id="m-timeline" class="timeline"></div></div>
       <div class="section"><div class="section-title">Quick-Apply Checklist</div><div id="m-checklist" class="checklist"></div></div>
       <div class="modal-actions" id="m-actions"></div>
@@ -489,7 +489,7 @@
         <select id="gen-resume-select" class="field" style="cursor:pointer;margin-bottom:8px;" onchange="fillResumeFromSaved()">
           <option value="">Paste manually below</option>
         </select>
-        <textarea id="gen-resume-text" class="field" style="min-height:110px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Paste your resume text, or select a saved resume above..."></textarea>
+        <textarea id="gen-resume-text" class="field" style="min-height:110px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Paste your resume text, or select a saved resume above..." aria-label="Resume text for cover letter generation"></textarea>
       </div>
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">Extra instructions (optional)</label>

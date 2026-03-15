@@ -1,0 +1,36 @@
+# Firebase Hosting — files excluded from deployment
+# These are dev/CI files and should never be uploaded to Firebase Hosting
+
+# CI/CD pipeline scripts
+sync.ps1
+
+# Local dev server
+server.js
+
+# Node dependencies (if ever added)
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# Claude Code workspace
+.claude/
+
+# Dev/editor config
+*.env
+.env.*
+*.local
+
+# Docs / notes (not needed in hosting)
+*.md
+!README.md
+
+# Test files
+*.test.js
+*.spec.js
+tests/
+
+# OS files
+.DS_Store
+Thumbs.db

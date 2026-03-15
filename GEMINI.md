@@ -17,6 +17,14 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
 - [x] Knowledge Injection — dependency order, module map, sync pipeline, boot logic written to CLAUDE.md
 - [x] Create .firebaseignore — protects sync.ps1, server.js, dev docs from Firebase Hosting deployment
 - [x] A11y/TTS window binding code audit — all 40+ onclick/oninput/onchange handlers verified ✅
+- [x] A11y Audit index.html — 18 issues fixed (2026-03-15, sweet-lamarr):
+      duplicate role="main", 15 missing aria-labels, emoji spans aria-hidden, download dropdown aria attrs, mob-more-menu role, setup link rel/aria
+- [x] PRD Empowerment Barrier Audit — 4 critical fixes (2026-03-15, sweet-lamarr):
+      job-card/k-card keyboard access (tabindex+role+onkeydown), showView focus management, modal focus to #m-title, delete btn aria-label
+- [x] Bug Fix: constants.js GEMINI_MODELS — removed gemini-2.5-flash (404), added gemini-1.5-pro (2026-03-15, sweet-lamarr)
+- [x] Bug Fix: tts.js ttsStop() hardened — _utterance=null reset added; prescribed toggle logic was already present (2026-03-15, sweet-lamarr)
+- [x] Bug Fix: app.js — added clearErr/showErr/setStatus import from ui/utils.js + window binding (2026-03-15, sweet-lamarr)
+- [x] Bug Fix: ai-editor.js — generateCoverLetter, generateResume, autoTailorResume reordered to showView→editDocument; removed manual style.display overrides (2026-03-15, sweet-lamarr)
 
 ### 🔲 Awaiting User Action
 - [ ] **Checklist 2 — UI Manual Testing** (user must verify in Chrome at http://localhost:3000)
@@ -33,8 +41,11 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
   The job modal DOES trap focus (modal.js). The toolbar panel should match.
   Flag for Clipper sprint or next polish pass — not a blocker for UI Checklist 2.
 
-## Real-Time Sync Rule (Active — 2026-03-12)
-Both Claude and Gemini update CLAUDE.md + GEMINI.md immediately after every fix or discovery.
+## Real-Time Sync Rule (Active — 2026-03-12, expanded 2026-03-15)
+After EVERY change, fix, or discovery — update ALL THREE files immediately:
+1. CLAUDE.md (worktree) — technical log
+2. GEMINI.md (worktree) — task status
+3. MEMORY.md (C:\Users\local_f9\.claude\projects\C--Users-local-f9-WorkAble\memory\MEMORY.md) — persistent cross-session facts
 Do NOT batch updates to end of session.
 
 ## Persistence Rule

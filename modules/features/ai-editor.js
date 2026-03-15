@@ -112,10 +112,8 @@ export async function generateCoverLetter() {
     const newDoc  = { id: Date.now(), name: `${job.title} \u2014 ${job.company}`, content, wordCount: content.split(/\s+/).filter(Boolean).length, created: now, updated: now };
     state.covers.unshift(newDoc);
     saveCovers();
-    editDocument("cover", newDoc.id);
     window.showView("covers");
-    document.getElementById("cover-list-view").style.display   = "none";
-    document.getElementById("cover-editor-view").style.display = "";
+    editDocument("cover", newDoc.id);
     toast("Cover letter generated and saved!", "ok");
     setTimeout(() => setEditorMode("cover", "preview"), 100);
   } catch (e) {
@@ -175,10 +173,8 @@ export async function generateResume() {
     const newDoc    = { id: Date.now(), name: resumeName, content, wordCount: content.split(/\s+/).filter(Boolean).length, created: now, updated: now };
     state.resumes.unshift(newDoc);
     saveResumes();
-    editDocument("resume", newDoc.id);
     window.showView("resumes");
-    document.getElementById("resume-list-view").style.display   = "none";
-    document.getElementById("resume-editor-view").style.display = "";
+    editDocument("resume", newDoc.id);
     toast("Resume generated and saved!", "ok");
     setTimeout(() => setEditorMode("resume", "preview"), 100);
   } catch (e) {
@@ -211,10 +207,8 @@ export async function autoTailorResume(jobId) {
     saveResumes();
     toast("Tailored resume created!", "ok");
     window.closeModal();
-    editDocument("resume", newDoc.id);
     window.showView("resumes");
-    document.getElementById("resume-list-view").style.display   = "none";
-    document.getElementById("resume-editor-view").style.display = "";
+    editDocument("resume", newDoc.id);
     setTimeout(() => setEditorMode("resume", "preview"), 100);
   } catch (e) { toast("Tailoring failed: " + e.message, "err"); }
 }

@@ -11,10 +11,10 @@ export const STATUS = {
 export const STATUS_ORDER = ["saved", "applied", "interview", "offer", "rejected"];
 
 export const GEMINI_MODELS = [
-  "gemini-2.5-flash",
   "gemini-2.0-flash",
   "gemini-2.0-flash-lite",
   "gemini-1.5-flash",
+  "gemini-1.5-pro",
 ];
 
 export const CHECKLIST_ITEMS = [
