@@ -23,6 +23,8 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
       job-card/k-card keyboard access (tabindex+role+onkeydown), showView focus management, modal focus to #m-title, delete btn aria-label
 - [x] Bug Fix: constants.js GEMINI_MODELS — removed gemini-2.5-flash (404), added gemini-1.5-pro (2026-03-15, sweet-lamarr)
 - [x] Bug Fix: tts.js ttsStop() hardened — _utterance=null reset added; prescribed toggle logic was already present (2026-03-15, sweet-lamarr)
+- [x] Bug Fix: app.js — added clearErr/showErr/setStatus import from ui/utils.js + window binding (2026-03-15, sweet-lamarr)
+- [x] Bug Fix: ai-editor.js — generateCoverLetter, generateResume, autoTailorResume reordered to showView→editDocument; removed manual style.display overrides (2026-03-15, sweet-lamarr)
 
 ### 🔲 Awaiting User Action
 - [ ] **Checklist 2 — UI Manual Testing** (user must verify in Chrome at http://localhost:3000)

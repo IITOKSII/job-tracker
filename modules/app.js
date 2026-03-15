@@ -106,6 +106,9 @@ import {
 // Storage helpers (for window exposure)
 import { saveJobs, saveResumes, saveCovers } from "./services/db.service.js";
 
+// UI utils (for window exposure — used as window.clearErr/showErr/setStatus in features)
+import { clearErr, showErr, setStatus } from "./ui/utils.js";
+
 // ── Expose on window (HTML onclick compatibility) ────────────────────────────
 Object.assign(window, {
   // Nav
@@ -166,6 +169,9 @@ Object.assign(window, {
 
   // DB helpers (used by modal clearAllData etc.)
   saveJobs, saveResumes, saveCovers,
+
+  // UI utils (called as window.* from features to avoid circular imports)
+  clearErr, showErr, setStatus,
 });
 
 // ── Boot ─────────────────────────────────────────────────────────────────────

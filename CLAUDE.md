@@ -191,3 +191,13 @@ Three critical navigation friction barriers identified and fixed:
 - `ttsStop()` hardened: added `_utterance = null` reset so `ttsCycleSpeed()` cannot
   operate on a stale/cancelled utterance after stop
 - `ttsBtnHTML()` already had `event.stopPropagation()` — no change needed
+
+**Bug 3 — app.js missing clearErr/showErr/setStatus window bindings (FIXED)**
+- `ui/utils.js` was never imported in app.js — added import for `clearErr, showErr, setStatus`
+- Added all three to `Object.assign(window, {...})` so ai-editor.js `window.clearErr/showErr/setStatus` calls resolve
+
+**Bug 4 — ai-editor.js UI state crash after generation (FIXED)**
+- `generateCoverLetter`, `generateResume`, `autoTailorResume` all called `editDocument()` before
+  `showView()`, then forced `.style.display` manually — conflicting with `editDocument` internals
+- Fix: `window.showView(view)` first, then `editDocument(type, id)`, manual display lines removed
+- All three functions corrected identically
