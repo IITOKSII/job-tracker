@@ -14,6 +14,7 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
 ### ✅ Done (confirmed)
 - [x] **Fix #4 — ReferenceError app.js:** Added missing `import { clearErr, showErr, setStatus }` from `./ui/utils.js` + exposed on `window`. Loading screen hang resolved. (2026-03-15, optimistic-babbage)
 - [x] **Fix: Cover Letter View button broken** — index.html line 281 had Unicode smart quotes as attribute delimiters (from a11y commit), making getElementById('cover-name-input') return null. Fixed via sed. Verified in Chrome. (2026-03-15, optimistic-babbage)
+- [x] **Fix: TTS speaker icons in PDF export** — preview-engine.js downloadDoc() strips .tts-btn buttons from off-screen div before html2canvas capture. (2026-03-15, optimistic-babbage)
 - [x] Full Backend Audit — all checks passed
 - [x] Fix window.clearErr/showErr/setStatus missing from app.js (PR #9)
 - [x] Knowledge Injection — dependency order, module map, sync pipeline, boot logic written to CLAUDE.md

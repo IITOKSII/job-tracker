@@ -241,6 +241,7 @@ export async function downloadDoc(type, format) {
     wrap.style.cssText = "position:fixed;top:-9999px;left:0;width:794px;background:#fff;padding:52px 56px;font-family:DM Sans,sans-serif;";
     wrap.className = "doc-preview tpl-" + tpl;
     wrap.innerHTML = previewEl.innerHTML;
+    wrap.querySelectorAll(".tts-btn").forEach(btn => btn.remove());
     document.body.appendChild(wrap);
     try {
       const canvas = await html2canvas(wrap, { scale: 2, useCORS: true, backgroundColor: "#ffffff", width: 794 });
