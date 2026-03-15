@@ -95,7 +95,11 @@ export function openModal(id) {
   renderChecklist(j);
   document.getElementById("modal").style.display = "flex";
   document.addEventListener("keydown", _modalKeyHandler);
-  setTimeout(() => { const f = document.querySelector("#modal .modal button, #modal .modal input"); if (f) f.focus(); }, 100);
+  // Focus job title so screen readers announce dialog with full job context, not "Close"
+  setTimeout(() => {
+    const t = document.getElementById("m-title");
+    if (t) { t.setAttribute("tabindex", "-1"); t.focus(); }
+  }, 100);
 }
 
 export function closeModal() {

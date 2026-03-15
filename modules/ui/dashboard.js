@@ -81,7 +81,9 @@ export function renderGrid() {
   }
 
   g.innerHTML = f.map(j => `
-    <div class="job-card" onclick="openModal(${j.id})">
+    <div class="job-card" onclick="openModal(${j.id})" tabindex="0" role="button"
+      aria-label="${esc(j.company)} – ${esc(j.title)}, ${STATUS[j.status].label}"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal(${j.id})}">
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
         <div class="card-company">${esc(j.company)}</div>
         <span class="badge badge-${j.status}">${STATUS[j.status].label}</span>
@@ -97,7 +99,8 @@ export function renderGrid() {
         <div style="display:flex;align-items:center;gap:5px;">
           ${j.matchScore ? `<span class="match-pill" style="background:${scoreColor(j.matchScore)}22;color:${scoreColor(j.matchScore)}">${j.matchScore}% match</span>` : ""}
           <button onclick="quickDelete(${j.id},event)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:2px 5px;border-radius:5px;"
-            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'" title="Delete">\u{1F5D1}</button>
+            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"
+            aria-label="Delete ${esc(j.company)} – ${esc(j.title)}">\u{1F5D1}</button>
         </div>
       </div>
     </div>`).join("");
@@ -120,7 +123,9 @@ export function renderKanban() {
       </div>
       <div class="k-cards">
         ${col.length
-          ? col.map(j => `<div class="k-card" onclick="openModal(${j.id})">
+          ? col.map(j => `<div class="k-card" onclick="openModal(${j.id})" tabindex="0" role="button"
+              aria-label="${esc(j.company)} – ${esc(j.title)}"
+              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal(${j.id})}">
               <div class="k-company">${esc(j.company)}</div>
               <div class="k-title-text">${esc(j.title)}</div>
               <div class="k-footer">

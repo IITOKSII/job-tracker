@@ -25,6 +25,10 @@ export function showView(v) {
   if (v === "resumes")   window.renderResumeList();
   if (v === "covers")    window.renderCoverList();
   if (v === "emails")    window.renderEmailTemplates();
+
+  // Move focus to new view heading — screen reader users hear the page title on nav
+  const heading = document.querySelector("#view-" + v + " .page-title");
+  if (heading) { heading.setAttribute("tabindex", "-1"); heading.focus(); }
 }
 
 export function mobNav(v) { showView(v); }
