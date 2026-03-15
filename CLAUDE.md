@@ -132,6 +132,11 @@ After EVERY significant change, discovery, or fix:
 2. Update GEMINI.md — task status (mark done/in-progress, add new tasks)
 Do NOT wait until end of session. Write it immediately.
 
+## Fix Log (2026-03-15)
+- **app.js:** Added `import { clearErr, showErr, setStatus } from "./ui/utils.js"` (was missing — caused ReferenceError on boot)
+- **app.js:** Added `clearErr, showErr, setStatus` to `Object.assign(window, {...})` block
+- **Effect:** Resolves loading screen hang caused by ReferenceError before `Object.assign` completed
+
 ## Confirmation Gate — Active
 DO NOT begin WorkAble Clipper extension build until:
 1. Checklist 2 (UI) is manually verified by the user in Chrome

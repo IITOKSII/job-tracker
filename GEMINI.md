@@ -12,6 +12,7 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
 ## Master To-Do List
 
 ### ✅ Done (confirmed)
+- [x] **Fix #4 — ReferenceError app.js:** Added missing `import { clearErr, showErr, setStatus }` from `./ui/utils.js` + exposed on `window`. Loading screen hang resolved. (2026-03-15, optimistic-babbage)
 - [x] Full Backend Audit — all checks passed
 - [x] Fix window.clearErr/showErr/setStatus missing from app.js (PR #9)
 - [x] Knowledge Injection — dependency order, module map, sync pipeline, boot logic written to CLAUDE.md
