@@ -136,6 +136,7 @@ Do NOT wait until end of session. Write it immediately.
 - **app.js:** Added `import { clearErr, showErr, setStatus } from "./ui/utils.js"` (was missing — caused ReferenceError on boot)
 - **app.js:** Added `clearErr, showErr, setStatus` to `Object.assign(window, {...})` block
 - **Effect:** Resolves loading screen hang caused by ReferenceError before `Object.assign` completed
+- **index.html line 281:** A11y commit (c8f2545) used Unicode smart quotes (U+201D) as HTML attribute delimiters on cover-name-input, corrupting id/class/placeholder/aria-label. Fixed with sed replacing smart quotes with ASCII straight quotes. Root cause of "View button does not work for cover letters" bug.
 
 ## Confirmation Gate — Active
 DO NOT begin WorkAble Clipper extension build until:
