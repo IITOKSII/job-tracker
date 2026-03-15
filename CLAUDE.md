@@ -127,10 +127,13 @@ Current window binding groups (app.js lines 113–172):
 - UI utils: clearErr, showErr, setStatus
 
 ## Real-Time Sync Rule (Active — enforced from 2026-03-12)
-After EVERY significant change, discovery, or fix:
-1. Update CLAUDE.md — technical log (what changed, what file, why)
-2. Update GEMINI.md — task status (mark done/in-progress, add new tasks)
-Do NOT wait until end of session. Write it immediately.
+After EVERY change, fix, or discovery — no matter how small:
+1. Update CLAUDE.md (worktree) — technical log: what changed, which file, why
+2. Update GEMINI.md (worktree) — task status: mark done/in-progress, add new tasks
+3. Update MEMORY.md (C:\Users\local_f9\.claude\projects\C--Users-local-f9-WorkAble\memory\MEMORY.md)
+   — correct any stale facts, add new known-issues or fixes, update worktree/branch info
+
+ALL THREE. Every time. Do NOT batch or defer to end of session.
 
 ## Confirmation Gate — Active
 DO NOT begin WorkAble Clipper extension build until:

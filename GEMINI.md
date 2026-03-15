@@ -41,8 +41,11 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
   The job modal DOES trap focus (modal.js). The toolbar panel should match.
   Flag for Clipper sprint or next polish pass — not a blocker for UI Checklist 2.
 
-## Real-Time Sync Rule (Active — 2026-03-12)
-Both Claude and Gemini update CLAUDE.md + GEMINI.md immediately after every fix or discovery.
+## Real-Time Sync Rule (Active — 2026-03-12, expanded 2026-03-15)
+After EVERY change, fix, or discovery — update ALL THREE files immediately:
+1. CLAUDE.md (worktree) — technical log
+2. GEMINI.md (worktree) — task status
+3. MEMORY.md (C:\Users\local_f9\.claude\projects\C--Users-local-f9-WorkAble\memory\MEMORY.md) — persistent cross-session facts
 Do NOT batch updates to end of session.
 
 ## Persistence Rule
