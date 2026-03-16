@@ -26,9 +26,10 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
 - [x] Bug Fix: app.js — added clearErr/showErr/setStatus import from ui/utils.js + window binding (2026-03-15, sweet-lamarr)
 - [x] Bug Fix: ai-editor.js — generateCoverLetter, generateResume, autoTailorResume reordered to showView→editDocument; removed manual style.display overrides (2026-03-15, sweet-lamarr)
 
-- [x] Bug Fix: preview-engine.js — TTS speaker buttons were baked into PDF by html2canvas;
-      blank page 2 caused by inflated content height. Fix: strip .tts-btn from render clone
-      before html2canvas (2026-03-16, quizzical-lamport)
+- [x] Bug Fix: preview-engine.js — TTS .tts-btn removal was already in main from PR #10
+- [x] Bug Fix: preview-engine.js — blank second PDF page: bottom padding inflated canvas height
+      over A4; loop added near-blank trailing page. Fix: skip page if remaining < 5mm.
+      (2026-03-16, quizzical-lamport, applied to both main and worktree)
 
 ### 🔲 Awaiting User Action
 - [ ] **Checklist 2 — UI Manual Testing** (user must verify in Chrome at http://localhost:3000)

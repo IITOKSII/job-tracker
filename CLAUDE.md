@@ -199,12 +199,14 @@ Three critical navigation friction barriers identified and fixed:
 - `ui/utils.js` was never imported in app.js — added import for `clearErr, showErr, setStatus`
 - Added all three to `Object.assign(window, {...})` so ai-editor.js `window.clearErr/showErr/setStatus` calls resolve
 
-**Bug 5 — preview-engine.js TTS buttons in PDF output (FIXED, 2026-03-16, quizzical-lamport)**
-- `downloadDoc()` copied `previewEl.innerHTML` (including `.tts-btn` elements) into the hidden
-  `wrap` div before `html2canvas`, so speaker icons were baked into the PDF image.
-  The inflated height also caused a blank second page.
-- Fix: `wrap.querySelectorAll(".tts-btn").forEach(b => b.remove())` after `wrap.innerHTML` assignment.
-  Buttons stripped from render clone only — live preview is unaffected.
+**Bug 5 — preview-engine.js TTS buttons in PDF (already fixed in main/PR #10)**
+- `.tts-btn` removal was already in main — not the root cause of the blank page.
+
+**Bug 6 — preview-engine.js blank second PDF page (FIXED, 2026-03-16, quizzical-lamport)**
+- `wrap` has `padding:52px 56px` — 52px bottom padding inflates canvas height just over A4 (297mm).
+- `while (y < imgH)` loop adds a page for any overflow, even 1–2mm of bottom padding.
+- Fix: `if (imgH - y < 5) break;` before `pdf.addPage()` — skips trailing page when < 5mm remains.
+  Genuine multi-page documents are unaffected. Applied to both main and worktree.
 
 **Bug 4 — ai-editor.js UI state crash after generation (FIXED)**
 - `generateCoverLetter`, `generateResume`, `autoTailorResume` all called `editDocument()` before

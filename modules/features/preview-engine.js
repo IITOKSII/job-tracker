@@ -254,7 +254,10 @@ export async function downloadDoc(type, format) {
       const imgH = (canvas.height * imgW) / canvas.width;
       let y = 0;
       while (y < imgH) {
-        if (y > 0) pdf.addPage();
+        if (y > 0) {
+          if (imgH - y < 5) break;
+          pdf.addPage();
+        }
         pdf.addImage(imgData, "JPEG", 0, -y, imgW, imgH);
         y += pdfH;
       }
