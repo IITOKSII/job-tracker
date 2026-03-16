@@ -108,6 +108,8 @@ export async function loadAllData() {
         state.resumeTemplate = rt || "modern";
         state.coverTemplate  = ct || "modern";
         fb.workingModel      = wm || "";
+        // Mirror key to chrome.storage.local so Clipper can access it
+        if (k) { try { if (window.storage) await window.storage.set("gemini_key", k); } catch (_e) {} }
         document.getElementById("loading-screen").style.display = "none";
         if (fb.apiKey) {
           document.getElementById("setup-screen").style.display = "none";
