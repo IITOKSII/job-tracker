@@ -31,6 +31,8 @@ export async function storeSet(key, value) {
       await fb.db.collection("users").doc(fb.user.uid)
         .collection("settings").doc(key)
         .set({ value, updated: new Date().toISOString() });
+      // Mirror to chrome.storage.local so the Clipper extension can read it
+      try { if (window.storage) await window.storage.set(key, value); } catch (e) {}
       return;
     } catch (e) {}
   }

@@ -27,18 +27,18 @@ Last updated: 2026-03-16
 - [x] Bug Fix: preview-engine.js -- blank second PDF page fix (2026-03-16, quizzical-lamport)
 - [x] Checklist 2 -- UI Manual Testing (user confirmed 2026-03-16)
 
-### Done -- WorkAble Clipper (2026-03-16, trusting-bhaskara)
-- [x] Chrome Extension MV3 built -- all files in /extension/
-  - manifest.json, content.js, background.js, bridge.js, popup.html, popup.js, styles/popup.css
-  - Scrapers: LinkedIn, Indeed, Seek, Jora, Glassdoor, Workable, generic fallback
-  - bridge.js wires chrome.storage.local -> window.storage so WorkAble reads clipped jobs transparently
-  - Full A11y: ARIA live regions, focus management, WCAG AA contrast
-  - Icons: icon.svg source in extension/icons/ (run npm install sharp && node generate-icons.js for PNGs)
+### Done -- WorkAble Clipper fixes (2026-03-16, upbeat-chatterjee, PR #17 + #18)
+- [x] Bug Fix: bridge.js -- CRITICAL: was calling chrome.storage.local in MAIN world (chrome undefined there)
+  - Fix: postMessage relay. bridge.js (MAIN) sends messages; bridge-relay.js (ISOLATED, new) handles chrome.storage
+  - manifest.json updated to load bridge-relay.js at document_start (ISOLATED world)
+- [x] popup.js -- Gemini analysis before save (requirements, interview_questions, company_facts populated)
+- [x] auth.service.js -- Firebase users now get clipper jobs merged (window.storage.get direct call post-Firestore load)
+- [x] dashboard.js + modal.js -- "NEW" badge for unseen clipper jobs; cleared on modal open
 
-### Next
-- [ ] Load extension: chrome://extensions -> Enable Developer Mode -> Load unpacked -> select /extension/
-- [ ] Test on a real LinkedIn/Seek job page, confirm job appears in WorkAble tracker
-- [ ] Add icon PNGs (run generate-icons.js with sharp)
+### Awaiting User Verification
+- [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → WorkAble flow
+- [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
+- [ ] Add icon PNGs (run: npm install sharp && node extension/generate-icons.js)
 
 ## One Noted A11y Gap (non-blocking, for polish sprint)
 - `a11y-panel` has `role="dialog"` but toolbar.js does not implement focus trapping.

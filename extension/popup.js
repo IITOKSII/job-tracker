@@ -52,11 +52,20 @@ function populatePreview(data) {
 const GEMINI_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-1.5-pro"];
 
 async function getApiKey() {
-  return new Promise(resolve => {
+  // 1. Try chrome.storage.local first
+  const stored = await new Promise(resolve => {
     chrome.storage.local.get("gemini_key", data => {
       resolve(data.gemini_key?.value || null);
     });
   });
+  if (stored) return stored;
+
+  // 2. Fall back: read from the active tab's localStorage (where WorkAble stores it)
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const resp = await chrome.tabs.sendMessage(tab.id, { type: "GET_GEMINI_KEY" });
+    return resp?.key || null;
+  } catch (_e) { return null; }
 }
 
 function parseGeminiJSON(text) {
