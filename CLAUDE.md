@@ -1,6 +1,6 @@
 # Engineer Instructions
 - Read this at session start. GEMINI.md is for the Gemini AI assistant (not Claude).
-- Current Sprint: UI Accessibility and SaaS Commercial Readiness.
+- Current Sprint: WorkAble Clipper (Chrome Extension MV3).
 
 ## Quick Start
 ```

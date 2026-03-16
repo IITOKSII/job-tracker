@@ -27,10 +27,18 @@ Last updated: 2026-03-16
 - [x] Bug Fix: preview-engine.js -- blank second PDF page fix (2026-03-16, quizzical-lamport)
 - [x] Checklist 2 -- UI Manual Testing (user confirmed 2026-03-16)
 
-### Next -- Ready to Build
-- [ ] **WorkAble Clipper** -- Chrome Extension MV3 build
-  Structure: /extension/ -> manifest.json (MV3), popup.html/js, content.js, background.js, styles/popup.css, icons/
-  A11y lens: every popup element must pass contrast/keyboard/landmark checks
+### Done -- WorkAble Clipper (2026-03-16, trusting-bhaskara)
+- [x] Chrome Extension MV3 built -- all files in /extension/
+  - manifest.json, content.js, background.js, bridge.js, popup.html, popup.js, styles/popup.css
+  - Scrapers: LinkedIn, Indeed, Seek, Jora, Glassdoor, Workable, generic fallback
+  - bridge.js wires chrome.storage.local -> window.storage so WorkAble reads clipped jobs transparently
+  - Full A11y: ARIA live regions, focus management, WCAG AA contrast
+  - Icons: icon.svg source in extension/icons/ (run npm install sharp && node generate-icons.js for PNGs)
+
+### Next
+- [ ] Load extension: chrome://extensions -> Enable Developer Mode -> Load unpacked -> select /extension/
+- [ ] Test on a real LinkedIn/Seek job page, confirm job appears in WorkAble tracker
+- [ ] Add icon PNGs (run generate-icons.js with sharp)
 
 ## One Noted A11y Gap (non-blocking, for polish sprint)
 - `a11y-panel` has `role="dialog"` but toolbar.js does not implement focus trapping.
