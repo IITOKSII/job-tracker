@@ -241,6 +241,7 @@ export async function downloadDoc(type, format) {
     wrap.style.cssText = "position:fixed;top:-9999px;left:0;width:794px;background:#fff;padding:52px 56px;font-family:DM Sans,sans-serif;";
     wrap.className = "doc-preview tpl-" + tpl;
     wrap.innerHTML = previewEl.innerHTML;
+    wrap.querySelectorAll(".tts-btn").forEach(b => b.remove());
     document.body.appendChild(wrap);
     try {
       const canvas = await html2canvas(wrap, { scale: 2, useCORS: true, backgroundColor: "#ffffff", width: 794 });
@@ -253,7 +254,10 @@ export async function downloadDoc(type, format) {
       const imgH = (canvas.height * imgW) / canvas.width;
       let y = 0;
       while (y < imgH) {
-        if (y > 0) pdf.addPage();
+        if (y > 0) {
+          if (imgH - y < 5) break;
+          pdf.addPage();
+        }
         pdf.addImage(imgData, "JPEG", 0, -y, imgW, imgH);
         y += pdfH;
       }
