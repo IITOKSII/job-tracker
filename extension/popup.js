@@ -47,25 +47,79 @@ function populatePreview(data) {
   document.getElementById("job-salary").textContent  = truncate(data.salary,  40) || "N/A";
 }
 
+// ── Gemini analysis ───────────────────────────────────────────────────────────
+
+const GEMINI_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-1.5-pro"];
+
+async function getApiKey() {
+  return new Promise(resolve => {
+    chrome.storage.local.get("gemini_key", data => {
+      resolve(data.gemini_key?.value || null);
+    });
+  });
+}
+
+function parseGeminiJSON(text) {
+  const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+  try { return JSON.parse(cleaned); } catch (_e) {}
+  const start = cleaned.indexOf("{");
+  const end   = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) return null;
+  try { return JSON.parse(cleaned.substring(start, end + 1)); } catch (_e) { return null; }
+}
+
+async function analyseWithGemini(description, key) {
+  const sanitised = description.replace(/\r\n/g, "\n").substring(0, 8000);
+  const systemMsg = "You are a job posting analyser. You MUST respond with ONLY a raw JSON object. No markdown, no backticks, no commentary, no text before or after the JSON. Just the JSON object.";
+  const prompt = `Extract structured information from this job advertisement text. If any field is not mentioned in the text, use "N/A" for strings or empty arrays for lists.\n\nIMPORTANT: Separate the job ad's own screening/application questions from interview preparation questions you generate to help the applicant practise.\n\nJOB AD TEXT:\n"""\n${sanitised}\n"""\n\nRespond with ONLY this JSON structure (no other text):\n{"title":"job title","company":"company name","location":"city or region","salary":"salary if mentioned","description":"2-3 sentence summary of the role","requirements":["requirement 1","requirement 2","requirement 3"],"application_questions":[{"question":"screening question from the job ad itself"}],"interview_questions":[{"type":"Behavioral","question":"AI-generated practice question","answer":"A strong 3-4 sentence suggested answer using STAR method where appropriate"},{"type":"Technical","question":"...","answer":"..."},{"type":"Role-Specific","question":"...","answer":"..."},{"type":"Situational","question":"...","answer":"..."},{"type":"Culture Fit","question":"...","answer":"..."}],"company_facts":[{"label":"Industry","value":"..."},{"label":"Size","value":"..."},{"label":"Known For","value":"..."},{"label":"Culture","value":"..."}]}`;
+
+  const body = JSON.stringify({
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.4 },
+    systemInstruction: { parts: [{ text: systemMsg }] },
+  });
+
+  for (const model of GEMINI_MODELS) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body }
+      );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        const msg = err?.error?.message || "";
+        if (msg.includes("not found") || msg.includes("not supported") || res.status === 404) continue;
+        break; // non-retryable error
+      }
+      const data = await res.json();
+      const txt = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!txt) break;
+      return parseGeminiJSON(txt);
+    } catch (_e) { continue; }
+  }
+  return null;
+}
+
 // ── Job builder ───────────────────────────────────────────────────────────────
 
-function buildJob(scrapedData, status) {
+function buildJob(scrapedData, analysed, status) {
   return {
     id:                   Date.now(),
     url:                  scrapedData.url          || "",
-    title:                scrapedData.title        || "Unknown Title",
-    company:              scrapedData.company      || "Unknown Company",
-    location:             scrapedData.location     || "N/A",
-    salary:               scrapedData.salary       || "N/A",
-    description:          scrapedData.description  || "",
-    requirements:         [],
-    application_questions: [],
-    interview_questions:  [],
-    company_facts:        [],
+    title:                analysed?.title    || scrapedData.title    || "Unknown Title",
+    company:              analysed?.company  || scrapedData.company  || "Unknown Company",
+    location:             analysed?.location || scrapedData.location || "N/A",
+    salary:               analysed?.salary   || scrapedData.salary   || "N/A",
+    description:          analysed?.description || scrapedData.description || "",
+    requirements:         analysed?.requirements         || [],
+    application_questions: analysed?.application_questions || [],
+    interview_questions:  analysed?.interview_questions  || [],
+    company_facts:        analysed?.company_facts        || [],
     status,
     notes:                "",
     date:                 new Date().toISOString(),
     source:               "clipper",
+    seen:                 false,
   };
 }
 
@@ -76,10 +130,19 @@ async function handleClip() {
 
   const btn = document.getElementById("clip-btn");
   btn.disabled = true;
-  btn.textContent = "Saving…";
 
   const status = document.getElementById("job-status-select").value;
-  const job = buildJob(currentJob, status);
+
+  // Attempt Gemini analysis if API key is available
+  let analysed = null;
+  if (currentJob.description) {
+    btn.textContent = "Analysing…";
+    const key = await getApiKey();
+    if (key) analysed = await analyseWithGemini(currentJob.description, key);
+  }
+
+  btn.textContent = "Saving…";
+  const job = buildJob(currentJob, analysed, status);
 
   try {
     const resp = await chrome.runtime.sendMessage({ type: "SAVE_JOB", job });

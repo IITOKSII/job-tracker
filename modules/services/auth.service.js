@@ -86,6 +86,20 @@ export async function loadAllData() {
         if (fj) state.jobs    = fj;
         if (fr) state.resumes = fr;
         if (fc) state.covers  = fc;
+        // Merge any clipper jobs stored locally by the extension (not yet in Firestore)
+        try {
+          if (window.storage) {
+            const r = await window.storage.get("jt_jobs");
+            if (r?.value) {
+              const clipped = JSON.parse(r.value);
+              if (clipped.length) {
+                const ids = new Set(state.jobs.map(j => j.id));
+                const newOnes = clipped.filter(j => !ids.has(j.id));
+                if (newOnes.length) state.jobs = [...newOnes, ...state.jobs];
+              }
+            }
+          }
+        } catch (_e) {}
         const [k, rt, ct, wm] = await Promise.all([
           storeGet("gemini_key"), storeGet("jt_resume_tpl"),
           storeGet("jt_cover_tpl"), storeGet("jt_gemini_model"),
