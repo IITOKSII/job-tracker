@@ -86,7 +86,10 @@ export function renderGrid() {
       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal(${j.id})}">
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
         <div class="card-company">${esc(j.company)}</div>
-        <span class="badge badge-${j.status}">${STATUS[j.status].label}</span>
+        <div style="display:flex;gap:5px;align-items:center;">
+          ${j.source === "clipper" && !j.seen ? '<span class="badge" style="background:rgba(255,165,0,0.15);color:#e07b00;font-size:9px;padding:2px 7px;">NEW</span>' : ""}
+          <span class="badge badge-${j.status}">${STATUS[j.status].label}</span>
+        </div>
       </div>
       <div class="card-title">${esc(j.title)}</div>
       <div class="card-meta">
@@ -126,7 +129,10 @@ export function renderKanban() {
           ? col.map(j => `<div class="k-card" onclick="openModal(${j.id})" tabindex="0" role="button"
               aria-label="${esc(j.company)} – ${esc(j.title)}"
               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal(${j.id})}">
-              <div class="k-company">${esc(j.company)}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="k-company">${esc(j.company)}</div>
+                ${j.source === "clipper" && !j.seen ? '<span class="badge" style="background:rgba(255,165,0,0.15);color:#e07b00;font-size:9px;padding:2px 7px;">NEW</span>' : ""}
+              </div>
               <div class="k-title-text">${esc(j.title)}</div>
               <div class="k-footer">
                 <span>${new Date(j.date).toLocaleDateString("en-AU", {day:"numeric",month:"short"})}</span>

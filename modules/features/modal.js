@@ -11,6 +11,8 @@ import { ttsBtnHTML } from "../a11y/tts.js";
 export function openModal(id) {
   const j = state.jobs.find(x => x.id === id); if (!j) return;
   state.currentJobId = id;
+  // Clear "New" badge on first open
+  if (j.source === "clipper" && !j.seen) { j.seen = true; saveJobs(); }
 
   document.getElementById("m-company").textContent = j.company;
   document.getElementById("m-title").textContent   = j.title;
