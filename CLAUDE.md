@@ -22,12 +22,6 @@ assets → state → ui/utils → config → services → features → a11y → 
 - `ui/nav.js` calls all render functions via `window.*` — no imports from features
 - When a new module needs to call something from a higher layer → use `window.*`, not import
 
-## Window Bindings (app.js Object.assign)
-Every function called from HTML `onclick=""` must be in the `Object.assign(window, {...})` block.
-Currently exposed: nav, dashboard, jobs, documents, preview, modal, analytics, email, ai-editor,
-auth, tts, toolbar, db helpers (saveJobs/saveResumes/saveCovers), ui utils (clearErr/showErr/setStatus).
-If you add a new onclick in index.html → add it to app.js window block immediately.
-
 ## Modular File Hierarchy (complete map)
 ```
 modules/
@@ -126,81 +120,6 @@ Current window binding groups (app.js lines 113–172):
 - DB helpers: saveJobs, saveResumes, saveCovers
 - UI utils: clearErr, showErr, setStatus
 
-## Real-Time Sync Rule (Active — enforced from 2026-03-12)
-After EVERY change, fix, or discovery — no matter how small:
-1. Update CLAUDE.md (worktree) — technical log: what changed, which file, why
-2. Update GEMINI.md (worktree) — task status: mark done/in-progress, add new tasks
-3. Update MEMORY.md (C:\Users\local_f9\.claude\projects\C--Users-local-f9-WorkAble\memory\MEMORY.md)
-   — correct any stale facts, add new known-issues or fixes, update worktree/branch info
-
-ALL THREE. Every time. Do NOT batch or defer to end of session.
-
-## Confirmation Gate — Active
-DO NOT begin WorkAble Clipper extension build until:
-1. Checklist 2 (UI) is manually verified by the user in Chrome
-2. User explicitly confirms "UI check done, proceed to Clipper"
-
-## Session Log — 2026-03-15 (sweet-lamarr worktree)
-
-### A11y Audit — index.html (COMPLETED)
-Fixed 18 issues across 6 categories:
-1. **Duplicate role="main"** — `#setup-screen` changed from `role="main"` to `role="region"` (line 50)
-2. **15 form inputs missing aria-label** — added `aria-label` to:
-   - `#key-input`, `#url-input`, `#paste-input`, `#cv-text`
-   - `#resume-name-input`, `#resume-textarea`, `#resume-ai-instruction`
-   - `#cover-name-input`, `#cover-textarea`, `#cover-ai-instruction`
-   - `#email-subject`, `#email-body`, `#new-key-input`
-   - `#m-notes`, `#gen-resume-text`
-3. **Emoji nav-icon spans** — added `aria-hidden="true"` to all `<span class="nav-icon">` and `<span class="mob-icon">` (replace_all)
-4. **Download dropdown triggers** — added `aria-haspopup="true" aria-expanded="false" aria-label` to resume + cover download buttons
-5. **mob-more-menu** — added `role="navigation" aria-label="More navigation options"`
-6. **Setup external link** — added `rel="noopener noreferrer"` + `aria-label` with "(opens in new tab)"
-
-### Remaining non-blocking gap (carry forward)
-- `#a11y-panel` has `aria-modal="true"` but toolbar.js does not implement focus trapping — noted in GEMINI.md
-
-### .firebaseignore — CREATED
-Excludes: sync.ps1, server.js, node_modules/, .git/, .claude/, *.md (except README), *.env, test files, OS files
-
-### PRD Empowerment Barrier Audit (2026-03-15, sweet-lamarr)
-PRD.md read — Mission: Empowering people with disabilities. Pillars: Universal Data Harvesting, Modular Accessibility, Individual Agency.
-Three critical navigation friction barriers identified and fixed:
-
-1. **Job cards not keyboard-accessible** (dashboard.js:84, 123) — `div.job-card` and `div.k-card` had `onclick` but no `tabindex`, `role`, or keyboard handler. Keyboard users could not Tab to or activate any job.
-   - Fix: Added `tabindex="0"`, `role="button"`, `aria-label` (company + title + status), `onkeydown` Enter/Space handler to both grid and kanban cards.
-
-2. **`showView()` no focus management** (nav.js) — Switching views left focus stranded on the nav button. Screen reader users got no announcement that the view changed.
-   - Fix: After rendering, `showView()` now moves focus to `#view-{v} .page-title` via `tabindex="-1"` + `.focus()`.
-
-3. **Modal opens focused on "Close ×"** (modal.js:98) — First thing screen reader announced on modal open was "Close, button" with no job context.
-   - Fix: Focus moved to `#m-title` element (populated with job title) via `tabindex="-1"` + `.focus()`. Screen reader now announces job title first, then dialog context.
-
-4. **Delete button aria-label** (dashboard.js) — Trash emoji `title="Delete"` was ambiguous. Fixed to `aria-label="Delete {company} – {title}"`.
-
-### PRD Feature Gaps (not yet built — carry forward for Clipper sprint)
-- A11y Ratings: no way to log employer accessibility hurdles
-- Self-Advocacy: no accommodation request template storage
-- Barrier Logs: no tracking of external job site technical debt
-
-### Urgent Bug Fixes (2026-03-15, sweet-lamarr — continued from context compaction)
-
-**Bug 1 — constants.js GEMINI_MODELS (FIXED)**
-- `"gemini-2.5-flash"` removed (caused API 404 on every first AI call)
-- `"gemini-1.5-pro"` added as final waterfall fallback
-- New order: `gemini-2.0-flash → gemini-2.0-flash-lite → gemini-1.5-flash → gemini-1.5-pro`
-
-**Bug 2 — tts.js TTS Stop reliability (ASSESSED + HARDENED)**
-- Prescribed toggle logic (lines 22–23) was already implemented in the worktree copy
-- `ttsStop()` hardened: added `_utterance = null` reset so `ttsCycleSpeed()` cannot
-  operate on a stale/cancelled utterance after stop
-- `ttsBtnHTML()` already had `event.stopPropagation()` — no change needed
-
-**Bug 3 — app.js missing clearErr/showErr/setStatus window bindings (FIXED)**
-- `ui/utils.js` was never imported in app.js — added import for `clearErr, showErr, setStatus`
-- Added all three to `Object.assign(window, {...})` so ai-editor.js `window.clearErr/showErr/setStatus` calls resolve
-
-**Bug 4 — ai-editor.js UI state crash after generation (FIXED)**
-- `generateCoverLetter`, `generateResume`, `autoTailorResume` all called `editDocument()` before
-  `showView()`, then forced `.style.display` manually — conflicting with `editDocument` internals
-- Fix: `window.showView(view)` first, then `editDocument(type, id)`, manual display lines removed
-- All three functions corrected identically
+## Sync Rule (Lightweight)
+Update CLAUDE.md + MEMORY.md only on meaningful changes (bugs, architecture, new rules).
+GEMINI.md: update only when task status changes (started/done/blocked).

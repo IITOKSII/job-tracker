@@ -26,27 +26,21 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
 - [x] Bug Fix: app.js — added clearErr/showErr/setStatus import from ui/utils.js + window binding (2026-03-15, sweet-lamarr)
 - [x] Bug Fix: ai-editor.js — generateCoverLetter, generateResume, autoTailorResume reordered to showView→editDocument; removed manual style.display overrides (2026-03-15, sweet-lamarr)
 
-### 🔲 Awaiting User Action
-- [ ] **Checklist 2 — UI Manual Testing** (user must verify in Chrome at http://localhost:3000)
-  Start server: `node server.js`
-  Covers: Auth flow, Dashboard filters/views, Job modal, A11y toolbar, TTS, Voice input,
-  Documents, Analytics, Email templates, Navigation, Settings
+### ✅ Done (confirmed)
+- [x] Checklist 2 — UI Manual Testing (user confirmed 2026-03-16)
 
-### 🔲 Blocked (waiting on Checklist 2 confirmation)
+### 🔲 Next — Ready to Build
 - [ ] **WorkAble Clipper** — Chrome Extension MV3 build
-  Unblocked when user says: "UI check done, proceed to Clipper"
+  Structure: /extension/ → manifest.json (MV3), popup.html/js, content.js, background.js, styles/popup.css, icons/
+  A11y lens: every popup element must pass contrast/keyboard/landmark checks
 
 ## One Noted A11y Gap (non-blocking, for polish sprint)
 - `a11y-panel` has `role="dialog"` but toolbar.js does not implement focus trapping.
   The job modal DOES trap focus (modal.js). The toolbar panel should match.
   Flag for Clipper sprint or next polish pass — not a blocker for UI Checklist 2.
 
-## Real-Time Sync Rule (Active — 2026-03-12, expanded 2026-03-15)
-After EVERY change, fix, or discovery — update ALL THREE files immediately:
-1. CLAUDE.md (worktree) — technical log
-2. GEMINI.md (worktree) — task status
-3. MEMORY.md (C:\Users\local_f9\.claude\projects\C--Users-local-f9-WorkAble\memory\MEMORY.md) — persistent cross-session facts
-Do NOT batch updates to end of session.
+## Sync Rule (Lightweight — 2026-03-16)
+Update CLAUDE.md + MEMORY.md on meaningful changes only. GEMINI.md on task status changes only.
 
 ## Persistence Rule
 - ALWAYS read CLAUDE.md and GEMINI.md at start of every session.
