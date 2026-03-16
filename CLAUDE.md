@@ -1,7 +1,7 @@
 # Engineer Instructions
 - Read this and GEMINI.md at the start of every session.
 - You are authorized to edit both files to log progress.
-- Current Sprint: UI Accessibility and SaaS Commercial Readiness.
+- Current Sprint: WorkAble Clipper (Chrome Extension MV3).
 
 ## Module Dependency Order (NO circular imports — enforce strictly)
 ```
@@ -139,6 +139,21 @@ ALL THREE. Every time. Do NOT batch or defer to end of session.
 DO NOT begin WorkAble Clipper extension build until:
 1. Checklist 2 (UI) is manually verified by the user in Chrome
 2. User explicitly confirms "UI check done, proceed to Clipper"
+
+## Session Log — 2026-03-16 (trusting-bhaskara worktree)
+
+### WorkAble Clipper — Chrome Extension MV3 (BUILT)
+Files created in `/extension/`:
+- `manifest.json` — MV3, permissions: storage/activeTab/scripting, content_scripts for all URLs + WorkAble domains
+- `content.js` — scrapers for LinkedIn, Indeed, Seek, Jora, Glassdoor, Workable, generic fallback
+- `background.js` — service worker: SAVE_JOB, CHECK_DUPLICATE, GET_JOB_COUNT via chrome.storage.local
+- `bridge.js` — injected into WorkAble pages (world:MAIN), exposes `window.storage` proxy so db.service.js reads from chrome.storage.local transparently
+- `popup.html` — fully accessible: ARIA live regions, dl/dt/dd field list, role=alert on state screens, focus managed on screen transitions
+- `popup.js` — boot → scrape → duplicate check → show preview → clip → save via background.js
+- `styles/popup.css` — WorkAble design tokens, WCAG AA contrast, focus rings
+- `icons/generate-icons.js` + `icons/icon.svg` — icon source; run `npm install sharp && node generate-icons.js` to produce PNGs
+
+Storage contract: chrome.storage.local key `jt_jobs` → `{ value: "[{...}]" }` — mirrors db.service.js storeGet/storeSet. WorkAble reads clipped jobs automatically when bridge.js is injected.
 
 ## Session Log — 2026-03-15 (sweet-lamarr worktree)
 

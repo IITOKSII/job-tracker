@@ -32,9 +32,17 @@ Last updated: 2026-03-12 (Real-Time Sync Rule active)
   Covers: Auth flow, Dashboard filters/views, Job modal, A11y toolbar, TTS, Voice input,
   Documents, Analytics, Email templates, Navigation, Settings
 
-### 🔲 Blocked (waiting on Checklist 2 confirmation)
-- [ ] **WorkAble Clipper** — Chrome Extension MV3 build
-  Unblocked when user says: "UI check done, proceed to Clipper"
+### ✅ Done — WorkAble Clipper (2026-03-16, trusting-bhaskara)
+- [x] Chrome Extension MV3 built — all files in `/extension/`
+  - manifest.json, content.js, background.js, bridge.js, popup.html, popup.js, styles/popup.css
+  - Scrapers: LinkedIn, Indeed, Seek, Jora, Glassdoor, Workable, generic fallback
+  - bridge.js wires chrome.storage.local → window.storage so WorkAble reads clipped jobs transparently
+  - Full A11y: ARIA live regions, focus management, WCAG AA contrast
+  - Icons: icon.svg + generate-icons.js (run with sharp to produce PNGs)
+
+### 🔲 Next (after Clipper verified in Chrome)
+- [ ] Load extension at chrome://extensions → test on LinkedIn/Seek job page → confirm job appears in WorkAble
+- [ ] Add icon PNGs to extension/icons/ (run `npm install sharp && node generate-icons.js`)
 
 ## One Noted A11y Gap (non-blocking, for polish sprint)
 - `a11y-panel` has `role="dialog"` but toolbar.js does not implement focus trapping.

@@ -1,0 +1,229 @@
+/* WorkAble Clipper — popup.css
+   Design tokens match WorkAble app (base.css).
+   WCAG AA contrast enforced throughout.
+   Popup fixed width: 360px. */
+
+/* ── Tokens ───────────────────────────────────────────────────────────────── */
+:root {
+  --bg:       #141a1f;
+  --surface:  #1a2028;
+  --surface2: #212830;
+  --border:   #2a3340;
+  --accent:   #2ec4b6;
+  --accent2:  #5dd9cd;
+  --text:     #dfe4ea;
+  --muted:    #8b9bab;
+  --green:    #2ed573;
+  --red:      #ff6b81;
+  --yellow:   #e8b84b;
+  --radius:   10px;
+}
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+body {
+  width: 360px;
+  min-height: 200px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.logo-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.popup-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+/* ── Main ────────────────────────────────────────────────────────────────── */
+#popup-main {
+  padding: 14px;
+}
+
+/* ── State screens ───────────────────────────────────────────────────────── */
+.state-screen {
+  outline: none; /* focus managed via JS, not visible ring */
+}
+
+.center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 10px 4px;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Field list ──────────────────────────────────────────────────────────── */
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.field-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.field-row:last-child { border-bottom: none; }
+
+.field-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-width: 54px;
+  flex-shrink: 0;
+}
+
+.field-value {
+  font-size: 13px;
+  color: var(--text);
+  word-break: break-word;
+  font-style: normal; /* reset dd italic */
+}
+
+/* ── Status row ──────────────────────────────────────────────────────────── */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.status-select {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-size: 13px;
+  padding: 7px 10px;
+  cursor: pointer;
+  appearance: auto;
+}
+.status-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Button ──────────────────────────────────────────────────────────────── */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #0d1117; /* dark text on teal — contrast ratio > 7:1 */
+}
+
+.btn-primary:hover  { opacity: 0.9; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ── Hint text ───────────────────────────────────────────────────────────── */
+.hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ── State icons ─────────────────────────────────────────────────────────── */
+.state-icon   { color: var(--muted); margin-bottom: 2px; }
+.state-title  { font-size: 14px; font-weight: 600; color: var(--text); }
+.status-msg   { color: var(--muted); font-size: 13px; }
+
+.success-circle,
+.warn-circle,
+.error-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+.success-circle { background: rgba(46, 213, 115, 0.12); color: var(--green); }
+.warn-circle    { background: rgba(232, 184, 75, 0.12);  color: var(--yellow); }
+.error-circle   { background: rgba(255, 107, 129, 0.12); color: var(--red); }
+
+.success-sub {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 280px;
+  word-break: break-word;
+  text-align: center;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.popup-footer {
+  padding: 7px 14px 9px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
