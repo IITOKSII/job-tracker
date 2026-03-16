@@ -29,6 +29,16 @@
       "js": ["bridge.js"],
       "run_at": "document_start",
       "world": "MAIN"
+    },
+    {
+      "matches": [
+        "http://localhost:3000/*",
+        "http://localhost:3001/*",
+        "https://*.web.app/*",
+        "https://*.firebaseapp.com/*"
+      ],
+      "js": ["bridge-relay.js"],
+      "run_at": "document_start"
     }
   ]
 }
