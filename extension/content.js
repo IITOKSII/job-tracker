@@ -184,6 +184,13 @@
       } catch (e) {
         sendResponse({ ok: false, detected: false, data: null, error: e.message });
       }
+    } else if (msg.type === "GET_GEMINI_KEY") {
+      // Read from the page's localStorage (where WorkAble stores the key)
+      try {
+        sendResponse({ key: localStorage.getItem("gemini_key") || null });
+      } catch (_e) {
+        sendResponse({ key: null });
+      }
     }
     return true;
   });
