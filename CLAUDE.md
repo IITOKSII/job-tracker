@@ -12,7 +12,7 @@ node server.js          # http://localhost:3000
 ## Token Efficiency Protocol (MANDATORY — all sessions)
 1. **Lazy Loading** — don't read files until the current sub-task needs them
 2. **Delta-Only** — Edit tool only, never full file rewrites; use `// ... existing code` in explanations
-3. **Plan Gate** — >2 files touched = 3-bullet plan → wait for "GO" before coding
+3. **Plan Gate** — removed for WorkAble (2026-03-16). Full autonomy authorized.
 4. **Context Alert** — at ~15-20 messages: "Context is heavy. Summarize and start a new thread?"
 5. **Response Discipline** — no trailing summaries, no preamble, action-first, 1-sentence status updates
 
@@ -35,45 +35,39 @@ assets → state → ui/utils → config → services → features → a11y → 
 - `ui/nav.js` calls all render functions via `window.*` — no imports from features
 - When a new module needs to call something from a higher layer → use `window.*`, not import
 
-## Window Bindings (app.js Object.assign)
-Every function called from HTML `onclick=""` must be in the `Object.assign(window, {...})` block.
-Currently exposed: nav, dashboard, jobs, documents, preview, modal, analytics, email, ai-editor,
-auth, tts, toolbar, db helpers (saveJobs/saveResumes/saveCovers), ui utils (clearErr/showErr/setStatus).
-If you add a new onclick in index.html → add it to app.js window block immediately.
-
 ## Module Structure
 ```
 modules/
-  state.js              ← singleton: { state, fb }
-  assets/               ← constants, ai-prompts, email-templates (zero imports)
-  config/               ← firebase.config, gemini.config (imports state)
-  services/             ← db.service, auth.service (imports state + config)
-  ui/                   ← utils, nav, dashboard (imports state + ui/utils)
-  features/             ← jobs, modal, documents, preview-engine, ai-editor, analytics, email
-  a11y/                 ← tts, toolbar (imports services + ui/utils only)
-  app.js                ← bootstrap + Object.assign(window, {...})
+  state.js              <- singleton: { state, fb }
+  assets/               <- constants, ai-prompts, email-templates (zero imports)
+  config/               <- firebase.config, gemini.config (imports state)
+  services/             <- db.service, auth.service (imports state + config)
+  ui/                   <- utils, nav, dashboard (imports state + ui/utils)
+  features/             <- jobs, modal, documents, preview-engine, ai-editor, analytics, email
+  a11y/                 <- tts, toolbar (imports services + ui/utils only)
+  app.js                <- bootstrap + Object.assign(window, {...})
 ```
 For full export lists, read the individual files.
 
 ## sync.ps1 Pipeline (full sequence)
-Every commit goes through this pipeline — do not bypass:
+Every commit goes through this pipeline -- do not bypass:
 ```
-1. Smoke test    → starts node server.js, checks HTTP 200 on :3000, kills server
+1. Smoke test    -> starts node server.js, checks HTTP 200 on :3000, kills server
                    ABORTS if non-200 (nothing is pushed if the server is broken)
-2. git add + commit → "WorkAble Update: {date}"
-3. git push      → pushes branch to origin
-4. PR check      → if PR exists: updates it; if not: creates new PR via gh pr create
-5. Conflict check → gh pr view --json mergeable; ABORTS if CONFLICTING
-6. Auto-merge    → gh pr merge --auto --merge (fires immediately after conflict check)
+2. git add + commit -> "WorkAble Update: {date}"
+3. git push      -> pushes branch to origin
+4. PR check      -> if PR exists: updates it; if not: creates new PR via gh pr create
+5. Conflict check -> gh pr view --json mergeable; ABORTS if CONFLICTING
+6. Auto-merge    -> gh pr merge --auto --merge (fires immediately after conflict check)
 ```
 - Never use `--no-verify` or skip the smoke test
-- Always run from the active worktree — never from main directly
-- .claude/ is in .gitignore — launch.json is never committed
+- Always run from the active worktree -- never from main directly
+- .claude/ is in .gitignore -- launch.json is never committed
 
 ## Window Bindings Rule (app.js Object.assign)
-Any new `onclick`/`oninput`/`onchange` in index.html → add the function to `Object.assign(window, {...})` in app.js in the same commit. Read app.js for the current list.
+Any new `onclick`/`oninput`/`onchange` in index.html -> add the function to `Object.assign(window, {...})` in app.js in the same commit. Read app.js for the current list.
 
-## Sync Rule (Lightweight — replaces old 3-file rule)
+## Sync Rule (Lightweight)
 Update CLAUDE.md and MEMORY.md only on **meaningful** changes (new bugs, architecture shifts, new rules).
 Do NOT log every micro-fix. Git history is the audit trail for code changes.
 GEMINI.md: update task status only when tasks change state (started/done/blocked).
@@ -83,11 +77,6 @@ GEMINI.md: update task status only when tasks change state (started/done/blocked
 - Never carry forward logs from other worktrees (e.g. sweet-lamarr logs in a new branch).
 - Keep only: active rules, module map, pipeline docs, confirmation gates.
 - Max CLAUDE.md target: ~100 lines. If over, prune completed session logs first.
-
-## Confirmation Gate — Active
-DO NOT begin WorkAble Clipper extension build until:
-1. Checklist 2 (UI) is manually verified by the user in Chrome
-2. User explicitly confirms "UI check done, proceed to Clipper"
 
 ## Carry-Forward Items (from merged worktrees)
 - `#a11y-panel` focus trapping not yet implemented in toolbar.js
