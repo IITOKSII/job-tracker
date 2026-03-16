@@ -25,7 +25,6 @@ Last updated: 2026-03-16 (Real-Time Sync Rule active)
 - [x] Bug Fix: tts.js ttsStop() hardened — _utterance=null reset added; prescribed toggle logic was already present (2026-03-15, sweet-lamarr)
 - [x] Bug Fix: app.js — added clearErr/showErr/setStatus import from ui/utils.js + window binding (2026-03-15, sweet-lamarr)
 - [x] Bug Fix: ai-editor.js — generateCoverLetter, generateResume, autoTailorResume reordered to showView→editDocument; removed manual style.display overrides (2026-03-15, sweet-lamarr)
-- [x] Bug Fix: preview-engine.js downloadDoc() — blank trailing page 2 fix: wrap div bottom padding (52px 56px) inflated canvas height just over A4 (297mm); added `if (imgH - y < 5) break;` before pdf.addPage() to skip near-empty trailing pages. Applied to main AND worktree (2026-03-16)
 
 ### 🔲 Awaiting User Action
 - [ ] **Checklist 2 — UI Manual Testing** (user must verify in Chrome at http://localhost:3000)
