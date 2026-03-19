@@ -71,6 +71,7 @@
  * @property {string} notes                           - Free-text user notes
  * @property {string} date                            - ISO timestamp of creation
  * @property {string} [rawText]                       - Present only for paste-in jobs
+ * @property {number} [parentId]                      - Version child: points to the root document's id
  * @property {"clipper"} [source]                     - Present only for Clipper extension jobs
  * @property {boolean} [seen]                         - false → shows amber "NEW" badge (Clipper jobs)
  */
@@ -83,6 +84,7 @@
  * @property {number} wordCount   - Cached word count
  * @property {string} created     - ISO timestamp of creation
  * @property {string} updated     - ISO timestamp of last save
+ * @property {number} [parentId]  - If set, this document is a version child; points to root document's id
  */
 
 // Document is used for both Resumes (state.resumes) and Cover Letters (state.covers).

@@ -5,20 +5,56 @@ import { saveResumes, saveCovers } from "../services/db.service.js";
 import { esc, toast } from "../ui/utils.js";
 import { setEditorMode, updateWordCount, refreshPreview } from "./preview-engine.js";
 
+// ── Version helpers ───────────────────────────────────────────────────────────
+
+function getVersionFamily(list, doc) {
+  const rootId = doc.parentId || doc.id;
+  return list
+    .filter(d => d.id === rootId || d.parentId === rootId)
+    .sort((a, b) => a.created.localeCompare(b.created));
+}
+
+function _refreshVersionSelect(type, activeId) {
+  const list    = type === "resume" ? state.resumes : state.covers;
+  const editId  = activeId != null ? activeId : state.editingDocId[type];
+  const current = list.find(d => d.id === editId);
+  const btn     = document.getElementById(type + "-new-version-btn");
+  const bar     = document.getElementById(type + "-version-bar");
+  if (!current) {
+    if (btn) btn.style.display = "none";
+    if (bar) bar.style.display = "none";
+    return;
+  }
+  if (btn) btn.style.display = "";
+  const family = getVersionFamily(list, current);
+  const sel    = document.getElementById(type + "-version-select");
+  if (family.length > 1 && sel && bar) {
+    sel.innerHTML = family.map((d, i) =>
+      `<option value="${d.id}"${d.id === editId ? " selected" : ""}>Version ${i + 1} \u2014 ${new Date(d.created).toLocaleDateString("en-AU",{day:"numeric",month:"short"})}</option>`
+    ).join("");
+    bar.style.display = "flex";
+  } else if (bar) {
+    bar.style.display = "none";
+  }
+}
+
 // ── Resume list ──────────────────────────────────────────────────────────────
 
 export function renderResumeList() {
   document.getElementById("resume-list-view").style.display   = "";
   document.getElementById("resume-editor-view").style.display = "none";
   const el = document.getElementById("resume-list");
-  if (!state.resumes.length) {
+  const resumeRoots = state.resumes.filter(r => !r.parentId);
+  if (!resumeRoots.length) {
     el.innerHTML = '<div class="doc-empty">No resumes saved yet.<br><span style="font-size:12px;">Click <strong>New Resume</strong> to paste or upload one, or<br><strong>Generate from Scratch</strong> to have AI build one for you.</span></div>';
     return;
   }
-  el.innerHTML = state.resumes.map(r =>
-    `<div class="doc-item">
+  el.innerHTML = resumeRoots.map(r => {
+    const vCount = state.resumes.filter(d => d.parentId === r.id).length;
+    const vBadge = vCount > 0 ? ` <span style="font-size:10px;padding:1px 6px;background:var(--accent);color:#fff;border-radius:10px;vertical-align:middle;">${vCount + 1} versions</span>` : "";
+    return `<div class="doc-item">
       <div class="doc-info">
-        <div class="doc-name">${esc(r.name)}</div>
+        <div class="doc-name">${esc(r.name)}${vBadge}</div>
         <div class="doc-meta">${r.wordCount || 0} words &middot; Last edited ${new Date(r.updated).toLocaleDateString("en-AU", {day:"numeric",month:"short",year:"numeric"})}</div>
       </div>
       <div class="doc-actions">
@@ -27,8 +63,8 @@ export function renderResumeList() {
         <button class="btn btn-ghost btn-sm"   onclick="duplicateResumeById(${r.id})">Duplicate</button>
         <button class="btn btn-danger btn-sm"  onclick="deleteDocument('resume',${r.id})">Delete</button>
       </div>
-    </div>`
-  ).join("");
+    </div>`;
+  }).join("");
 }
 
 // ── Cover list ───────────────────────────────────────────────────────────────
@@ -37,14 +73,17 @@ export function renderCoverList() {
   document.getElementById("cover-list-view").style.display   = "";
   document.getElementById("cover-editor-view").style.display = "none";
   const el = document.getElementById("cover-list");
-  if (!state.covers.length) {
+  const coverRoots = state.covers.filter(c => !c.parentId);
+  if (!coverRoots.length) {
     el.innerHTML = '<div class="doc-empty">No cover letters saved yet.<br><span style="font-size:12px;">Click <strong>New Cover Letter</strong> or <strong>Generate from Job</strong> to get started.</span></div>';
     return;
   }
-  el.innerHTML = state.covers.map(c =>
-    `<div class="doc-item">
+  el.innerHTML = coverRoots.map(c => {
+    const vCount = state.covers.filter(d => d.parentId === c.id).length;
+    const vBadge = vCount > 0 ? ` <span style="font-size:10px;padding:1px 6px;background:var(--accent);color:#fff;border-radius:10px;vertical-align:middle;">${vCount + 1} versions</span>` : "";
+    return `<div class="doc-item">
       <div class="doc-info">
-        <div class="doc-name">${esc(c.name)}</div>
+        <div class="doc-name">${esc(c.name)}${vBadge}</div>
         <div class="doc-meta">${c.wordCount || 0} words &middot; Last edited ${new Date(c.updated).toLocaleDateString("en-AU", {day:"numeric",month:"short",year:"numeric"})}</div>
       </div>
       <div class="doc-actions">
@@ -53,14 +92,15 @@ export function renderCoverList() {
         <button class="btn btn-ghost btn-sm"   onclick="duplicateCoverById(${c.id})">Duplicate</button>
         <button class="btn btn-danger btn-sm"  onclick="deleteDocument('cover',${c.id})">Delete</button>
       </div>
-    </div>`
-  ).join("");
+    </div>`;
+  }).join("");
 }
 
 // ── Open editor ──────────────────────────────────────────────────────────────
 
 export function newDocument(type) {
   state.editingDocId[type] = null;
+  _refreshVersionSelect(type, null);
   document.getElementById(type + "-name-input").value = "";
   document.getElementById(type + "-textarea").value   = "";
   updateWordCount(type);
@@ -78,6 +118,7 @@ export function editDocument(type, id) {
   document.getElementById(type + "-name-input").value = doc.name;
   document.getElementById(type + "-textarea").value   = doc.content;
   updateWordCount(type);
+  _refreshVersionSelect(type, id);
   document.getElementById(type + "-list-view").style.display   = "none";
   document.getElementById(type + "-editor-view").style.display = "";
   if (type === "cover")  populateCoverJobSelect();
@@ -127,9 +168,69 @@ export function saveDocument(type) {
 
 export function deleteDocument(type, id) {
   if (!confirm("Delete this document? This cannot be undone.")) return;
-  if (type === "resume") { state.resumes = state.resumes.filter(r => r.id !== id); saveResumes(); renderResumeList(); }
-  else                   { state.covers  = state.covers.filter(c => c.id !== id);  saveCovers();  renderCoverList(); }
+  if (type === "resume") {
+    const doc = state.resumes.find(r => r.id === id);
+    if (doc && !doc.parentId) {
+      // Deleting a root — promote oldest child to new root
+      const children = state.resumes.filter(r => r.parentId === id).sort((a, b) => a.created.localeCompare(b.created));
+      if (children.length) {
+        const newRootId = children[0].id;
+        state.resumes = state.resumes.filter(r => r.id !== id).map(r =>
+          r.parentId === id ? (r.id === newRootId ? { ...r, parentId: undefined } : { ...r, parentId: newRootId }) : r
+        );
+      } else { state.resumes = state.resumes.filter(r => r.id !== id); }
+    } else { state.resumes = state.resumes.filter(r => r.id !== id); }
+    saveResumes(); renderResumeList();
+  } else {
+    const doc = state.covers.find(c => c.id === id);
+    if (doc && !doc.parentId) {
+      const children = state.covers.filter(c => c.parentId === id).sort((a, b) => a.created.localeCompare(b.created));
+      if (children.length) {
+        const newRootId = children[0].id;
+        state.covers = state.covers.filter(c => c.id !== id).map(c =>
+          c.parentId === id ? (c.id === newRootId ? { ...c, parentId: undefined } : { ...c, parentId: newRootId }) : c
+        );
+      } else { state.covers = state.covers.filter(c => c.id !== id); }
+    } else { state.covers = state.covers.filter(c => c.id !== id); }
+    saveCovers(); renderCoverList();
+  }
   toast("Deleted", "ok");
+}
+
+// ── Versioning ────────────────────────────────────────────────────────────────
+
+export function saveAsNewVersion(type) {
+  const name    = document.getElementById(type + "-name-input").value.trim();
+  const content = document.getElementById(type + "-textarea").value.trim();
+  if (!name)    { toast("Please enter a name", "err"); return; }
+  if (!content) { toast("Document is empty",   "err"); return; }
+  const editId = state.editingDocId[type];
+  if (!editId)  { toast("Save the document first before creating a version", "err"); return; }
+  const list    = type === "resume" ? state.resumes : state.covers;
+  const current = list.find(d => d.id === editId);
+  if (!current) return;
+  const rootId    = current.parentId || current.id;
+  const wordCount = content.split(/\s+/).filter(Boolean).length;
+  const now       = new Date().toISOString();
+  const newDoc    = { id: Date.now(), name, content, wordCount, created: now, updated: now, parentId: rootId };
+  if (type === "resume") { state.resumes.unshift(newDoc); saveResumes(); }
+  else                   { state.covers.unshift(newDoc);  saveCovers(); }
+  state.editingDocId[type] = newDoc.id;
+  _refreshVersionSelect(type, newDoc.id);
+  const family = getVersionFamily(type === "resume" ? state.resumes : state.covers, newDoc);
+  toast(`Saved as Version ${family.findIndex(d => d.id === newDoc.id) + 1}`, "ok");
+}
+
+export function loadVersion(type, id) {
+  const list = type === "resume" ? state.resumes : state.covers;
+  const doc  = list.find(d => d.id === id);
+  if (!doc) return;
+  state.editingDocId[type] = id;
+  document.getElementById(type + "-name-input").value = doc.name;
+  document.getElementById(type + "-textarea").value   = doc.content;
+  updateWordCount(type);
+  const family = getVersionFamily(list, doc);
+  toast(`Switched to Version ${family.findIndex(d => d.id === id) + 1}`, "");
 }
 
 // ── Duplicate ────────────────────────────────────────────────────────────────
