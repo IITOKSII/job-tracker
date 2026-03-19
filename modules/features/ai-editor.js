@@ -2,7 +2,8 @@
 // Export/import data also lives here.
 
 import { state } from "../state.js";
-import { SYDNEY_RECRUITER, RESUME_EXPERT } from "../assets/ai-prompts.js";
+import { SYDNEY_RECRUITER, RESUME_EXPERT, ACCOMMODATION_ADVISOR } from "../assets/ai-prompts.js";
+import { ACCOMMODATION_TEMPLATES } from "../assets/accommodation-templates.js";
 import { callGemini } from "../config/gemini.config.js";
 import { saveResumes, saveCovers, saveJobs } from "../services/db.service.js";
 import { esc, toast } from "../ui/utils.js";
@@ -211,6 +212,77 @@ export async function autoTailorResume(jobId) {
     editDocument("resume", newDoc.id);
     setTimeout(() => setEditorMode("resume", "preview"), 100);
   } catch (e) { toast("Tailoring failed: " + e.message, "err"); }
+}
+
+// ── Accommodation letter generator ───────────────────────────────────────────
+
+export function openAccommodationModal(jobId) {
+  const sel = document.getElementById("accom-template-select");
+  sel.innerHTML = ACCOMMODATION_TEMPLATES.map(t =>
+    `<option value="${t.id}">${esc(t.name)} \u2014 ${t.desc}</option>`
+  ).join("");
+  document.getElementById("accom-notes").value = "";
+  window.clearErr("accom-error");
+  document.getElementById("accom-status").textContent = "";
+  document.getElementById("accom-btn").disabled = false;
+  document.getElementById("accom-modal").dataset.jobId = jobId != null ? jobId : "";
+  document.getElementById("accom-modal").style.display = "flex";
+}
+
+export function closeAccommodationModal() {
+  document.getElementById("accom-modal").style.display = "none";
+}
+
+export async function generateAccommodationLetter() {
+  const sel      = document.getElementById("accom-template-select");
+  const template = ACCOMMODATION_TEMPLATES.find(t => t.id === sel.value);
+  const notes    = document.getElementById("accom-notes").value.trim();
+  const rawId    = document.getElementById("accom-modal").dataset.jobId;
+  const jobId    = rawId ? parseInt(rawId) : null;
+  const j        = jobId ? state.jobs.find(x => x.id === jobId) : null;
+
+  if (!template) { window.showErr("accom-error", "Please select a template."); return; }
+  if (!notes)    { window.showErr("accom-error", "Please describe your access needs."); return; }
+  window.clearErr("accom-error");
+
+  const btn = document.getElementById("accom-btn");
+  btn.disabled = true;
+  document.getElementById("accom-status").innerHTML = "<span class='spinner'></span> Generating letter\u2026";
+
+  const today      = new Date().toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  const jobContext = j
+    ? `\n\nJOB CONTEXT:\nJob Title: ${j.title}\nCompany: ${j.company}\nKey duties / requirements: ${(j.requirements || []).slice(0, 5).join(", ") || j.description?.slice(0, 200) || "N/A"}`
+    : "";
+
+  const prompt =
+    `Fill in the following Australian workplace accommodation request letter template using the user's specific needs and the job context provided. Replace ALL placeholders (e.g. [NEED], [REASON], [JOB_DUTY], [ADJUSTMENT_1], [ADJUSTMENT_2], [LOCATION], [SCHEDULE], [REVIEW_PERIOD]) with realistic, specific content. Use today's date: ${today}.
+
+TEMPLATE:
+${template.body}
+
+USER'S ACCESS NEEDS AND NOTES:
+${notes}${jobContext}
+
+Return only the completed letter. Do not leave any placeholder unfilled.`;
+
+  try {
+    const letter  = await callGemini(prompt, ACCOMMODATION_ADVISOR);
+    document.getElementById("accom-status").textContent = "";
+    closeAccommodationModal();
+    const now     = new Date().toISOString();
+    const content = letter.trim();
+    const name    = `Accommodation Request \u2014 ${j ? j.title + " @ " + j.company : template.name}`;
+    const newDoc  = { id: Date.now(), name, content, wordCount: content.split(/\s+/).filter(Boolean).length, created: now, updated: now };
+    state.covers.unshift(newDoc);
+    saveCovers();
+    window.showView("covers");
+    editDocument("cover", newDoc.id);
+    toast("Accommodation letter generated and saved!", "ok");
+    setTimeout(() => setEditorMode("cover", "preview"), 100);
+  } catch (e) {
+    document.getElementById("accom-status").textContent = "";
+    window.showErr("accom-error", "Generation failed: " + (e.message || "Please try again."));
+  } finally { btn.disabled = false; }
 }
 
 // ── Export / Import ──────────────────────────────────────────────────────────
