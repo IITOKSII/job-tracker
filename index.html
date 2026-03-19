@@ -552,6 +552,31 @@
     </div>
   </div>
 </div>
+<!-- Accommodation Letter Generator Modal -->
+<div id="accom-modal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="accom-modal-title" style="display:none;" onclick="if(event.target===this)closeAccommodationModal()">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-head">
+      <div><div class="modal-company">Accommodation Request</div><div class="modal-title-text" id="accom-modal-title">Generate Adjustment Letter</div></div>
+      <button class="modal-close" onclick="closeAccommodationModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Select a template and describe your access needs. Gemini will generate a legally-grounded letter under the <em>Disability Discrimination Act 1992</em> and <em>Fair Work Act 2009</em>.</p>
+      <div style="margin-bottom:14px;">
+        <label for="accom-template-select" style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">Select Template</label>
+        <select id="accom-template-select" class="field" style="cursor:pointer;" aria-label="Accommodation request template"></select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label for="accom-notes" style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">Your Access Needs &amp; Notes</label>
+        <textarea id="accom-notes" class="field" style="min-height:120px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Describe your disability or condition and the adjustments you need. e.g. I have ADHD and chronic fatigue — I need a quiet room, 50% extra time, and written instructions rather than verbal.&#10;&#10;The more detail you provide, the better the letter." aria-label="Your access needs and notes for the accommodation request"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-primary" id="accom-btn" onclick="generateAccommodationLetter()">Generate Letter</button>
+        <span id="accom-status" aria-live="assertive" style="font-size:12px;color:var(--muted);"></span>
+      </div>
+      <div id="accom-error" style="font-size:13px;color:var(--red);margin-top:8px;display:none;" role="alert"></div>
+    </div>
+  </div>
+</div>
 <script type="module" src="modules/app.js"></script>
 </body>
 </html>

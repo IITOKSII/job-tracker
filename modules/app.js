@@ -85,6 +85,7 @@ import {
   newDocumentFromJob, closeGenModal, fillResumeFromSaved,
   generateCoverLetter, openResumeGenerator, closeResumeGenModal,
   generateResume, autoTailorResume,
+  openAccommodationModal, closeAccommodationModal, generateAccommodationLetter,
   exportAllData, importAllData,
 } from "./features/ai-editor.js";
 
@@ -157,6 +158,7 @@ Object.assign(window, {
   newDocumentFromJob, closeGenModal, fillResumeFromSaved,
   generateCoverLetter, openResumeGenerator, closeResumeGenModal,
   generateResume, autoTailorResume,
+  openAccommodationModal, closeAccommodationModal, generateAccommodationLetter,
   exportAllData, importAllData,
 
   // Auth

@@ -91,6 +91,7 @@ export function openModal(id) {
     (j.url ? `<a href="${j.url}" target="_blank" class="btn btn-ghost">Open Job</a>` : "") +
     `<button class="btn btn-ghost btn-sm" onclick="quickGenCoverFromModal(${j.id})">Write Cover Letter</button>` +
     (state.resumes.length ? `<button class="btn btn-ghost btn-sm" onclick="autoTailorResume(${j.id})">&#9997; Tailor Resume</button>` : "") +
+    `<button class="btn btn-ghost btn-sm" onclick="openAccommodationModal(${j.id})">&#9855; Request Accommodations</button>` +
     `<button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="deleteFromModal()">Delete</button>`;
 
   renderTimeline(j);
