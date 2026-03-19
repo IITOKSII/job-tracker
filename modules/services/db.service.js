@@ -2,6 +2,7 @@
 // Also owns the save helpers for top-level collections (jobs, resumes, covers).
 
 import { state, fb } from "../state.js";
+import { toast } from "../ui/utils.js";
 
 // ── Core ref ────────────────────────────────────────────────────────────────
 
@@ -48,7 +49,13 @@ export async function fbSaveCollection(name, arr) {
     await fb.db.collection("users").doc(fb.user.uid)
       .collection("data").doc(name)
       .set({ items: JSON.stringify(arr), updated: new Date().toISOString() });
-  } catch (e) { console.warn("Firebase save error:", e); }
+  } catch (e) {
+    console.warn("Firebase save error:", e);
+    if (e.code === "permission-denied")
+      toast("Sync failed: Access denied. Please sign in again.", "err");
+    else if (e.code !== "unavailable") // "unavailable" = offline — handled by Firestore cache
+      toast("Sync failed: " + (e.message || "Unknown error"), "err");
+  }
 }
 
 export async function fbLoadCollection(name) {
@@ -57,7 +64,10 @@ export async function fbLoadCollection(name) {
     const doc = await fb.db.collection("users").doc(fb.user.uid)
       .collection("data").doc(name).get();
     if (doc.exists && doc.data().items) return JSON.parse(doc.data().items);
-  } catch (e) {}
+  } catch (e) {
+    if (e.code === "permission-denied")
+      toast("Access denied: Could not load " + name + ". Please sign in again.", "err");
+  }
   return null;
 }
 

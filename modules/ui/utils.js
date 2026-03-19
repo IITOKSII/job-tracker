@@ -13,7 +13,7 @@ export function toast(msg, type = "") {
   t.className = "toast " + type;
   t.textContent = msg;
   t.setAttribute("role", "alert");
-  t.setAttribute("aria-live", "polite");
+  t.setAttribute("aria-live", type === "err" ? "assertive" : "polite");
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
