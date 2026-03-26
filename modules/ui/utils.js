@@ -45,3 +45,17 @@ export function scoreColor(n) {
        : n >= 40 ? "var(--blue)"
        :           "var(--red)";
 }
+
+const _loadedScripts = {};
+export function loadScript(url) {
+  if (_loadedScripts[url]) return _loadedScripts[url];
+  _loadedScripts[url] = new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = url;
+    s.async = true;
+    s.onload  = () => res();
+    s.onerror = () => { delete _loadedScripts[url]; rej(new Error("Failed: " + url)); };
+    document.head.appendChild(s);
+  });
+  return _loadedScripts[url];
+}

@@ -1,5 +1,10 @@
 # CHANGELOG — WorkAble (formerly JobTrack)
 
+## [2026-03-26] — Task 3: Lazy-Loading Foundations
+- **Added**: `loadScript(url)` promise-based utility in `modules/ui/utils.js` — deduplicates concurrent loads via `_loadedScripts` cache map.
+- **Refactored**: `_extractPDF`, `_extractDOCX`, `_renderPDFPages` in `modules/features/documents.js` — now `await loadScript(...)` on demand instead of assuming globals.
+- **Removed**: Blocking `<script>` tags for pdf.js (3.11.174) and mammoth (1.6.0) from `index.html` `<head>`.
+
 ## [0.1.1] — 2026-03-10 — Planning
 - Added P1 TODO item: Fix Gemini hallucinations (Phase 2.5 — AI)
 
@@ -30,8 +35,11 @@
 - Added .claudignore to optimize AI context window.
 - Fixed 'File too large' error for future sessions.
 
-### [2026-03-10] - Desktop Sync & Security Hardening
-- **Added**: .gitignore for AI workstates (.claude/).
-- **Changed**: index.html converted to modular type="module" structure.
-- **Fixed**: Resolved merge conflicts in index.html and corrected CRLF line endings.
-- **Security**: Hardened Firestore logic using the userDocRef pattern for subscription readiness.
+### [2026-03-22] - Performance & Hygiene Optimization
+- **Completed**: Task 3 — Optimize PDF.js/Mammoth.js loading (Lighthouse Performance).
+- **Added**: `loadScript` promise-based utility to `modules/ui/utils.js`.
+- **Improved**: Lazy-loading of `pdf.min.js` and `mammoth.browser.min.js` (loaded only on file upload).
+- **Improved**: Configuration of `pdf.worker.js` now uses the official worker script for better performance.
+- **Changed**: Removed blocking script tags for heavy libraries from `index.html`.
+- **Non-Technical Summary**: Generated and saved to `docs/updates/2026-03-22_LazyLoading.md`.
+- **Cleanup**: Purged redundant worktrees and business documentation as part of the repository hygiene update.
