@@ -1,2 +1,9 @@
 
 .claude/
+
+# Gemini & Tooling Artifacts
+.gemini/
+.cache/
+.config/
+.claude.json
+.bash_history
