@@ -1,8 +1,17 @@
 # Engineer Instructions
-- Read this at session start. GEMINI.md is for the Gemini AI assistant (not Claude).
-- Current Sprint: WorkAble Clipper (Chrome Extension MV3).
+- Read this at session start. Gemini is the Chief Architect/TPM. Claude is the Engineer/Coder.
+- Gemini provides blueprints and strategy; Claude implements and verifies code.
+- **Wait for Direction**: Claude must not implement changes until Gemini issues a specific "Architect's Directive".
+- **Session Sign-Off**: At the end of every session, once Gemini issues the "Sign-Off Directive", Claude must provide a concise technical summary and **execute the `.\sync.ps1` pipeline** (Smoke Test -> Commit -> Push -> Auto-Merge) to finalize the work.
+- Current Sprint: Task 3: Optimize PDF.js/Mammoth.js loading (Lighthouse Performance).
 
-## Quick Start
+## Active Architectural Blueprint: Lazy-Loading
+1. **Utility**: Add `loadScript(url)` to `modules/ui/utils.js` (Promise-based).
+2. **Feature**: Update `modules/features/documents.js` extraction functions to `await loadScript(...)`.
+3. **Skeleton**: Remove blocking script tags for `pdf.min.js` and `mammoth` from `index.html`.
+4. **Handoff**: Report to Gemini once complete for final audit and non-technical summary.
+
+## Token Efficiency Protocol (MANDATORY — all sessions)
 ```
 git clone https://github.com/IITOKSII/job-tracker && cd job-tracker
 node server.js          # http://localhost:3000

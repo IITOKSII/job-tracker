@@ -1,17 +1,34 @@
-# WorkAble Master Project Memory
-Last updated: 2026-03-16
+# WorkAble Architect's Memory (Architect: Gemini)
+Last updated: 2026-03-22
+
+## AI Persona: Elite Technical Project Manager (The Sheriff)
+- **Role**: Chief Architect & Strategic Overseer.
+- **Tone**: Professional, direct, action-first.
+- **Workflow**: Mandatory **'Outstanding Tasks -> Blockers -> Verification -> Next Tasks'**.
+- **Efficiency**: Architect provides blueprints and surgical code deltas; Claude implements.
+
+## Source of Truth Protocol (Mandatory for Handoff)
+1. **CLAUDE.md**: Engineer's Manual (Instructions, Blueprints, Efficiency).
+2. **GEMINI.md**: Architect's Memory (Task Status, Architecture, Strategic Oversight).
+3. **MEMORY.md**: Project History & Gotchas (Persistence, Technical Facts).
+4. **CHANGELOG.md**: Change Audit Trail (Must be updated after every task).
 
 ## System Architecture (Verified)
-- **Entry:** index.html -> modules/app.js (Object.assign window boot)
-- **State:** modules/state.js (Singleton: { state, fb } -- only source of truth)
-- **Storage:** db.service.js (Triple-guarded: Firestore -> Extension -> LocalStorage)
-- **A11y:** tts.js (en-AU voice), toolbar.js (preferences: contrast/dyslexia/easyread/motion/size/spacing)
-- **Pipeline:** sync.ps1 (Smoke test -> commit -> push -> PR -> conflict check -> auto-merge)
-- **Full module map + dependency order:** see CLAUDE.md
+- **Entry**: index.html -> modules/app.js (Object.assign window boot)
+- **State**: modules/state.js (Singleton: { state, fb } -- only source of truth)
+- **Storage**: db.service.js (Triple-guarded: Firestore -> Extension -> LocalStorage)
+- **A11y**: tts.js (en-AU voice), toolbar.js (preferences: contrast/dyslexia/easyread/motion/size/spacing)
+- **Pipeline**: sync.ps1 (Smoke test -> commit -> push -> PR -> conflict check -> auto-merge)
 
 ## Master To-Do List
 
+### Outstanding Tasks
+- [ ] WCAG AA 4.5:1 Color Contrast Check (added from TODO.md)
+- [ ] Add icon PNGs (run: npm install sharp && node extension/generate-icons.js)
+- [ ] Focus trapping for `a11y-panel` in `toolbar.js` (non-blocking polish)
+
 ### Done (confirmed)
+- [x] Optimize PDF.js/Mammoth.js loading (Lighthouse Performance) — 2026-03-22
 - [x] Full Backend Audit -- all checks passed
 - [x] Fix window.clearErr/showErr/setStatus missing from app.js (PR #9)
 - [x] Knowledge Injection -- dependency order, module map, sync pipeline, boot logic written to CLAUDE.md
@@ -26,27 +43,18 @@ Last updated: 2026-03-16
 - [x] Bug Fix: preview-engine.js -- TTS .tts-btn removal (PR #10)
 - [x] Bug Fix: preview-engine.js -- blank second PDF page fix (2026-03-16, quizzical-lamport)
 - [x] Checklist 2 -- UI Manual Testing (user confirmed 2026-03-16)
+- [x] WorkAble Clipper -- Chrome Extension MV3 built and merged (PR #18)
+- [x] Self-Advocacy -- Accommodation Request templates and AI generator (PR #24)
 
-### Done -- WorkAble Clipper fixes (2026-03-16, upbeat-chatterjee, PR #17 + #18)
-- [x] Bug Fix: bridge.js -- CRITICAL: was calling chrome.storage.local in MAIN world (chrome undefined there)
-  - Fix: postMessage relay. bridge.js (MAIN) sends messages; bridge-relay.js (ISOLATED, new) handles chrome.storage
-  - manifest.json updated to load bridge-relay.js at document_start (ISOLATED world)
-- [x] popup.js -- Gemini analysis before save (requirements, interview_questions, company_facts populated)
-- [x] auth.service.js -- Firebase users now get clipper jobs merged (window.storage.get direct call post-Firestore load)
-- [x] dashboard.js + modal.js -- "NEW" badge for unseen clipper jobs; cleared on modal open
-
-### Awaiting User Verification
-- [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → WorkAble flow
-- [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
+### Outstanding Tasks
 - [ ] Add icon PNGs (run: npm install sharp && node extension/generate-icons.js)
+- [ ] Focus trapping for `a11y-panel` in `toolbar.js` (non-blocking polish)
+- [ ] Optimize PDF.js/Mammoth.js loading (Lighthouse Performance)
 
-## One Noted A11y Gap (non-blocking, for polish sprint)
-- `a11y-panel` has `role="dialog"` but toolbar.js does not implement focus trapping.
-  The job modal DOES trap focus (modal.js). The toolbar panel should match.
-
-## Sync Rule (Lightweight -- 2026-03-16)
+## Sync Rule (Lightweight -- 2026-03-20)
 Update CLAUDE.md + MEMORY.md on meaningful changes only. GEMINI.md on task status changes only.
 
 ## Persistence Rule
 - ALWAYS read CLAUDE.md and GEMINI.md at start of every session.
 - DO NOT mark tasks 'Done' until User confirms actioned results.
+
