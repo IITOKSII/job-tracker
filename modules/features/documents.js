@@ -2,7 +2,7 @@
 
 import { state } from "../state.js";
 import { saveResumes, saveCovers } from "../services/db.service.js";
-import { esc, toast } from "../ui/utils.js";
+import { esc, toast, loadScript } from "../ui/utils.js";
 import { setEditorMode, updateWordCount, refreshPreview } from "./preview-engine.js";
 
 // ── Version helpers ───────────────────────────────────────────────────────────
@@ -316,7 +316,8 @@ function _readAsText(file) {
 }
 
 async function _extractPDF(file) {
-  if (typeof pdfjsLib === "undefined") throw new Error("PDF library not loaded. Please refresh.");
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
   const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
   let full = "";
   for (let i = 1; i <= pdf.numPages; i++) {
@@ -329,13 +330,15 @@ async function _extractPDF(file) {
 }
 
 async function _extractDOCX(file) {
-  if (typeof mammoth === "undefined") throw new Error("DOCX library not loaded. Please refresh.");
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js");
   const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
   if (!result.value.trim()) throw new Error("No text found in document.");
   return result.value;
 }
 
 async function _renderPDFPages(file) {
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
   const viewer    = document.getElementById("resume-pdf-viewer");
   const container = document.getElementById("resume-pdf-pages");
   if (!viewer || !container) return;
