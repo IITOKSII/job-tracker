@@ -75,6 +75,14 @@
  * @property {"clipper"} [source]                     - Present only for Clipper extension jobs
  * @property {boolean} [seen]                         - false → shows amber "NEW" badge (Clipper jobs)
  * @property {BarrierLog[]} [barriers]               - User-logged accessibility/process barriers for this job
+ * @property {A11yRating} [a11yRating]               - AI-extracted accessibility rating
+ */
+
+/**
+ * @typedef {Object} A11yRating
+ * @property {number} score                           - 1 to 5 based on disclosed support
+ * @property {string} details                         - Brief justification for the score
+ * @property {string[]} criteria                      - Key a11y points found (e.g. "Adjustments mentioned", "Inclusion policy")
  */
 
 /**

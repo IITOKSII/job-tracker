@@ -36,7 +36,7 @@ Last updated: 2026-03-29
 - [x] dashboard.js + modal.js -- "NEW" badge for unseen clipper jobs; cleared on modal open
 
 ### Awaiting User Verification
-- [ ] Verify Capabal Clipper flow (clip → dashboard) on main (PR #32)
+- [ ] Verify A11y Rating appears in job modal after analysing a new job (URL or paste)
 
 ### Done — Structured Bulleted Job Summaries (2026-03-29)
 - [x] AI prompts updated in `jobs.js` (URL + paste) and `extension/popup.js` (clipper) — description now requests 3-4 bullet points starting with • on separate lines
@@ -59,6 +59,12 @@ Last updated: 2026-03-29
 ### Done — Accommodation Template De-Legalisation (2026-03-29)
 - [x] Removed legal citations from all three accommodation templates (interview-request, workplace-adjustment, remote-flexible) for a more human-centric tone
 - [x] AI prompt in `generateAccommodationLetter` updated: IMPORTANT instruction added to avoid legal citations/acts
+
+### Done — A11y Rating Schema & AI Extraction (2026-03-29)
+- [x] Implemented A11y Rating schema and AI extraction logic (2026-03-29)
+  - `A11yRating` typedef added to `modules/assets/types.js`; `[a11yRating]` property added to `Job` typedef
+  - `a11y_rating` field added to Gemini prompt JSON in `modules/features/jobs.js` (URL + paste paths) and `extension/popup.js`
+  - `a11yRating: d.a11y_rating || null` mapped in all three job builder objects
 
 ### Done — A11y Polish Sprint (2026-03-29)
 - [x] Focus trapping for `#a11y-panel` in toolbar.js (2026-03-29)
