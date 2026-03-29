@@ -57,13 +57,20 @@ function setJobs(jobs) {
 }
 
 // ── URL normalisation ─────────────────────────────────────────────────────────
-// Strips query parameters and trailing slashes so tracking variants of the
-// same job URL (e.g. ?refId=xyz, ?trackingId=abc) are treated as duplicates.
+// Strips tracking params but keeps identity params (jobId, currentJobId) that
+// are part of the job's identity (e.g. LinkedIn search page uses currentJobId).
+
+const _IDENTITY_PARAMS = new Set(["jobid", "currentjobid"]);
 
 function normalizeUrl(url) {
   try {
     const u = new URL(url);
-    return (u.origin + u.pathname).replace(/\/+$/, "").toLowerCase();
+    // Drop all params except identity params
+    for (const key of [...u.searchParams.keys()]) {
+      if (!_IDENTITY_PARAMS.has(key.toLowerCase())) u.searchParams.delete(key);
+    }
+    const qs = u.searchParams.toString();
+    return (u.origin + u.pathname + (qs ? `?${qs}` : "")).replace(/\/+$/, "").toLowerCase();
   } catch (_e) {
     return url.split("?")[0].replace(/\/+$/, "").toLowerCase();
   }

@@ -159,12 +159,28 @@
   }
 
   function seekCanonicalUrl() {
-    // Prefer <link rel="canonical">
+    // 1. Prefer <link rel="canonical"> if it contains a job ID
     const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical?.href) return canonical.href;
-    // Fall back: strip query string, keep /job/ID path
-    const m = window.location.pathname.match(/\/job\/(\d+)/);
-    if (m) return `https://www.seek.com.au/job/${m[1]}`;
+    if (canonical?.href) {
+      const mc = canonical.href.match(/\/job\/(\d+)/);
+      if (mc) return `https://www.seek.com.au/job/${mc[1]}`;
+    }
+    // 2. Pathname match (direct job page URL)
+    const mp = window.location.pathname.match(/\/job\/(\d+)/);
+    if (mp) return `https://www.seek.com.au/job/${mp[1]}`;
+    // 3. Search page: find the active/highlighted job card link in the results sidebar
+    const activeLink =
+      document.querySelector('[data-automation="jobTitle"][href*="/job/"]') ||
+      document.querySelector('a[href*="/job/"][aria-current]') ||
+      document.querySelector('a[href*="/job/"][class*="active"]') ||
+      document.querySelector('[data-job-id]');
+    if (activeLink) {
+      const href = activeLink.getAttribute("href") || "";
+      const mh = href.match(/\/job\/(\d+)/);
+      if (mh) return `https://www.seek.com.au/job/${mh[1]}`;
+      const did = activeLink.getAttribute("data-job-id");
+      if (did) return `https://www.seek.com.au/job/${did}`;
+    }
     return window.location.href;
   }
 
