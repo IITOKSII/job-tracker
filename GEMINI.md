@@ -37,6 +37,7 @@ Last updated: 2026-03-29
 
 ### Awaiting User Verification
 - [ ] Verify A11y Rating badge appears on dashboard cards and full breakdown shows in modal
+- [ ] Verify Clipper dedup: LinkedIn/SEEK tracking URLs treated as same job; "Save Anyway" works on duplicate screen
 
 ### Done — Structured Bulleted Job Summaries (2026-03-29)
 - [x] AI prompts updated in `jobs.js` (URL + paste) and `extension/popup.js` (clipper) — description now requests 3-4 bullet points starting with • on separate lines
@@ -59,6 +60,11 @@ Last updated: 2026-03-29
 ### Done — Accommodation Template De-Legalisation (2026-03-29)
 - [x] Removed legal citations from all three accommodation templates (interview-request, workplace-adjustment, remote-flexible) for a more human-centric tone
 - [x] AI prompt in `generateAccommodationLetter` updated: IMPORTANT instruction added to avoid legal citations/acts
+
+### Done — Clipper Deep Links & Duplicate Refinement (2026-03-29)
+- [x] content.js: LinkedIn canonical URL extracted from title link or path (`/jobs/view/ID`); SEEK uses `<link rel="canonical">` or path ID
+- [x] background.js: `normalizeUrl()` strips query params + trailing slashes before all duplicate comparisons
+- [x] popup.html + popup.js: "Save Anyway" force-save button on duplicate screen — appends `#force-{ts}` to bypass dedup
 
 ### Done — A11y Rating UI (2026-03-29)
 - [x] Implemented A11y Rating UI badges on dashboard and detailed breakdown in modal (2026-03-29)
