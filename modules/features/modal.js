@@ -5,6 +5,7 @@ import { STATUS, STATUS_ORDER, CHECKLIST_ITEMS } from "../assets/constants.js";
 import { esc, scoreColor, toast } from "../ui/utils.js";
 import { saveJobs } from "../services/db.service.js";
 import { ttsBtnHTML } from "../a11y/tts.js";
+import { callGemini } from "../config/gemini.config.js";
 
 // ── Open / Close ─────────────────────────────────────────────────────────────
 
@@ -272,11 +273,35 @@ export function renderBarriers(j) {
     return;
   }
   list.innerHTML = j.barriers.map(b =>
-    `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--surface2,var(--surface));border-radius:6px;margin-bottom:6px;font-size:13px;">
-      <span style="flex-shrink:0;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;background:var(--red)22;color:var(--red);">${esc(BARRIER_LABELS[b.type] || b.type)}</span>
-      <div style="flex:1;color:var(--text);">${esc(b.description)}<div style="font-size:11px;color:var(--muted);margin-top:3px;">${new Date(b.date).toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})}</div></div>
+    `<div id="barrier-${b.id}" style="padding:8px 10px;background:var(--surface2,var(--surface));border-radius:6px;margin-bottom:6px;font-size:13px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span style="flex-shrink:0;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;background:var(--red)22;color:var(--red);">${esc(BARRIER_LABELS[b.type] || b.type)}</span>
+        <div style="flex:1;color:var(--text);">${esc(b.description)}<div style="font-size:11px;color:var(--muted);margin-top:3px;">${new Date(b.date).toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})}</div></div>
+        <button class="btn btn-ghost btn-sm" style="flex-shrink:0;font-size:11px;" onclick="suggestBarrierSolution(${b.id})">&#x2728; Suggest Solution</button>
+      </div>
+      <div id="barrier-sol-${b.id}"></div>
     </div>`
   ).join("");
+}
+
+export async function suggestBarrierSolution(barrierId) {
+  const j = state.jobs.find(x => x.id === state.currentJobId); if (!j) return;
+  const b = (j.barriers || []).find(x => x.id === barrierId); if (!b) return;
+  const solEl = document.getElementById(`barrier-sol-${barrierId}`); if (!solEl) return;
+
+  solEl.innerHTML = `<div style="margin-top:8px;padding:10px 12px;background:var(--accent)11;border-left:3px solid var(--accent);border-radius:4px;font-size:12px;color:var(--muted);">Thinking...</div>`;
+
+  try {
+    const prompt = `Given the accessibility barrier: "${b.description}", suggest a specific, professional, and reasonable accommodation or solution the candidate can propose to the employer.`;
+    const text = await callGemini(prompt);
+    solEl.innerHTML = `<div style="margin-top:8px;padding:10px 12px;background:var(--accent)11;border-left:3px solid var(--accent);border-radius:4px;">
+      <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:5px;letter-spacing:0.05em;">CAPABAL TIP</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6;">${esc(text)}</div>
+    </div>`;
+  } catch (e) {
+    solEl.innerHTML = `<div style="margin-top:8px;padding:8px 10px;background:var(--red)11;border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--red);">${esc(e.message)}</div>`;
+    toast(e.message, "err");
+  }
 }
 
 export function addBarrier() {
