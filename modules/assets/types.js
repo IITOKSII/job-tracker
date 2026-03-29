@@ -76,6 +76,13 @@
  * @property {boolean} [seen]                         - false → shows amber "NEW" badge (Clipper jobs)
  * @property {BarrierLog[]} [barriers]               - User-logged accessibility/process barriers for this job
  * @property {A11yRating} [a11yRating]               - AI-extracted accessibility rating
+ * @property {JobSection[]} [breakdown]               - Detailed, structured breakdown of the job
+ */
+
+/**
+ * @typedef {Object} JobSection
+ * @property {string} section                         - e.g. "Role Overview", "Responsibilities", "Perks & Benefits"
+ * @property {string[]} items                         - Bullet points for this section
  */
 
 /**

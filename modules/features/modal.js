@@ -31,7 +31,23 @@ export function openModal(id) {
     return `<button class="status-opt" style="${a ? `color:${m.color};border-color:${m.color};background:${m.color}18` : ""}" onclick="updateStatus('${s}')">${m.label}</button>`;
   }).join("");
 
-  if (j.description) {
+  if (j.breakdown?.length) {
+    // Structured breakdown — professional brief layout
+    const summaryHTML = j.description
+      ? `<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.65;">${esc(j.description)}${ttsBtnHTML(j.description)}</p>`
+      : "";
+    const sectionsHTML = j.breakdown.map(sec => {
+      const validItems = (sec.items || []).filter(i => i && i !== "...");
+      if (!validItems.length) return "";
+      return `<div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">${esc(sec.section)}</div>
+        ${validItems.map(item => `<div style="display:flex;gap:8px;margin-bottom:5px;font-size:13px;color:var(--muted);"><span style="color:var(--accent);flex-shrink:0;margin-top:1px;">•</span><span>${esc(item)}</span></div>`).join("")}
+      </div>`;
+    }).join("");
+    document.getElementById("m-desc").innerHTML = summaryHTML + sectionsHTML;
+    document.getElementById("m-desc-sec").style.display = "";
+  } else if (j.description) {
+    // Fallback: plain description + requirements
     const _lines = j.description.split('\n').map(l => l.trim()).filter(Boolean);
     const _bulleted = _lines.length > 1 && _lines.some(l => /^[•\-\*]/.test(l));
     const _descHTML = _bulleted

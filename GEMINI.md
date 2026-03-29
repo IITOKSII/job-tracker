@@ -61,6 +61,12 @@ Last updated: 2026-03-29
 - [x] Removed legal citations from all three accommodation templates (interview-request, workplace-adjustment, remote-flexible) for a more human-centric tone
 - [x] AI prompt in `generateAccommodationLetter` updated: IMPORTANT instruction added to avoid legal citations/acts
 
+### Done — Categorized Job Breakdown (2026-03-29)
+- [x] Implemented Categorized Job Breakdown for comprehensive and structured readability (2026-03-29)
+  - `JobSection` typedef added to `types.js`; `[breakdown]` property added to `Job` typedef
+  - All three Gemini prompts (URL, paste, clipper) updated to extract `breakdown` array with thematic sections
+  - `modal.js`: breakdown sections render with uppercase accent headers + bullet items; `description` shown as short summary above; plain-text fallback preserved for legacy jobs
+
 ### Done — Clipper Deep Links & Duplicate Refinement (2026-03-29)
 - [x] content.js: LinkedIn canonical URL extracted from title link or path (`/jobs/view/ID`); SEEK uses `<link rel="canonical">` or path ID
 - [x] background.js: `normalizeUrl()` strips query params + trailing slashes before all duplicate comparisons
