@@ -36,8 +36,7 @@ Last updated: 2026-03-29
 - [x] dashboard.js + modal.js -- "NEW" badge for unseen clipper jobs; cleared on modal open
 
 ### Awaiting User Verification
-- [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → Capabal flow
-- [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
+- [ ] Verify Capabal Clipper flow (clip → dashboard) on main (PR #32)
 
 ### Done — Structured Bulleted Job Summaries (2026-03-29)
 - [x] AI prompts updated in `jobs.js` (URL + paste) and `extension/popup.js` (clipper) — description now requests 3-4 bullet points starting with • on separate lines
