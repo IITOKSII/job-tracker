@@ -31,8 +31,13 @@ export function openModal(id) {
   }).join("");
 
   if (j.description) {
+    const _lines = j.description.split('\n').map(l => l.trim()).filter(Boolean);
+    const _bulleted = _lines.length > 1 && _lines.some(l => /^[•\-\*]/.test(l));
+    const _descHTML = _bulleted
+      ? `<div style="margin-bottom:6px;">${_lines.map(l => `<div style="display:flex;gap:8px;margin-bottom:5px;font-size:13px;color:var(--muted);"><span style="color:var(--accent);flex-shrink:0;">•</span><span>${esc(l.replace(/^[•\-\*]\s*/,''))}</span></div>`).join('')}</div>`
+      : `<p style="font-size:13px;color:var(--muted);">${esc(j.description)}</p>`;
     document.getElementById("m-desc").innerHTML =
-      `<p>${esc(j.description)}${ttsBtnHTML(j.description)}</p>` +
+      _descHTML + ttsBtnHTML(j.description) +
       ((j.requirements || []).length
         ? `<ul style="padding-left:17px;margin-top:9px;">${(j.requirements || []).map(r => `<li style="font-size:13px;color:var(--muted);margin-bottom:2px;">${esc(r)}</li>`).join("")}</ul>`
         : "");
