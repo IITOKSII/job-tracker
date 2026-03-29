@@ -1,5 +1,10 @@
 # CHANGELOG — WorkAble (formerly JobTrack)
 
+## [2026-03-29] — A11y Polish: Focus Trapping & Visibility
+- **Added**: Focus trap in `modules/a11y/toolbar.js` — Tab/Shift+Tab cycles within `#a11y-panel`, Escape closes, focus returns to `#a11y-fab` on close.
+- **Improved**: `:focus-visible` in `styles/base.css` — 3px outline + soft outer glow (`box-shadow: 0 0 0 6px rgba(46,196,182,0.2)`), meets WCAG 2.2 AA visibility requirements.
+- **Added**: Extension icon PNGs (`icon16.png`, `icon48.png`, `icon128.png`) generated from `extension/icons/icon.svg`.
+
 ## [2026-03-26] — Task 3: Lazy-Loading Foundations
 - **Added**: `loadScript(url)` promise-based utility in `modules/ui/utils.js` — deduplicates concurrent loads via `_loadedScripts` cache map.
 - **Refactored**: `_extractPDF`, `_extractDOCX`, `_renderPDFPages` in `modules/features/documents.js` — now `await loadScript(...)` on demand instead of assuming globals.
