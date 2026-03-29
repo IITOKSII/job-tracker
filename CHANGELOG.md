@@ -1,5 +1,9 @@
 # CHANGELOG — WorkAble (formerly JobTrack)
 
+## [2026-03-29]
+- Implemented focus trapping for accessibility panel (`#a11y-panel`) in `modules/a11y/toolbar.js`: Tab/Shift+Tab cycles within panel, Escape closes, focus returns to `#a11y-fab` on close.
+- Enhanced focus visibility in `styles/base.css`: 3px outline + soft outer glow on all `:focus-visible` elements.
+
 ## [2026-03-26] — Task 3: Lazy-Loading Foundations
 - **Added**: `loadScript(url)` promise-based utility in `modules/ui/utils.js` — deduplicates concurrent loads via `_loadedScripts` cache map.
 - **Refactored**: `_extractPDF`, `_extractDOCX`, `_renderPDFPages` in `modules/features/documents.js` — now `await loadScript(...)` on demand instead of assuming globals.
