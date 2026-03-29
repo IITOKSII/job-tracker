@@ -1,4 +1,4 @@
-# WorkAble Master Project Memory
+# Capabal Master Project Memory
 Last updated: 2026-03-29
 
 ## System Architecture (Verified)
@@ -38,6 +38,13 @@ Last updated: 2026-03-29
 ### Awaiting User Verification
 - [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → WorkAble flow
 - [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
+
+### Done — Project Rebrand to Capabal (2026-03-29)
+- [x] index.html: title, setup screen heading, sidebar logo updated to "Capabal"
+- [x] manifest.json (root): name/short_name → "Capabal"
+- [x] extension/manifest.json: name → "Capabal Clipper", description + default_title updated
+- [x] GEMINI.md header updated
+- [x] CHANGELOG.md rebrand entry added
 
 ### Done — A11y Polish Sprint (2026-03-29)
 - [x] Focus trapping for `#a11y-panel` in toolbar.js (2026-03-29)

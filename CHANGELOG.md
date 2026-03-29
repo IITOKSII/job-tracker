@@ -1,4 +1,12 @@
-# CHANGELOG — WorkAble (formerly JobTrack)
+# CHANGELOG — Capabal (formerly WorkAble / JobTrack)
+
+## [2026-03-29] — Project Rebrand: WorkAble → Capabal
+- **Updated**: `<title>` in `index.html` → "Capabal – Application Manager".
+- **Updated**: Setup screen heading → "Welcome to Capabal".
+- **Updated**: Sidebar logo → `Capa<span>bal</span>`.
+- **Updated**: `manifest.json` (root) — `name`/`short_name` → "Capabal".
+- **Updated**: `extension/manifest.json` — `name` → "Capabal Clipper", `description` and `default_title` updated.
+- **No changes needed**: `constants.js`, `ai-prompts.js` — no branding strings found.
 
 ## [2026-03-29] — A11y Polish: Focus Trapping & Visibility
 - **Added**: Focus trap in `modules/a11y/toolbar.js` — Tab/Shift+Tab cycles within `#a11y-panel`, Escape closes, focus returns to `#a11y-fab` on close.
