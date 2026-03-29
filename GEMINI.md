@@ -39,6 +39,10 @@ Last updated: 2026-03-29
 - [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → WorkAble flow
 - [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
 
+### Done — Structured Bulleted Job Summaries (2026-03-29)
+- [x] AI prompts updated in `jobs.js` (URL + paste) and `extension/popup.js` (clipper) — description now requests 3-4 bullet points starting with • on separate lines
+- [x] `modal.js` renderJobModal: splits description on newlines, renders styled bullet divs (accent • icon) if bullets detected; falls back to `<p>` for existing plain-text data
+
 ### Done — WCAG Contrast Audit (2026-03-29)
 - Audited: Dashboard cards, Navigation sidebar, Toasts, A11y panel
 - All text pairs pass 4.5:1 (lowest: --muted on --surface = 5.76:1)
