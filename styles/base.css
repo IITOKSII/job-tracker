@@ -1,5 +1,5 @@
 /* base.css — CSS variables, reset, body, scrollbar, selection */
-:root{--bg:#141a1f;--surface:#1a2028;--surface2:#212830;--border:#2a3340;--accent:#2ec4b6;--accent2:#5dd9cd;--text:#dfe4ea;--muted:#8b9bab;--green:#2ed573;--red:#ff6b81;--blue:#56b4f9;--purple:#9d8df1;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.2);--shadow-lg:0 8px 30px rgba(0,0,0,0.25);}
+:root{--bg:#141a1f;--surface:#1a2028;--surface2:#212830;--border:#2a3340;--accent:#2ec4b6;--accent2:#5dd9cd;--text:#dfe4ea;--muted:#8b9bab;--green:#2ed573;--red:#ff6b81;--blue:#56b4f9;--purple:#9d8df1;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.2);--shadow-lg:0 10px 40px -10px rgba(0,0,0,0.5);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
