@@ -33,6 +33,8 @@
 .match-box{background:var(--surface);border-radius:8px;padding:12px;}
 .match-box strong{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);display:block;margin-bottom:5px;}
 .aq-item{background:var(--surface2);border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.5;border-left:2px solid var(--blue);margin-bottom:6px;}
+.modal-desc-p{font-size:13px;color:var(--muted);line-height:1.7;letter-spacing:0.01em;margin:0 0 10px;}
+.modal-desc-p:last-child{margin-bottom:0;}
 .aq-type{color:var(--blue);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;display:block;margin-bottom:2px;}
 .timeline{position:relative;padding-left:20px;}
 .timeline::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--border);border-radius:2px;}

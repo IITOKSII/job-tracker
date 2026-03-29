@@ -50,9 +50,23 @@ export function openModal(id) {
     // Fallback: plain description + requirements
     const _lines = j.description.split('\n').map(l => l.trim()).filter(Boolean);
     const _bulleted = _lines.length > 1 && _lines.some(l => /^[•\-\*]/.test(l));
-    const _descHTML = _bulleted
-      ? `<div style="margin-bottom:6px;">${_lines.map(l => `<div style="display:flex;gap:8px;margin-bottom:5px;font-size:13px;color:var(--muted);"><span style="color:var(--accent);flex-shrink:0;">•</span><span>${esc(l.replace(/^[•\-\*]\s*/,''))}</span></div>`).join('')}</div>`
-      : `<p style="font-size:13px;color:var(--muted);">${esc(j.description)}</p>`;
+    let _descHTML;
+    if (_bulleted) {
+      _descHTML = `<div style="margin-bottom:6px;">${_lines.map(l => `<div style="display:flex;gap:8px;margin-bottom:5px;font-size:13px;color:var(--muted);line-height:1.7;letter-spacing:0.01em;"><span style="color:var(--accent);flex-shrink:0;">•</span><span>${esc(l.replace(/^[•\-\*]\s*/,''))}</span></div>`).join('')}</div>`;
+    } else if (_lines.length > 1) {
+      // Multiple newline-separated lines — render as spaced paragraphs
+      _descHTML = _lines.map(l => `<p class="modal-desc-p">${esc(l)}</p>`).join('');
+    } else if (j.description.length > 500 && !/\n/.test(j.description)) {
+      // Wall of text — regex-split into 2-sentence paragraph chunks
+      const _sentences = j.description.match(/[^.!?]+[.!?]+(?:\s|$)/g) || [j.description];
+      const _paras = [];
+      for (let _i = 0; _i < _sentences.length; _i += 2) {
+        _paras.push(_sentences.slice(_i, _i + 2).join(' ').trim());
+      }
+      _descHTML = _paras.filter(Boolean).map(p => `<p class="modal-desc-p">${esc(p)}</p>`).join('');
+    } else {
+      _descHTML = `<p class="modal-desc-p">${esc(j.description)}</p>`;
+    }
     document.getElementById("m-desc").innerHTML =
       _descHTML + ttsBtnHTML(j.description) +
       ((j.requirements || []).length
