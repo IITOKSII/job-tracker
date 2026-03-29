@@ -1,5 +1,5 @@
 # WorkAble Master Project Memory
-Last updated: 2026-03-16
+Last updated: 2026-03-29
 
 ## System Architecture (Verified)
 - **Entry:** index.html -> modules/app.js (Object.assign window boot)
