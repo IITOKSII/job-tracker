@@ -263,6 +263,8 @@ ${template.body}
 USER'S ACCESS NEEDS AND NOTES:
 ${notes}${jobContext}
 
+IMPORTANT: Do not include any legal citations, acts, or formal legislation names (e.g., Fair Work Act, Disability Discrimination Act). Keep the tone professional, collaborative, and focused on practical needs rather than legal rights.
+
 Return only the completed letter. Do not leave any placeholder unfilled.`;
 
   try {

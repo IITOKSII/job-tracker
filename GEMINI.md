@@ -57,6 +57,10 @@ Last updated: 2026-03-29
 - [x] GEMINI.md header updated
 - [x] CHANGELOG.md rebrand entry added
 
+### Done — Accommodation Template De-Legalisation (2026-03-29)
+- [x] Removed legal citations from all three accommodation templates (interview-request, workplace-adjustment, remote-flexible) for a more human-centric tone
+- [x] AI prompt in `generateAccommodationLetter` updated: IMPORTANT instruction added to avoid legal citations/acts
+
 ### Done — A11y Polish Sprint (2026-03-29)
 - [x] Focus trapping for `#a11y-panel` in toolbar.js (2026-03-29)
 - [x] Enhanced focus-visible indicators in base.css — 3px outline + outer glow (2026-03-29)
