@@ -39,6 +39,13 @@ Last updated: 2026-03-29
 - [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → WorkAble flow
 - [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
 
+### Done — WCAG Contrast Audit (2026-03-29)
+- Audited: Dashboard cards, Navigation sidebar, Toasts, A11y panel
+- All text pairs pass 4.5:1 (lowest: --muted on --surface = 5.76:1)
+- All UI borders pass 3:1 (--green/.ok = 8.50:1; --red/.err = 5.99:1)
+- **One failure fixed**: `.a11y-toggle.on::after` — white thumb (#fff) on --accent (#2ec4b6) = 2.17:1 (fails 3:1). Fixed to `background:#111` → 8.71:1 ✅
+- File changed: `styles/a11y.css` line 19
+
 ### Done — Project Rebrand to Capabal (2026-03-29)
 - [x] index.html: title, setup screen heading, sidebar logo updated to "Capabal"
 - [x] manifest.json (root): name/short_name → "Capabal"
