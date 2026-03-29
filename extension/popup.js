@@ -172,6 +172,41 @@ async function handleClip() {
   }
 }
 
+// ── Force Save (bypass duplicate check) ───────────────────────────────────────
+
+async function handleForceSave() {
+  if (!currentJob) return;
+  const btn = document.getElementById("force-save-btn");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+
+  const status = document.getElementById("job-status-select")?.value || "saved";
+  let analysed = null;
+  if (currentJob.description) {
+    const key = await getApiKey();
+    if (key) analysed = await analyseWithGemini(currentJob.description, key);
+  }
+
+  // Give the job a unique URL stamp so background.js won't re-flag it
+  const job = buildJob(currentJob, analysed, status);
+  job.url = job.url ? `${job.url}#force-${Date.now()}` : `force-${Date.now()}`;
+
+  try {
+    const resp = await chrome.runtime.sendMessage({ type: "SAVE_JOB", job });
+    if (resp.ok) {
+      document.getElementById("success-job-name").textContent =
+        `"${truncate(job.title, 50)}" at ${truncate(job.company, 40)}`;
+      showScreen("success");
+    } else {
+      document.getElementById("error-detail").textContent = resp.error || "Unknown error";
+      showScreen("error");
+    }
+  } catch (e) {
+    document.getElementById("error-detail").textContent = e.message || "Could not save job.";
+    showScreen("error");
+  }
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
 async function boot() {
@@ -229,6 +264,7 @@ async function boot() {
 
   // Wire up clip button
   document.getElementById("clip-btn").addEventListener("click", handleClip);
+  document.getElementById("force-save-btn")?.addEventListener("click", handleForceSave);
 }
 
 document.addEventListener("DOMContentLoaded", boot);

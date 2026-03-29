@@ -56,12 +56,28 @@ function setJobs(jobs) {
   });
 }
 
+// ── URL normalisation ─────────────────────────────────────────────────────────
+// Strips query parameters and trailing slashes so tracking variants of the
+// same job URL (e.g. ?refId=xyz, ?trackingId=abc) are treated as duplicates.
+
+function normalizeUrl(url) {
+  try {
+    const u = new URL(url);
+    return (u.origin + u.pathname).replace(/\/+$/, "").toLowerCase();
+  } catch (_e) {
+    return url.split("?")[0].replace(/\/+$/, "").toLowerCase();
+  }
+}
+
 async function saveJob(job) {
   const jobs = await getJobs();
 
-  // Duplicate check by URL (skip for jobs with no URL)
-  if (job.url && jobs.some(j => j.url === job.url)) {
-    throw new Error("DUPLICATE");
+  // Duplicate check by normalised URL (skip for jobs with no URL)
+  if (job.url) {
+    const norm = normalizeUrl(job.url);
+    if (jobs.some(j => j.url && normalizeUrl(j.url) === norm)) {
+      throw new Error("DUPLICATE");
+    }
   }
 
   jobs.unshift(job);
@@ -75,6 +91,7 @@ async function getJobCount() {
 
 async function isDuplicate(url) {
   if (!url) return false;
+  const norm = normalizeUrl(url);
   const jobs = await getJobs();
-  return jobs.some(j => j.url === url);
+  return jobs.some(j => j.url && normalizeUrl(j.url) === norm);
 }

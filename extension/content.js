@@ -143,19 +143,45 @@
     return { title, company, location, salary: "N/A", description };
   }
 
+  // ── Canonical URL helpers ─────────────────────────────────────────────────────
+
+  function linkedInCanonicalUrl() {
+    // Prefer the title link href (already a clean /jobs/view/ID path)
+    const titleLink = document.querySelector("a.job-details-jobs-unified-top-card__job-title");
+    if (titleLink) {
+      const m = titleLink.href.match(/\/jobs\/view\/(\d+)/);
+      if (m) return `https://www.linkedin.com/jobs/view/${m[1]}`;
+    }
+    // Fall back: extract ID from current URL
+    const m = window.location.pathname.match(/\/jobs\/view\/(\d+)/);
+    if (m) return `https://www.linkedin.com/jobs/view/${m[1]}`;
+    return window.location.href;
+  }
+
+  function seekCanonicalUrl() {
+    // Prefer <link rel="canonical">
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical?.href) return canonical.href;
+    // Fall back: strip query string, keep /job/ID path
+    const m = window.location.pathname.match(/\/job\/(\d+)/);
+    if (m) return `https://www.seek.com.au/job/${m[1]}`;
+    return window.location.href;
+  }
+
   // ── Dispatcher ────────────────────────────────────────────────────────────────
 
   function scrape() {
     const host = window.location.hostname.toLowerCase();
     let data;
+    let canonicalUrl = window.location.href;
 
-    if (host.includes("linkedin.com"))     data = scrapeLinkedIn();
-    else if (host.includes("indeed.com"))  data = scrapeIndeed();
-    else if (host.includes("seek.com"))    data = scrapeSeek();
-    else if (host.includes("jora.com"))    data = scrapeJora();
-    else if (host.includes("glassdoor.")) data = scrapeGlassdoor();
-    else if (host.includes("workable."))  data = scrapeWorkable();
-    else                                   data = scrapeGeneric();
+    if (host.includes("linkedin.com"))     { data = scrapeLinkedIn();  canonicalUrl = linkedInCanonicalUrl(); }
+    else if (host.includes("indeed.com"))  { data = scrapeIndeed(); }
+    else if (host.includes("seek.com"))    { data = scrapeSeek();       canonicalUrl = seekCanonicalUrl(); }
+    else if (host.includes("jora.com"))    { data = scrapeJora(); }
+    else if (host.includes("glassdoor.")) { data = scrapeGlassdoor(); }
+    else if (host.includes("workable."))  { data = scrapeWorkable(); }
+    else                                   { data = scrapeGeneric(); }
 
     // Quality gate — if we got nothing useful fall back to generic
     if (!data.title && !data.company) data = scrapeGeneric();
@@ -167,7 +193,7 @@
       salary:      data.salary      || "N/A",
       description: data.description || "",
       requirements: [],
-      url:         window.location.href,
+      url:         canonicalUrl,
       source:      host,
     };
   }
