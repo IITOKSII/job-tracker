@@ -101,6 +101,7 @@ export function openModal(id) {
 
   renderTimeline(j);
   renderChecklist(j);
+  renderBarriers(j);
   document.getElementById("modal").style.display = "flex";
   document.addEventListener("keydown", _modalKeyHandler);
   // Focus job title so screen readers announce dialog with full job context, not "Close"
@@ -252,6 +253,42 @@ export function toggleChecklistItem(key) {
   j.checklist[key] = !j.checklist[key];
   saveJobs();
   renderChecklist(j);
+}
+
+// ── Barrier Log ──────────────────────────────────────────────────────────────
+
+const BARRIER_LABELS = {
+  "site-friction":   "Site Friction",
+  "process-barrier": "Process Barrier",
+  "unresponsive":    "Unresponsive",
+};
+
+export function renderBarriers(j) {
+  if (!j.barriers) j.barriers = [];
+  const list = document.getElementById("m-barrier-list");
+  if (!list) return;
+  if (!j.barriers.length) {
+    list.innerHTML = `<p style="font-size:12px;color:var(--muted);margin:0 0 4px;">No barriers logged yet.</p>`;
+    return;
+  }
+  list.innerHTML = j.barriers.map(b =>
+    `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--surface2,var(--surface));border-radius:6px;margin-bottom:6px;font-size:13px;">
+      <span style="flex-shrink:0;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;background:var(--red)22;color:var(--red);">${esc(BARRIER_LABELS[b.type] || b.type)}</span>
+      <div style="flex:1;color:var(--text);">${esc(b.description)}<div style="font-size:11px;color:var(--muted);margin-top:3px;">${new Date(b.date).toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})}</div></div>
+    </div>`
+  ).join("");
+}
+
+export function addBarrier() {
+  const j = state.jobs.find(x => x.id === state.currentJobId); if (!j) return;
+  const type = document.getElementById("m-barrier-type")?.value;
+  const desc = document.getElementById("m-barrier-desc")?.value.trim();
+  if (!desc) return;
+  if (!j.barriers) j.barriers = [];
+  j.barriers.push({ id: Date.now(), type, description: desc, date: new Date().toISOString() });
+  saveJobs();
+  document.getElementById("m-barrier-desc").value = "";
+  renderBarriers(j);
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

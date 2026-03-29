@@ -476,6 +476,19 @@
       <div class="section"><div class="section-title">My Notes</div><textarea id="m-notes" class="field" style="min-height:72px;padding:10px 13px;line-height:1.6;resize:vertical;" placeholder="Add your notes..." aria-label="Job application notes"></textarea></div>
       <div class="section"><div class="section-title">Application Timeline</div><div id="m-timeline" class="timeline"></div></div>
       <div class="section"><div class="section-title">Quick-Apply Checklist</div><div id="m-checklist" class="checklist"></div></div>
+      <div class="section" id="m-barrier-sec">
+        <div class="section-title">Accessibility Barrier Log</div>
+        <div id="m-barrier-list" style="margin-bottom:10px;"></div>
+        <div id="m-barrier-form" style="display:flex;flex-direction:column;gap:8px;">
+          <select id="m-barrier-type" class="field" aria-label="Barrier type" style="padding:8px 10px;font-size:13px;">
+            <option value="site-friction">Site Friction (inaccessible application portal)</option>
+            <option value="process-barrier">Process Barrier (unreasonable requirement)</option>
+            <option value="unresponsive">Unresponsive (no reply / ghosted)</option>
+          </select>
+          <textarea id="m-barrier-desc" class="field" placeholder="Describe the barrier..." aria-label="Barrier description" style="min-height:60px;padding:8px 10px;font-size:13px;resize:vertical;"></textarea>
+          <button class="btn btn-ghost btn-sm" onclick="addBarrier()" style="align-self:flex-start;">+ Log Barrier</button>
+        </div>
+      </div>
       <div class="modal-actions" id="m-actions"></div>
     </div>
   </div>
