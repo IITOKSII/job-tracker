@@ -41,8 +41,7 @@ Last updated: 2026-03-16
 - [ ] Add icon PNGs (run: npm install sharp && node extension/generate-icons.js)
 
 ## One Noted A11y Gap (non-blocking, for polish sprint)
-- `a11y-panel` has `role="dialog"` but toolbar.js does not implement focus trapping.
-  The job modal DOES trap focus (modal.js). The toolbar panel should match.
+- [x] Focus trapping for `#a11y-panel` in toolbar.js (2026-03-29)
 
 ## Sync Rule (Lightweight -- 2026-03-16)
 Update CLAUDE.md + MEMORY.md on meaningful changes only. GEMINI.md on task status changes only.

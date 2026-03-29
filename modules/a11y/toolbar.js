@@ -15,11 +15,46 @@ let _prefs = {
 
 // ── Panel toggle ─────────────────────────────────────────────────────────────
 
+const FOCUSABLE = 'button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])';
+let _trapHandler = null;
+
 export function toggleA11yPanel() {
   const panel = document.getElementById("a11y-panel");
   const fab   = document.getElementById("a11y-fab");
   const isOpen = panel.classList.toggle("open");
   if (fab) fab.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+  if (isOpen) {
+    _installFocusTrap(panel, fab);
+  } else {
+    _removeFocusTrap(panel);
+    if (fab) fab.focus();
+  }
+}
+
+function _installFocusTrap(panel, fab) {
+  const getFocusable = () => Array.from(panel.querySelectorAll(FOCUSABLE));
+  const closeBtn = panel.querySelector('[data-a11y-close],[id$="-close"],button[aria-label*="lose"]')
+                || getFocusable()[0];
+  if (closeBtn) closeBtn.focus();
+
+  _trapHandler = (e) => {
+    if (e.key === "Escape") { toggleA11yPanel(); return; }
+    if (e.key !== "Tab") return;
+    const els = getFocusable();
+    if (!els.length) return;
+    const first = els[0], last = els[els.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+    }
+  };
+  panel.addEventListener("keydown", _trapHandler);
+}
+
+function _removeFocusTrap(panel) {
+  if (_trapHandler) { panel.removeEventListener("keydown", _trapHandler); _trapHandler = null; }
 }
 
 // ── Toggle features ───────────────────────────────────────────────────────────
