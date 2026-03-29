@@ -98,6 +98,7 @@ export function openModal(id) {
     `<button class="btn btn-ghost btn-sm" onclick="quickGenCoverFromModal(${j.id})">Write Cover Letter</button>` +
     (state.resumes.length ? `<button class="btn btn-ghost btn-sm" onclick="autoTailorResume(${j.id})">&#9997; Tailor Resume</button>` : "") +
     `<button class="btn btn-ghost btn-sm" onclick="openAccommodationModal(${j.id})">&#9855; Request Accommodations</button>` +
+    `<button class="btn btn-ghost btn-sm" onclick="showBarrierSection()">&#9888; Log Barrier</button>` +
     `<button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="deleteFromModal()">Delete</button>`;
 
   renderTimeline(j);
@@ -264,14 +265,18 @@ const BARRIER_LABELS = {
   "unresponsive":    "Unresponsive",
 };
 
+export function showBarrierSection() {
+  const sec = document.getElementById("m-barrier-sec");
+  if (sec) { sec.style.display = ""; document.getElementById("m-barrier-type")?.focus(); }
+}
+
 export function renderBarriers(j) {
   if (!j.barriers) j.barriers = [];
+  const sec  = document.getElementById("m-barrier-sec");
   const list = document.getElementById("m-barrier-list");
-  if (!list) return;
-  if (!j.barriers.length) {
-    list.innerHTML = `<p style="font-size:12px;color:var(--muted);margin:0 0 4px;">No barriers logged yet.</p>`;
-    return;
-  }
+  if (!list || !sec) return;
+  if (!j.barriers.length) { sec.style.display = "none"; return; }
+  sec.style.display = "";
   list.innerHTML = j.barriers.map(b =>
     `<div id="barrier-${b.id}" style="padding:8px 10px;background:var(--surface2,var(--surface));border-radius:6px;margin-bottom:6px;font-size:13px;">
       <div style="display:flex;align-items:flex-start;gap:8px;">
@@ -289,15 +294,12 @@ export async function suggestBarrierSolution(barrierId) {
   const b = (j.barriers || []).find(x => x.id === barrierId); if (!b) return;
   const solEl = document.getElementById(`barrier-sol-${barrierId}`); if (!solEl) return;
 
-  solEl.innerHTML = `<div style="margin-top:8px;padding:10px 12px;background:var(--accent)11;border-left:3px solid var(--accent);border-radius:4px;font-size:12px;color:var(--muted);">Thinking...</div>`;
+  solEl.innerHTML = `<div class="barrier-solution-box"><div class="tip-body" style="color:var(--muted);">Thinking...</div></div>`;
 
   try {
     const prompt = `Given the accessibility barrier: "${b.description}", suggest a specific, professional, and reasonable accommodation or solution the candidate can propose to the employer.`;
     const text = await callGemini(prompt);
-    solEl.innerHTML = `<div style="margin-top:8px;padding:10px 12px;background:var(--accent)11;border-left:3px solid var(--accent);border-radius:4px;">
-      <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:5px;letter-spacing:0.05em;">CAPABAL TIP</div>
-      <div style="font-size:13px;color:var(--text);line-height:1.6;">${esc(text)}</div>
-    </div>`;
+    solEl.innerHTML = `<div class="barrier-solution-box"><div class="tip-label">CAPABAL TIP</div><div class="tip-body">${esc(text)}</div></div>`;
   } catch (e) {
     solEl.innerHTML = `<div style="margin-top:8px;padding:8px 10px;background:var(--red)11;border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--red);">${esc(e.message)}</div>`;
     toast(e.message, "err");
