@@ -70,6 +70,8 @@ Last updated: 2026-03-29
   - `#m-barrier-sec` section added to modal in index.html (type dropdown + description textarea + Log button)
   - `renderBarriers(j)` + `addBarrier()` added to modal.js; wired into `openModal`
   - Both exported and bound to `window` via app.js `Object.assign`
+- [x] Integrated AI-powered solution suggestions for logged barriers (2026-03-29)
+  - `suggestBarrierSolution(barrierId)` calls Gemini with barrier description; renders response as "CAPABAL TIP" box inline under each barrier
 
 ## Sync Rule (Lightweight -- 2026-03-16)
 Update CLAUDE.md + MEMORY.md on meaningful changes only. GEMINI.md on task status changes only.
