@@ -36,7 +36,7 @@ Last updated: 2026-03-29
 - [x] dashboard.js + modal.js -- "NEW" badge for unseen clipper jobs; cleared on modal open
 
 ### Awaiting User Verification
-- [ ] Verify A11y Rating appears in job modal after analysing a new job (URL or paste)
+- [ ] Verify A11y Rating badge appears on dashboard cards and full breakdown shows in modal
 
 ### Done — Structured Bulleted Job Summaries (2026-03-29)
 - [x] AI prompts updated in `jobs.js` (URL + paste) and `extension/popup.js` (clipper) — description now requests 3-4 bullet points starting with • on separate lines
@@ -59,6 +59,12 @@ Last updated: 2026-03-29
 ### Done — Accommodation Template De-Legalisation (2026-03-29)
 - [x] Removed legal citations from all three accommodation templates (interview-request, workplace-adjustment, remote-flexible) for a more human-centric tone
 - [x] AI prompt in `generateAccommodationLetter` updated: IMPORTANT instruction added to avoid legal citations/acts
+
+### Done — A11y Rating UI (2026-03-29)
+- [x] Implemented A11y Rating UI badges on dashboard and detailed breakdown in modal (2026-03-29)
+  - Dashboard cards: color-coded `A11y X/5` badge (green ≥4, amber 2-3, red 1) next to match pill
+  - Modal: star display + score badge + details text + criteria tags in `#m-a11y-sec` section
+  - CSS: `.a11y-score-badge`, `.a11y-tags`, `.a11y-tag` added to `components.css`
 
 ### Done — A11y Rating Schema & AI Extraction (2026-03-29)
 - [x] Implemented A11y Rating schema and AI extraction logic (2026-03-29)

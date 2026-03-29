@@ -80,6 +80,26 @@ export function openModal(id) {
     document.getElementById("m-facts-sec").style.display = "none";
   }
 
+  const a11ySec = document.getElementById("m-a11y-sec");
+  if (j.a11yRating?.score) {
+    const r = j.a11yRating;
+    const color = r.score >= 4 ? "var(--green)" : r.score >= 2 ? "#e07b00" : "var(--red)";
+    const stars = "★".repeat(r.score) + "☆".repeat(5 - r.score);
+    const criteriaHTML = r.criteria?.filter(c => c && c !== "...").map(c =>
+      `<span class="a11y-tag">${esc(c)}</span>`
+    ).join("") || "";
+    document.getElementById("m-a11y-content").innerHTML =
+      `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span class="a11y-score-badge" style="background:${color}22;color:${color};">${r.score}/5</span>
+        <span style="color:${color};font-size:16px;letter-spacing:1px;" aria-label="${r.score} out of 5 stars">${stars}</span>
+      </div>
+      ${r.details ? `<p style="font-size:13px;color:var(--muted);margin:0 0 8px;">${esc(r.details)}</p>` : ""}
+      ${criteriaHTML ? `<div class="a11y-tags">${criteriaHTML}</div>` : ""}`;
+    a11ySec.style.display = "";
+  } else {
+    a11ySec.style.display = "none";
+  }
+
   document.getElementById("m-notes").value = j.notes || "";
 
   const isec = document.getElementById("m-interview-sec");
