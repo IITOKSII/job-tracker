@@ -72,6 +72,9 @@ Last updated: 2026-03-29
   - Both exported and bound to `window` via app.js `Object.assign`
 - [x] Integrated AI-powered solution suggestions for logged barriers (2026-03-29)
   - `suggestBarrierSolution(barrierId)` calls Gemini with barrier description; renders response as "CAPABAL TIP" box inline under each barrier
+- [x] Styled barrier solution boxes and refined modal UX (2026-03-29)
+  - `.barrier-solution-box` CSS class added to components.css (accent left-border, surface background)
+  - `#m-barrier-sec` hidden by default when no barriers logged; revealed via "⚠ Log Barrier" button in modal actions (`showBarrierSection()`)
 
 ## Sync Rule (Lightweight -- 2026-03-16)
 Update CLAUDE.md + MEMORY.md on meaningful changes only. GEMINI.md on task status changes only.
