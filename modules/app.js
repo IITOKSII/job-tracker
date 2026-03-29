@@ -67,6 +67,7 @@ import {
   saveInterviewDate, saveInterviewType, saveNotes,
   deleteFromModal, clearAllData, quickGenCoverFromModal,
   renderTimeline, renderChecklist, toggleChecklistItem,
+  renderBarriers, addBarrier,
 } from "./features/modal.js";
 
 // Analytics
@@ -144,6 +145,7 @@ Object.assign(window, {
   saveInterviewDate, saveInterviewType, saveNotes,
   deleteFromModal, clearAllData, quickGenCoverFromModal,
   renderTimeline, renderChecklist, toggleChecklistItem,
+  renderBarriers, addBarrier,
 
   // Analytics
   renderAnalytics,

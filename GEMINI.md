@@ -65,6 +65,12 @@ Last updated: 2026-03-29
 - [x] Enhanced focus-visible indicators in base.css — 3px outline + outer glow (2026-03-29)
 - [x] Extension icon PNGs generated (icon16.png, icon48.png, icon128.png) (2026-03-29)
 
+### Done — Barrier Log UI & Persistence (2026-03-29)
+- [x] Implemented Barrier Log UI and persistence logic (2026-03-29)
+  - `#m-barrier-sec` section added to modal in index.html (type dropdown + description textarea + Log button)
+  - `renderBarriers(j)` + `addBarrier()` added to modal.js; wired into `openModal`
+  - Both exported and bound to `window` via app.js `Object.assign`
+
 ## Sync Rule (Lightweight -- 2026-03-16)
 Update CLAUDE.md + MEMORY.md on meaningful changes only. GEMINI.md on task status changes only.
 
