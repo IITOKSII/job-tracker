@@ -252,6 +252,10 @@ async function boot() {
   currentJob = response.data;
   populatePreview(currentJob);
 
+  // Wire buttons early — force-save-btn must be ready before the duplicate early-return
+  document.getElementById("clip-btn").addEventListener("click", handleClip);
+  document.getElementById("force-save-btn")?.addEventListener("click", handleForceSave);
+
   // Pre-check for duplicate
   try {
     const dup = await chrome.runtime.sendMessage({ type: "CHECK_DUPLICATE", url: currentJob.url });
@@ -262,10 +266,6 @@ async function boot() {
   } catch (_e) { /* non-fatal */ }
 
   showScreen("found");
-
-  // Wire up clip button
-  document.getElementById("clip-btn").addEventListener("click", handleClip);
-  document.getElementById("force-save-btn")?.addEventListener("click", handleForceSave);
 }
 
 document.addEventListener("DOMContentLoaded", boot);
