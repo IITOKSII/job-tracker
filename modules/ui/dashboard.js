@@ -100,6 +100,7 @@ export function renderGrid() {
       <div class="card-footer">
         <span class="card-date">${new Date(j.date).toLocaleDateString("en-AU", {day:"numeric",month:"short",year:"numeric"})}</span>
         <div style="display:flex;align-items:center;gap:5px;">
+          ${j.a11yRating?.score ? (() => { const c = j.a11yRating.score >= 4 ? "var(--green)" : j.a11yRating.score >= 2 ? "#e07b00" : "var(--red)"; return `<span class="a11y-score-badge" style="background:${c}22;color:${c};" title="Accessibility Rating: ${j.a11yRating.score}/5">A11y ${j.a11yRating.score}/5</span>`; })() : ""}
           ${j.matchScore ? `<span class="match-pill" style="background:${scoreColor(j.matchScore)}22;color:${scoreColor(j.matchScore)}">${j.matchScore}% match</span>` : ""}
           <button onclick="quickDelete(${j.id},event)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:2px 5px;border-radius:5px;"
             onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"
