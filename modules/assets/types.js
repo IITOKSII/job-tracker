@@ -74,6 +74,15 @@
  * @property {number} [parentId]                      - Version child: points to the root document's id
  * @property {"clipper"} [source]                     - Present only for Clipper extension jobs
  * @property {boolean} [seen]                         - false → shows amber "NEW" badge (Clipper jobs)
+ * @property {BarrierLog[]} [barriers]               - User-logged accessibility/process barriers for this job
+ */
+
+/**
+ * @typedef {Object} BarrierLog
+ * @property {number} id                              - Date.now() at creation
+ * @property {"site-friction"|"process-barrier"|"unresponsive"} type
+ * @property {string} description                     - Free-text description of the barrier
+ * @property {string} date                            - ISO timestamp of when the barrier was logged
  */
 
 /**

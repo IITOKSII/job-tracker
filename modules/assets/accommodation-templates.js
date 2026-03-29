@@ -102,4 +102,39 @@ Yours sincerely,
 [Phone Number]
 [Email Address]`,
   },
+  {
+    id:   "neurodiversity-sensory",
+    name: "Neurodiversity / Sensory Support Request",
+    desc: "Request quiet environments, written instructions, and agenda-sharing to support neurodivergent or sensory processing needs",
+    body: `[Your Name]
+[Position / Employee ID or "Applicant"]
+[Date]
+
+[Hiring Manager's Name / HR Contact]
+[Company Name]
+
+Dear [Hiring Manager's Name],
+
+Re: Sensory and Communication Support Request — [Job Title]
+
+I am writing to share some information about how I work best, and to request a few simple adjustments that would allow me to engage fully and contribute at my highest level.
+
+I have [NEED], which means that [REASON]. The adjustments I am requesting are straightforward and are likely things your team can accommodate with minimal disruption.
+
+I would appreciate:
+
+• A quieter workspace or access to a low-stimulation area when focused work is required
+• Written instructions or summaries provided alongside verbal communication, to support accurate processing and follow-through
+• An agenda shared in advance of any meetings or interviews, so I can prepare effectively and participate with confidence
+
+These preferences reflect how I do my best work — not limitations on what I can deliver. I am fully capable of [JOB_DUTY], and these adjustments simply remove friction that has nothing to do with my ability or commitment.
+
+I am happy to have a conversation about what might work best in your environment. Thank you for taking the time to consider this.
+
+Yours sincerely,
+
+[Your Name]
+[Phone Number]
+[Email Address]`,
+  },
 ];

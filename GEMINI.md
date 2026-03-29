@@ -36,7 +36,7 @@ Last updated: 2026-03-29
 - [x] dashboard.js + modal.js -- "NEW" badge for unseen clipper jobs; cleared on modal open
 
 ### Awaiting User Verification
-- [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → WorkAble flow
+- [ ] Reload extension at chrome://extensions after PR #18 merges, then test clip → Capabal flow
 - [ ] Confirm clipped jobs appear in dashboard with full AI-analysed data
 
 ### Done — Structured Bulleted Job Summaries (2026-03-29)
