@@ -1,10 +1,10 @@
 # Engineer Instructions
 - Read this at session start. GEMINI.md is for the Gemini AI assistant (not Claude).
-- Current Sprint: WorkAble Clipper (Chrome Extension MV3).
+- Current Sprint: Capabal.app Clipper (Chrome Extension MV3).
 
 ## Quick Start
 ```
-git clone https://github.com/IITOKSII/job-tracker && cd job-tracker
+git clone https://github.com/IITOKSII/capabal-app && cd capabal-app
 node server.js          # http://localhost:3000
 .\sync.ps1              # commit → push → PR → auto-merge
 ```
@@ -12,7 +12,7 @@ node server.js          # http://localhost:3000
 ## Token Efficiency Protocol (MANDATORY — all sessions)
 1. **Lazy Loading** — don't read files until the current sub-task needs them
 2. **Delta-Only** — Edit tool only, never full file rewrites; use `// ... existing code` in explanations
-3. **Plan Gate** — removed for WorkAble (2026-03-16). Full autonomy authorized.
+3. **Plan Gate** — removed for Capabal.app (2026-03-16). Full autonomy authorized.
 4. **Context Alert** — at ~15-20 messages: "Context is heavy. Summarize and start a new thread?"
 5. **Response Discipline** — no trailing summaries, no preamble, action-first, 1-sentence status updates
 
@@ -54,7 +54,7 @@ Every commit goes through this pipeline -- do not bypass:
 ```
 1. Smoke test    -> starts node server.js, checks HTTP 200 on :3000, kills server
                    ABORTS if non-200 (nothing is pushed if the server is broken)
-2. git add + commit -> "WorkAble Update: {date}"
+2. git add + commit -> "Capabal.app Update: {date}"
 3. git push      -> pushes branch to origin
 4. PR check      -> if PR exists: updates it; if not: creates new PR via gh pr create
 5. Conflict check -> gh pr view --json mergeable; ABORTS if CONFLICTING

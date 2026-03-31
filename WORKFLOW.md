@@ -6,7 +6,7 @@
 
 ### 🟦 The Handoff Prompt
 
-**PROJECT CONTEXT:** WorkAble (Modular)  
+**PROJECT CONTEXT:** Capabal.app (Modular)  
 **Architecture:** - \index.html\: UI Skeleton  
 - \modules/app.js\: Logic/Firebase  
 - \modules/style.css\: Styling  

@@ -27,7 +27,7 @@ Last updated: 2026-03-29
 - [x] Bug Fix: preview-engine.js -- blank second PDF page fix (2026-03-16, quizzical-lamport)
 - [x] Checklist 2 -- UI Manual Testing (user confirmed 2026-03-16)
 
-### Done -- WorkAble Clipper fixes (2026-03-16, upbeat-chatterjee, PR #17 + #18)
+### Done -- Capabal.app Clipper fixes (2026-03-16, upbeat-chatterjee, PR #17 + #18)
 - [x] Bug Fix: bridge.js -- CRITICAL: was calling chrome.storage.local in MAIN world (chrome undefined there)
   - Fix: postMessage relay. bridge.js (MAIN) sends messages; bridge-relay.js (ISOLATED, new) handles chrome.storage
   - manifest.json updated to load bridge-relay.js at document_start (ISOLATED world)

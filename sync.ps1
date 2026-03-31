@@ -6,7 +6,7 @@ git pull origin (git branch --show-current) --rebase
 # 2. Stage and Commit
 git add .
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm"
-git commit -m "WorkAble Update: $timestamp"
+git commit -m "Capabal.app Update: $timestamp"
 
 # 3. Push to current branch
 $branch = git branch --show-current

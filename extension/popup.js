@@ -1,4 +1,4 @@
-// WorkAble Clipper — popup.js
+// Capabal.app Clipper — popup.js
 // Orchestrates the popup UI: requests job data from content.js,
 // displays it, and saves via background.js when the user clips.
 
@@ -60,7 +60,7 @@ async function getApiKey() {
   });
   if (stored) return stored;
 
-  // 2. Fall back: read from the active tab's localStorage (where WorkAble stores it)
+  // 2. Fall back: read from the active tab's localStorage (where Capabal.app stores it)
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const resp = await chrome.tabs.sendMessage(tab.id, { type: "GET_GEMINI_KEY" });

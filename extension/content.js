@@ -1,4 +1,4 @@
-// WorkAble Clipper — content.js
+// Capabal.app Clipper — content.js
 // Extracts job data from popular job sites.
 // Runs on all pages at document_idle; responds to SCRAPE_JOB messages from popup.
 
@@ -227,7 +227,7 @@
         sendResponse({ ok: false, detected: false, data: null, error: e.message });
       }
     } else if (msg.type === "GET_GEMINI_KEY") {
-      // Read from the page's localStorage (where WorkAble stores the key)
+      // Read from the page's localStorage (where Capabal.app stores the key)
       try {
         sendResponse({ key: localStorage.getItem("gemini_key") || null });
       } catch (_e) {

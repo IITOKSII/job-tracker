@@ -1,4 +1,4 @@
-# WorkAble PRD
+# Capabal.app PRD
 
 ## Mission
 Empowering people with disabilities through independent career management tools.

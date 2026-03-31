@@ -1,4 +1,4 @@
-// WorkAble Clipper — bridge.js
+// Capabal.app Clipper — bridge.js
 // Runs in world: "MAIN" (page JS context). chrome.* APIs are NOT available here.
 // Communicates with bridge-relay.js (ISOLATED world) via postMessage to access
 // chrome.storage.local. bridge-relay.js must be loaded alongside this file.

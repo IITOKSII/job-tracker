@@ -1,6 +1,6 @@
-// WorkAble Clipper — background.js (MV3 Service Worker)
+// Capabal.app Clipper — background.js (MV3 Service Worker)
 // Handles persistent storage operations for job clipping.
-// Storage format mirrors WorkAble's db.service.js storeGet/storeSet contract:
+// Storage format mirrors Capabal.app's db.service.js storeGet/storeSet contract:
 //   chrome.storage.local key "jt_jobs" → { value: "[{...}]" }
 
 "use strict";

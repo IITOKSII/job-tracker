@@ -1,4 +1,4 @@
-// WorkAble Clipper — bridge-relay.js
+// Capabal.app Clipper — bridge-relay.js
 // Runs in ISOLATED world (default content script context).
 // Has access to chrome.storage.local. Relays requests from bridge.js (MAIN world)
 // via window.postMessage and sends back results.

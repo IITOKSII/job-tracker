@@ -1,4 +1,4 @@
-// ── WorkAble Data Type Definitions ──────────────────────────────────────────
+// ── Capabal.app Data Type Definitions ──────────────────────────────────────────
 // TypeScript-style interface documentation for all Firestore-persisted objects.
 // This file is import-free (assets layer — zero dependencies).
 //
